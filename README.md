@@ -2,7 +2,9 @@
 
 A web application that transforms Last.fm listening data into a gamified profile with 12 unlockable achievements and a 10-level progression system powered by XP
 
-![images](screenshot/desktop-version.png)
+| Web Version | Mobile Version |
+| -- | -- |
+| ![images](screenshot/desktop-version.png) | ![images](screenshot/mobile-version.png) |
 
 ## Features
 
