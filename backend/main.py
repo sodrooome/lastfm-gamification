@@ -1,5 +1,8 @@
+import uvicorn
+from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from achievements import calculate_achievements, calculate_xp
 from lastfm import fetch_user_information, fetch_user_recent_tracks, fetch_user_top_artists, fetch_user_all_top_artists
 
@@ -56,3 +59,13 @@ async def get_user_profile(username: str):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+if __name__ == "__main__":
+    uvicorn.run(app, host='0.0.0.0', reload=True)
+
+
+# using absolute path is more reliable than relative one
+BASE_DIR = Path(__file__).parent
+FRONTEND_DIR = BASE_DIR.parent / "frontend"
+app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
