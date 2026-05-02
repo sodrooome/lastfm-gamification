@@ -1,99 +1,120 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LastFM Scrobble Achievements</title>
 
     <!-- Inter Display -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter+Display:wght@400;475;500;575;600&display=swap"
-        rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Display:wght@400;475;500;575;600&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Custom -->
     <link rel="stylesheet" href="/style.css" />
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="container">
+      <div class="hero text-center">
+        <h1 class="display-lg">LastFM Scrobble Achievements</h1>
+        <p class="subtitle">Turn your listening into identity</p>
+      </div>
 
-        <div class="hero text-center">
-            <h1 class="display-lg">LastFM Scrobble Achievements</h1>
-            <p class="subtitle">Turn your listening into identity</p>
+      <!-- Search -->
+      <div class="search-row">
+        <div class="search-group">
+          <input
+            id="usernameInput"
+            type="text"
+            class="text-input"
+            placeholder="Enter Last.fm username"
+          />
+          <button class="btn btn-primary" onclick="loadUser()">View</button>
         </div>
+      </div>
 
-        <!-- Search -->
-        <div class="search-row">
-            <div class="search-group">
-                <input id="usernameInput" type="text" class="text-input" placeholder="Enter Last.fm username">
-                <button class="btn btn-primary" onclick="loadUser()">View</button>
+      <!-- Loading -->
+      <div id="loading" class="text-center d-none">
+        <div class="spinner"></div>
+      </div>
+
+      <!-- Error -->
+      <div id="error" class="alert-error d-none text-center"></div>
+
+      <!-- Profile Card -->
+      <div id="profile" class="profile-card d-none">
+        <div class="profile-body text-center">
+          <img id="avatar" class="avatar" />
+
+          <h2 id="username" class="title-lg"></h2>
+          <div class="level-section">
+            <p id="level" class="level-badge"></p>
+            <span class="info-trigger">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 16 16"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="8" cy="8" r="7.5" stroke="currentColor" />
+                <path
+                  d="M6.5 6.5C6.5 5.67 7.17 5 8 5C8.83 5 9.5 5.67 9.5 6.5C9.5 7.33 8.5 7.5 8 8.5V9.5"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                />
+                <circle cx="8" cy="11" r="0.75" fill="currentColor" />
+              </svg>
+              <span class="info-tooltip">
+                <strong>How XP works</strong>
+                <hr />
+                <p><span>Scrobbles</span> XP from playcount milestones</p>
+                <p><span>Achievements</span> 150 XP per unlocked badge</p>
+                <p><span>Artists</span> XP from unique artist milestones</p>
+                <p><span>Account Age</span> 150 XP for 10+ year accounts</p>
+                <p>
+                  <span>Profile Complete</span> 150 XP for name, image, country
+                </p>
+                <hr />
+                <p>Total XP determines your level (1–10)</p>
+              </span>
+            </span>
+          </div>
+
+          <div class="level-progress">
+            <div class="progress-track">
+              <div class="progress-fill" id="progressFill"></div>
             </div>
+            <span class="progress-label" id="progressLabel"></span>
+          </div>
+          <p id="joinedDate" class="muted small"></p>
+
+          <div class="profile-meta">
+            <p id="topArtist"></p>
+            <p id="totalScrobbles"></p>
+          </div>
+
+          <hr class="hairline-divider" />
+
+          <h5 class="section-title">Daily Achievements</h5>
+          <div id="dailyAchievements" class="achievements-grid"></div>
+
+          <hr class="hairline-divider" />
+
+          <h5 class="section-title">Lifetime Achievements</h5>
+          <div id="achievements" class="achievements-grid"></div>
+
+          <div class="profile-footer">
+            <a href="/how-to.html" class="how-does-work-link"
+              >How does this work? &rarr;</a
+            >
+          </div>
         </div>
-
-        <!-- Loading -->
-        <div id="loading" class="text-center d-none">
-            <div class="spinner"></div>
-        </div>
-
-        <!-- Error -->
-        <div id="error" class="alert-error d-none text-center"></div>
-
-        <!-- Profile Card -->
-        <div id="profile" class="profile-card d-none">
-            <div class="profile-body text-center">
-
-                <img id="avatar" class="avatar" />
-
-                <h2 id="username" class="title-lg"></h2>
-                <div class="level-section">
-                    <p id="level" class="level-badge"></p>
-                    <span class="info-trigger">
-                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="8" cy="8" r="7.5" stroke="currentColor" />
-                            <path d="M6.5 6.5C6.5 5.67 7.17 5 8 5C8.83 5 9.5 5.67 9.5 6.5C9.5 7.33 8.5 7.5 8 8.5V9.5"
-                                stroke="currentColor" stroke-linecap="round" />
-                            <circle cx="8" cy="11" r="0.75" fill="currentColor" />
-                        </svg>
-                        <span class="info-tooltip">
-                            <strong>How XP works</strong>
-                            <hr>
-                            <p><span>Scrobbles</span> XP from playcount milestones</p>
-                            <p><span>Achievements</span> 150 XP per unlocked badge</p>
-                            <p><span>Artists</span> XP from unique artist milestones</p>
-                            <p><span>Account Age</span> 150 XP for 10+ year accounts</p>
-                            <p><span>Profile Complete</span> 150 XP for name, image, country</p>
-                            <hr>
-                            <p>Total XP determines your level (1–10)</p>
-                        </span>
-                    </span>
-                </div>
-
-                <div class="level-progress">
-                    <div class="progress-track">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <span class="progress-label" id="progressLabel"></span>
-                </div>
-                <p id="joinedDate" class="muted small"></p>
-
-                <div class="profile-meta">
-                    <p id="topArtist"></p>
-                    <p id="totalScrobbles"></p>
-                </div>
-
-                <hr class="hairline-divider">
-
-                <h5 class="section-title">Achievements</h5>
-
-                <div id="achievements" class="achievements-grid"></div>
-
-            </div>
-        </div>
-
+      </div>
     </div>
 
     <script src="/app.js"></script>
-</body>
-
+  </body>
 </html>

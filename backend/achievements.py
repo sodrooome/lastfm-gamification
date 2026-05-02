@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from collections import defaultdict
 
 ALL_ACHIEVEMENTS = [
     "Welcome to the Club, Folks!",
@@ -14,6 +14,12 @@ ALL_ACHIEVEMENTS = [
     "LGTM",
     "Spotify Wasn't Even Born Yet",
     "The Completion",
+]
+
+DAILY_ACHIEVEMENTS = [
+    "Scrobble of the Day",
+    "Having Fun with Yourself?",
+    "How about Take a Break"
 ]
 
 LEVEL_THRESHOLDS = [0, 110, 275, 500, 775, 1100, 1450, 1800, 2150, 2585]
@@ -72,6 +78,7 @@ def calculate_achievements(user_info, top_artists_set, recent_tracks):
         achievements.append({
             "name": a_name,
             "unlocked": a_name in unlocked,
+            "type": "lifetime"
         })
 
     return achievements
@@ -116,7 +123,7 @@ def calculate_xp(user_info, achievements, top_artists_set):
     playcount = int(user_info["user"]["playcount"])
     unique_artists = len(top_artists_set)
 
-    unlocked_count = sum(1 for a in achievements if a["unlocked"])
+    unlocked_count = sum(1 for a in achievements if a["unlocked"] and a.get("type") != "daily")
     scrobbles_xp = _scrobbles_xp(playcount)
     achievements_xp = unlocked_count * 150
     artists_xp = _artists_xp(unique_artists)
@@ -135,3 +142,50 @@ def calculate_xp(user_info, achievements, top_artists_set):
         "max_xp": MAX_XP,
         "progress_pct": round((total_xp / MAX_XP) * 100, 1) if MAX_XP > 0 else 0,
     }
+
+def get_scrobbles_by_day(recent_tracks):
+    daily_counts = defaultdict(int)
+
+    recenttracks = recent_tracks.get("recenttracks", {})
+    if not recenttracks:
+        return daily_counts
+
+    for track in recenttracks.get("track", []):
+        date_information = track.get("date")
+        if not date_information:
+            continue
+
+        timestamp = int(date_information["uts"])
+        day = datetime.utcfromtimestamp(timestamp).strftime("%Y-%m-%d")
+
+        daily_counts[day] += 1
+
+    return daily_counts
+
+
+def calculate_daily_achievements(recent_tracks):
+    daily_counts = get_scrobbles_by_day(recent_tracks=recent_tracks)
+
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+    today_count = daily_counts.get(today, 0)
+
+    unlocked = set()
+
+    if today_count >= 1:
+        unlocked.add("Scrobble of the Day")
+
+    if today_count >= 100:
+        unlocked.add("Having Fun with Yourself?")
+
+    if today_count >= 1000:
+        unlocked.add("How about Take a Break")
+
+    achievements = []
+    for name in DAILY_ACHIEVEMENTS:
+        achievements.append({
+            "name": name,
+            "unlocked": name in unlocked,
+            "type": "daily"
+        })
+    
+    return achievements

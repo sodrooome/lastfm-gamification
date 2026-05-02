@@ -3,7 +3,7 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from achievements import calculate_achievements, calculate_xp
+from achievements import calculate_achievements, calculate_xp, calculate_daily_achievements
 from lastfm import fetch_user_information, fetch_user_recent_tracks, fetch_user_top_artists, fetch_user_all_top_artists
 
 
@@ -27,8 +27,12 @@ async def get_user_profile(username: str):
         total_scrobbles = int(user_info["user"]["playcount"])
         get_top_artist = top_artists_response["topartists"]["artist"][0]["name"] if top_artists_response and top_artists_response["topartists"]["artist"] else "Unknown"
 
-        achievements = calculate_achievements(user_info=user_info, top_artists_set=top_artists_set, recent_tracks=recent_tracks)
-        xp_data = calculate_xp(user_info=user_info, achievements=achievements, top_artists_set=top_artists_set)
+        lifetime_achievements = calculate_achievements(user_info=user_info, top_artists_set=top_artists_set, recent_tracks=recent_tracks)
+        xp_data = calculate_xp(user_info=user_info, achievements=lifetime_achievements, top_artists_set=top_artists_set)
+
+        daily_achievements = calculate_daily_achievements(recent_tracks=recent_tracks)
+
+        achievements = lifetime_achievements + daily_achievements
 
         image_list = user_info["user"].get("image", [])
         print(image_list)
@@ -60,12 +64,10 @@ async def get_user_profile(username: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-
-if __name__ == "__main__":
-    uvicorn.run(app, host='0.0.0.0', reload=True)
-
-
 # using absolute path is more reliable than relative one
 BASE_DIR = Path(__file__).parent
 FRONTEND_DIR = BASE_DIR.parent / "frontend"
 app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+
+if __name__ == "__main__":
+    uvicorn.run(app, host='0.0.0.0', reload=True)
