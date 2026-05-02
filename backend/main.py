@@ -21,6 +21,10 @@ app.add_middleware(
 async def get_user_profile(username: str):
     try:
         user_info = await fetch_user_information(username=username)
+
+        if "error" in user_info and user_info["error"] == 6:
+            raise HTTPException(status_code=404, detail="The requested user does not exist")
+
         top_artists_set, top_artists_response = await fetch_user_all_top_artists(username=username)
         recent_tracks = await fetch_user_recent_tracks(username=username)
 
@@ -61,6 +65,8 @@ async def get_user_profile(username: str):
             "profile_image": profile_image,
             "joined_date": joined_date
         }
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
