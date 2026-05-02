@@ -79,6 +79,12 @@ body {
     color: var(--ink);
 }
 
+.display-md {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
 .title-lg {
     font-size: 24px;
     font-weight: 400;
@@ -203,6 +209,46 @@ body {
     padding: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
 }
+
+/* ─── User Not Found Card ─── */
+
+.user-not-found-card {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--rounded-lg);
+    padding: var(--spacing-xxl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.user-not-found-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-lg);
+}
+
+.user-not-found-icon {
+    color: var(--muted);
+}
+
+.user-not-found-title {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 0;
+}
+
+.user-not-found-desc {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--muted);
+    max-width: 400px;
+    margin: 0;
+}
+
+
 
 /* ─── Profile Card ─── */
 
@@ -603,8 +649,20 @@ body {
         font-size: 32px;
     }
 
+    .display-md {
+        font-size: 24px;
+    }
+
     .profile-card {
         padding: var(--spacing-xl);
+    }
+
+    .user-not-found-card {
+        padding: var(--spacing-xl);
+    }
+
+    .user-not-found-title {
+        font-size: 24px;
     }
 
     .search-group {

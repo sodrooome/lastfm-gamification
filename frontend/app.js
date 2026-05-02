@@ -14,9 +14,19 @@ async function loadUser(usernameParam) {
   toggle("loading", true);
   toggle("profile", false);
   toggle("error", false);
+  toggle("userNotFound", false);
 
   try {
     const res = await fetch(`${API_BASE}/user/${username}`);
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        showUserNotFound();
+        return;
+      }
+      throw new Error("Server error");
+    }
+
     const data = await res.json();
 
     renderProfile(data);
@@ -34,9 +44,18 @@ function renderProfile(data) {
   document.getElementById("avatar").src =
     data.profile_image || "https://via.placeholder.com/100";
 
-  document.getElementById("joinedDate").innerText = data.joined_date
-    ? `Joined: ${data.joined_date}`
-    : "";
+  // convert unix timestamp to the formatted and much appropriate date
+  if (data.joined_date) {
+    const date = new Date(data.joined_date * 1000)
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const day = date.getDate()
+    const month = months[date.getMonth()]
+    const year = date.getFullYear()
+    document.getElementById("joinedDate").innerText = `Joined: ${day} ${month} ${year}`
+  } else {
+    // don't display anything
+    document.getElementById("joinedDate").innerText = ""
+  }
 
   document.getElementById("username").innerText = data.username;
   document.getElementById("level").innerText = `Level ${data.level} / 10`;
@@ -83,6 +102,16 @@ function showError(msg) {
   const el = document.getElementById("error");
   el.innerText = msg;
   toggle("error", true);
+}
+
+function showUserNotFound() {
+  toggle("userNotFound", true);
+}
+
+function focusSearch() {
+  const input = document.getElementById("usernameInput");
+  input.value = "";
+  input.focus();
 }
 
 function toggle(id, show) {
