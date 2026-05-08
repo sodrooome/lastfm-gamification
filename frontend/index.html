@@ -1,133 +1,250 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LastFM Scrobble Achievements</title>
 
-    <!-- Inter Display -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter+Display:wght@400;475;500;575;600&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farmer.FM</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
 
-    <!-- Custom -->
-    <link rel="stylesheet" href="/style.css" />
-  </head>
-
-  <body>
-    <div class="container">
-      <div class="hero text-center">
-        <h1 class="display-lg">LastFM Scrobble Achievements</h1>
-        <p class="subtitle">Turn your listening into identity</p>
+<body>
+  <!-- ── Landing / Search State ── -->
+  <div id="landingView" class="landing-view">
+    <div class="landing-inner">
+      <div class="landing-logo">
+        <span class="logo-dot"></span>
+        <span class="logo-text">Farmer.FM</span>
       </div>
+      <h1 class="landing-title">Turn your listening<br />into identity</h1>
+      <p class="landing-sub">Enter your Last.fm username to see your scrobble achievements.</p>
+      <div class="landing-search">
+        <input id="usernameInput" type="text" class="text-input" placeholder="username" />
+        <button class="btn btn-primary" onclick="loadUser()">View Profile</button>
+      </div>
+    </div>
+  </div>
 
-      <!-- Search -->
-      <div class="search-row">
+  <!-- ── Dashboard State ── -->
+  <div id="dashboardView" class="dashboard-view d-none">
+    <!-- Top nav bar -->
+    <header class="dash-nav">
+      <div class="nav-left">
+        <span class="logo-dot small"></span>
+        <span class="logo-text">Farmer.FM</span>
+      </div>
+      <div class="nav-center">
         <div class="search-group">
-          <input
-            id="usernameInput"
-            type="text"
-            class="text-input"
-            placeholder="Enter Last.fm username"
-          />
-          <button class="btn btn-primary" onclick="loadUser()">View</button>
+          <input id="usernameInputDash" type="text" class="text-input small" placeholder="Search another user…" />
+          <button class="btn btn-primary small" onclick="loadUserFromDash()">View</button>
         </div>
       </div>
-
-      <!-- Loading -->
-      <div id="loading" class="text-center d-none">
-        <div class="spinner"></div>
+      <div class="nav-right">
+        <a href="/how-to.html" class="how-does-work-link">How it works →</a>
       </div>
+    </header>
 
-      <!-- Error -->
-      <div id="error" class="alert-error d-none text-center"></div>
+    <!-- Loading -->
+    <div id="loading" class="loading-overlay d-none">
+      <div class="spinner"></div>
+      <p class="loading-text">Fetching scrobbles…</p>
+    </div>
 
-      <!-- User Not Found -->
-      <div id="userNotFound" class="user-not-found-card d-none text-center">
-        <div class="user-not-found-body">
-          <svg class="user-not-found-icon" width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="16" r="8" stroke="currentColor" stroke-width="2"/>
-            <path d="M8 40c0-8.837 7.163-16 16-16s16 7.163 16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <line x1="32" y1="32" x2="42" y2="42" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <h2 class="display-md user-not-found-title">Oops. we can't find the user you were looking for</h2>
-          <p class="user-not-found-desc">The Last.fm username you entered doesn't exist or may have been changed. Try other username.</p>
-        </div>
-      </div>
+    <!-- Error -->
+    <div id="error" class="alert-error d-none text-center"></div>
 
-      <!-- Profile Card -->
-      <div id="profile" class="profile-card d-none">
-        <div class="profile-body text-center">
-          <img id="avatar" class="avatar" />
-
-          <h2 id="username" class="title-lg"></h2>
-          <div class="level-section">
-            <p id="level" class="level-badge"></p>
-            <span class="info-trigger">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <circle cx="8" cy="8" r="7.5" stroke="currentColor" />
-                <path
-                  d="M6.5 6.5C6.5 5.67 7.17 5 8 5C8.83 5 9.5 5.67 9.5 6.5C9.5 7.33 8.5 7.5 8 8.5V9.5"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                />
-                <circle cx="8" cy="11" r="0.75" fill="currentColor" />
-              </svg>
-              <span class="info-tooltip">
-                <strong>How XP works</strong>
-                <hr />
-                <p><span>Scrobbles</span> XP from playcount milestones</p>
-                <p><span>Achievements</span> 150 XP per unlocked badge</p>
-                <p><span>Artists</span> XP from unique artist milestones</p>
-                <p><span>Account Age</span> 150 XP for 10+ year accounts</p>
-                <p>
-                  <span>Profile Complete</span> 150 XP for name, image, country
-                </p>
-                <hr />
-                <p>Total XP determines your level (1–10)</p>
-              </span>
-            </span>
-          </div>
-
-          <div class="level-progress">
-            <div class="progress-track">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <span class="progress-label" id="progressLabel"></span>
-          </div>
-          <p id="joinedDate" class="muted small"></p>
-
-          <div class="profile-meta">
-            <p id="topArtist"></p>
-            <p id="totalScrobbles"></p>
-          </div>
-
-          <hr class="hairline-divider" />
-
-          <h5 class="section-title">Daily Achievements</h5>
-          <div id="dailyAchievements" class="achievements-grid"></div>
-
-          <hr class="hairline-divider" />
-
-          <h5 class="section-title">Lifetime Achievements</h5>
-          <div id="achievements" class="achievements-grid"></div>
-
-          <div class="profile-footer">
-            <a href="/how-to.html" class="how-does-work-link"
-              >How does this work? &rarr;</a
-            >
-          </div>
-        </div>
+    <!-- User Not Found -->
+    <div id="userNotFound" class="user-not-found-card d-none text-center">
+      <div class="user-not-found-body">
+        <svg class="user-not-found-icon" width="48" height="48" viewBox="0 0 48 48" fill="none"
+          xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="16" r="8" stroke="currentColor" stroke-width="2" />
+          <path d="M8 40c0-8.837 7.163-16 16-16s16 7.163 16 16" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" />
+          <line x1="32" y1="32" x2="42" y2="42" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <h2 class="display-md user-not-found-title">User not found</h2>
+        <p class="user-not-found-desc">The Last.fm username you entered doesn't exist or may have been changed. Try
+          another username.</p>
       </div>
     </div>
 
-    <script src="/app.js"></script>
-  </body>
+    <!-- Main Dashboard -->
+    <div id="profile" class="dash-layout d-none">
+
+      <!-- ── LEFT SIDEBAR ── -->
+      <aside class="sidebar">
+        <div class="sidebar-inner">
+          <!-- Avatar + identity -->
+          <div class="sidebar-identity">
+            <div class="avatar-wrap">
+              <img id="avatar" class="avatar" alt="avatar" />
+            </div>
+            <h2 id="username" class="sidebar-username"></h2>
+
+            <div class="level-section">
+              <p id="level" class="level-badge"></p>
+              <span class="info-trigger">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="8" cy="8" r="7.5" stroke="currentColor" />
+                  <path d="M6.5 6.5C6.5 5.67 7.17 5 8 5C8.83 5 9.5 5.67 9.5 6.5C9.5 7.33 8.5 7.5 8 8.5V9.5"
+                    stroke="currentColor" stroke-linecap="round" />
+                  <circle cx="8" cy="11" r="0.75" fill="currentColor" />
+                </svg>
+                <span class="info-tooltip">
+                  <strong>How XP works</strong>
+                  <hr />
+                  <p><span>Scrobbles</span> XP from playcount milestones</p>
+                  <p><span>Achievements</span> 150 XP per unlocked badge</p>
+                  <p><span>Artists</span> XP from unique artist milestones</p>
+                  <p><span>Account Age</span> 150 XP for 10+ year accounts</p>
+                  <p><span>Profile Complete</span> 150 XP for name, image, country</p>
+                  <hr />
+                  <p>Total XP determines your level (1–10)</p>
+                </span>
+              </span>
+            </div>
+
+            <div class="level-progress">
+              <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+              <span class="progress-label" id="progressLabel"></span>
+            </div>
+          </div>
+
+          <!-- Sidebar stats list -->
+          <ul class="sidebar-stats">
+            <li>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z" stroke="currentColor" stroke-width="1.5"
+                  stroke-linejoin="round" />
+              </svg>
+              <span id="topArtistSidebar"></span>
+            </li>
+            <li>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
+                <path d="M8 5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+              <span id="totalScrobblesSidebar"></span>
+            </li>
+          </ul>
+
+          <!-- Activity timeline -->
+          <div class="sidebar-timeline">
+            <p class="timeline-label">Activity Timeline</p>
+            <div class="timeline-row">
+              <div class="timeline-icon green">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                  <rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M5 1v4M11 1v4M2 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div>
+                <p class="timeline-meta">Started Scrobbling</p>
+                <p id="joinedDate" class="timeline-value"></p>
+              </div>
+            </div>
+            <div class="timeline-row">
+              <div class="timeline-icon blue">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M8 5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+              </div>
+              <div>
+                <p class="timeline-meta">Last Active</p>
+                <p class="timeline-value" id="fetchedDate"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ── RIGHT PANEL ── -->
+      <main class="main-panel">
+
+        <!-- Stats cards row -->
+        <div class="stats-card">
+          <p class="stats-card-title" id="statsTitle">Farmer Stats</p>
+
+          <!-- Level + progress bar -->
+          <div class="stats-level-row">
+            <span id="statsLevel" class="stats-level-text"></span>
+            <span id="statsProgress" class="stats-progress-pct"></span>
+          </div>
+          <div class="stats-progress-track">
+            <div id="statsProgressFill" class="stats-progress-fill"></div>
+          </div>
+
+          <!-- 4 mini-stat boxes -->
+          <div class="stats-grid">
+            <div class="stat-box blue-tint">
+              <p class="stat-box-label">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M8 5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                Total Scrobbles
+              </p>
+              <p id="statScrobbles" class="stat-box-value"></p>
+            </div>
+            <div class="stat-box green-tint">
+              <p class="stat-box-label">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 2a4 4 0 100 8A4 4 0 008 2zM2 14c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor"
+                    stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                Top Artist
+              </p>
+              <p id="statTopArtist" class="stat-box-value small-val"></p>
+            </div>
+            <div class="stat-box pink-tint">
+              <p class="stat-box-label">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z" stroke="currentColor" stroke-width="1.5"
+                    stroke-linejoin="round" />
+                </svg>
+                Achievements
+              </p>
+              <p id="statAchievements" class="stat-box-value"></p>
+            </div>
+            <div class="stat-box peach-tint">
+              <p class="stat-box-label">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                  <circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.5" />
+                  <circle cx="11" cy="5" r="3" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M1 13c0-2.761 2.239-5 5-5M9 13c0-2.761 2.239-5 5-5" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" />
+                </svg>
+                Daily Unlocked
+              </p>
+              <p id="statDaily" class="stat-box-value"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Achievements -->
+        <div class="achievements-section">
+          <p class="section-label">Daily Achievements</p>
+          <div id="dailyAchievements" class="achievements-list"></div>
+        </div>
+
+        <!-- Lifetime Achievements -->
+        <div class="achievements-section">
+          <p class="section-label">Lifetime Achievements</p>
+          <div id="achievements" class="achievements-list"></div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+
 </html>
