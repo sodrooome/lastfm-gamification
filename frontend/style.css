@@ -199,11 +199,12 @@ body {
     height: 52px;
     display: flex;
     align-items: center;
-    gap: var(--spacing-lg);
+    justify-content: space-between;
     padding: 0 var(--spacing-xl);
     position: sticky;
     top: 0;
     z-index: 100;
+    width: 100%;
 }
 
 .nav-left {
@@ -228,6 +229,7 @@ body {
 
 .nav-right {
     flex-shrink: 0;
+    margin-left: auto;
 }
 
 .how-does-work-link {
@@ -940,9 +942,36 @@ body {
 
     .dash-nav {
         padding: 0 var(--spacing-md);
+        height: auto;
+        padding: var(--spacing-sm);
+        flex-wrap: wrap;
+        gap: var(--spacing-sm)
+    }
+
+    .nav-left {
+        width: 100%;
+    }
+
+    .nav-center {
+        flex: 1;
+        min-width: 0;
     }
 
     .nav-center .search-group {
-        max-width: 200px;
+        max-width: none;
+    }
+
+    .text-input.small {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .nav-right {
+        flex-shrink: 0;
+    }
+
+    .how-does-work-link {
+        font-size: 12px;
+        white-space: nowrap;
     }
 }
