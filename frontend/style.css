@@ -331,8 +331,8 @@ body {
     flex-shrink: 0;
     background: var(--sidebar-bg);
     border-radius: var(--rounded-xl);
-    overflow: hidden;
     color: white;
+    position: relative;
 }
 
 .sidebar-inner {
@@ -379,6 +379,8 @@ body {
     align-items: center;
     justify-content: center;
     gap: var(--spacing-xs);
+    position: relative;
+    z-index: 10;
 }
 
 .level-badge {
@@ -405,10 +407,10 @@ body {
 
 .info-tooltip {
     position: absolute;
-    bottom: calc(100% + 10px);
+    top: calc(100% + 10px);
     left: 50%;
-    transform: translateX(-50%) translateY(4px);
-    width: 260px;
+    transform: translateX(-50%) translateY(-4px);
+    width: min(260px, calc(100vw - 32px));
     background: var(--canvas);
     border: 1px solid var(--hairline);
     border-radius: var(--rounded-lg);
@@ -416,18 +418,18 @@ body {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
-    z-index: 200;
+    z-index: 9999;
     pointer-events: none;
 }
 
 .info-tooltip::after {
     content: '';
     position: absolute;
-    top: 100%;
+    bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
     border: 5px solid transparent;
-    border-top-color: var(--canvas);
+    border-bottom-color: var(--canvas);
 }
 
 .info-trigger:hover .info-tooltip {
@@ -904,6 +906,8 @@ body {
 
     .sidebar {
         width: 100%;
+        overflow: visible;
+        position: relative;
     }
 
     .sidebar-inner {
@@ -911,6 +915,8 @@ body {
         flex-wrap: wrap;
         align-items: flex-start;
         gap: var(--spacing-md);
+        overflow: hidden;
+        border-radius: inherit;
     }
 
     .sidebar-identity {
