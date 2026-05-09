@@ -581,6 +581,10 @@ body {
     min-width: 0;
 }
 
+.main-panel>* {
+    width: 100%;
+}
+
 /* ─── Stats Card ─── */
 .stats-card {
     background: var(--canvas);
@@ -643,6 +647,10 @@ body {
 .stat-box {
     border-radius: var(--rounded-lg);
     padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 92px;
 }
 
 .stat-box-label {
@@ -691,6 +699,8 @@ body {
     background: var(--canvas);
     border-radius: var(--rounded-xl);
     padding: var(--spacing-xl);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .section-label {
