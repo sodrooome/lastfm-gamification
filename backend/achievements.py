@@ -19,7 +19,7 @@ ALL_ACHIEVEMENTS = [
 DAILY_ACHIEVEMENTS = [
     "Scrobble of the Day",
     "Having Fun with Yourself?",
-    "How about Take a Break"
+    "How about Take a Break",
 ]
 
 LEVEL_THRESHOLDS = [0, 110, 275, 500, 775, 1100, 1450, 1800, 2150, 2585]
@@ -64,22 +64,24 @@ def calculate_achievements(user_info, top_artists_set, recent_tracks):
     registered = user_info["user"].get("registered", {})
     unixtime = registered.get("unixtime")
     if unixtime:
-        account_age_years = (datetime.now() - datetime.fromtimestamp(int(unixtime))).days / 365.25
+        account_age_years = (
+            datetime.now() - datetime.fromtimestamp(int(unixtime))
+        ).days / 365.25
         if account_age_years >= 10:
             unlocked.add("Spotify Wasn't Even Born Yet")
 
     name = user_info["user"].get("name", "").strip()
     country = user_info["user"].get("country", "").strip()
-    has_image = any(img.get("#text", "").strip() for img in user_info["user"].get("image", []))
+    has_image = any(
+        img.get("#text", "").strip() for img in user_info["user"].get("image", [])
+    )
     if name and country and has_image:
         unlocked.add("The Completion")
 
     for a_name in ALL_ACHIEVEMENTS:
-        achievements.append({
-            "name": a_name,
-            "unlocked": a_name in unlocked,
-            "type": "lifetime"
-        })
+        achievements.append(
+            {"name": a_name, "unlocked": a_name in unlocked, "type": "lifetime"}
+        )
 
     return achievements
 
@@ -123,7 +125,9 @@ def calculate_xp(user_info, achievements, top_artists_set):
     playcount = int(user_info["user"]["playcount"])
     unique_artists = len(top_artists_set)
 
-    unlocked_count = sum(1 for a in achievements if a["unlocked"] and a.get("type") != "daily")
+    unlocked_count = sum(
+        1 for a in achievements if a["unlocked"] and a.get("type") != "daily"
+    )
     scrobbles_xp = _scrobbles_xp(playcount)
     achievements_xp = unlocked_count * 150
     artists_xp = _artists_xp(unique_artists)
@@ -142,6 +146,7 @@ def calculate_xp(user_info, achievements, top_artists_set):
         "max_xp": MAX_XP,
         "progress_pct": round((total_xp / MAX_XP) * 100, 1) if MAX_XP > 0 else 0,
     }
+
 
 def get_scrobbles_by_day(recent_tracks):
     daily_counts = defaultdict(int)
@@ -182,10 +187,8 @@ def calculate_daily_achievements(recent_tracks):
 
     achievements = []
     for name in DAILY_ACHIEVEMENTS:
-        achievements.append({
-            "name": name,
-            "unlocked": name in unlocked,
-            "type": "daily"
-        })
-    
+        achievements.append(
+            {"name": name, "unlocked": name in unlocked, "type": "daily"}
+        )
+
     return achievements

@@ -4,12 +4,13 @@
 
 The level system combines five XP sources into a single pool that drives progression across **10 levels** (0–2,585 max XP).
 
-| Source | Max XP | % of Total |
+| Source | Max XP | % of Raw |
 |---|---|---|
-| Scrobbles | 785 | 30.4% |
-| Achievements | 1,500 | 58.0% |
-| Unique Artists | 300 | 11.6% |
-| **Total** | **2,585** | **100%** |
+| Scrobbles | 785 | 27.2% |
+| Achievements | 1,800 | 62.4% |
+| Unique Artists | 300 | 10.4% |
+| **Raw total** | **2,885** | **100%** |
+| **Capped at** | **2,585** | |
 
 ---
 
@@ -53,7 +54,7 @@ Each tier is **cumulative**, meaning reaching a higher threshold automatically g
 
 ### 2. Achievements (Per Unlock)
 
-Each unlocked achievement grants a flat **150 XP**. There are 10 total achievements available.
+Each unlocked achievement grants a flat **150 XP**. There are 12 total lifetime achievements available.
 
 | # of Unlocked Achievements | XP Awarded |
 |---|---|
@@ -67,6 +68,8 @@ Each unlocked achievement grants a flat **150 XP**. There are 10 total achieveme
 | 8 | 1,200 |
 | 9 | 1,350 |
 | 10 | 1,500 |
+| 11 | 1,650 |
+| 12 | 1,800 |
 
 **Available achievements:**
 1. **Welcome to the Club, Folks!** — 1+ total scrobbles
@@ -77,8 +80,10 @@ Each unlocked achievement grants a flat **150 XP**. There are 10 total achieveme
 6. **Your Loved Ones** — 1+ unique top artists
 7. **Explorer** — 100+ unique top artists
 8. **How About Touch Some Grass?** — 1,000+ unique top artists
-9. **Spotify Wasn't Even Born Yet** — Account registered 10+ years ago
-10. **The Completion** — Profile has real name, image, and country set
+9. **Are You an Elitist or Identity Crisis?** — 5,000+ unique top artists
+10. **LGTM** — 10,000+ unique top artists
+11. **Spotify Wasn't Even Born Yet** — Account registered 10+ years ago
+12. **The Completion** — Profile has real name, image, and country set
 
 ### 3. Unique Artists (Cumulative Milestones)
 
@@ -146,8 +151,9 @@ progress_pct = (total_xp / MAX_XP) × 100
 ### Power Listener (Maxed)
 
 - **Scrobbles:** 1,000,000+ → 785 XP
-- **Achievements:** 10 unlocked → 1,500 XP
+- **Achievements:** 12 unlocked → 1,800 XP
 - **Unique Artists:** 1,000+ → 300 XP
+- **Raw total:** 2,885 XP — **capped at 2,585 XP**
 - **Total:** 2,585 XP → **Level 10**
 - **Progress:** 100%
 
