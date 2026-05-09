@@ -7,14 +7,14 @@ async def fetch_user_information(username: str):
         "method": "user.getinfo",
         "user": username,
         "api_key": LASTFM_API_KEY,
-        "format": "json"
+        "format": "json",
     }
 
     async with httpx.AsyncClient() as client:
         response = await client.get(url=LASTFM_BASE_URL, params=params)
         print(response.json())
         return response.json()
-    
+
 
 async def fetch_user_top_artists(username: str):
     params = {
@@ -31,22 +31,24 @@ async def fetch_user_top_artists(username: str):
         response = await client.get(url=LASTFM_BASE_URL, params=params)
         print(response.json())
         return response.json()
-    
+
+
 async def fetch_user_recent_tracks(username: str):
     params = {
         "method": "user.getrecenttracks",
         "user": username,
         "limit": 50,
         "api_key": LASTFM_API_KEY,
-        "format": "json"
+        "format": "json",
     }
 
     async with httpx.AsyncClient() as client:
         response = await client.get(url=LASTFM_BASE_URL, params=params)
         print(response.json())
         return response.json()
-    
-async def fetch_user_all_top_artists(username: str, limit=1000):
+
+
+async def fetch_user_all_top_artists(username: str, limit=10000):
     artists = set()
     page = 1
     first_page_data = None
@@ -58,7 +60,7 @@ async def fetch_user_all_top_artists(username: str, limit=1000):
             "limit": 1000,
             "page": page,
             "api_key": LASTFM_API_KEY,
-            "format": "json"
+            "format": "json",
         }
 
         async with httpx.AsyncClient() as client:
@@ -81,4 +83,17 @@ async def fetch_user_all_top_artists(username: str, limit=1000):
     return artists, first_page_data
 
 
+async def fetch_user_friends(username: str):
+    params = {
+        "method": "user.getfriends",
+        "user": username,
+        "api_key": LASTFM_API_KEY,
+        "format": "json",
+        "limit": 1,
+    }
 
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url=LASTFM_BASE_URL, params=params)
+        data = response.json()
+
+        return data
