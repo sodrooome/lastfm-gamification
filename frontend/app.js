@@ -81,6 +81,7 @@ async function _fetchAndRender(username) {
     renderProfile(data);
     window.history.pushState({}, "", `?user=${username}`);
   } catch (err) {
+    console.error(err)
     showError("Failed to load user");
   } finally {
     toggle("loading", false);
@@ -99,7 +100,7 @@ function renderProfile(data) {
 
   // ── Username ──
   document.getElementById("username").innerText = data.username;
-  document.getElementById("statsTitle").innerText = data.username + " Stats";
+  document.getElementById("statsTitle").innerText = data.username + " Farmer Stats";
 
   // ── Level ──
   const levelText = `Level ${data.level}`;
@@ -116,11 +117,19 @@ function renderProfile(data) {
   // ── Scrobbles + top artist ──
   const scrobblesFormatted = Number(data.total_scrobbles).toLocaleString();
   document.getElementById("statScrobbles").innerText = scrobblesFormatted;
-  document.getElementById("totalScrobblesSidebar").innerText =
-    scrobblesFormatted + " scrobbles";
+
+  /* unused code but might be useful later */
+  // document.getElementById("totalScrobblesSidebar").innerText =
+  //   scrobblesFormatted + " scrobbles";
 
   document.getElementById("statTopArtist").innerText = data.top_artist;
-  document.getElementById("topArtistSidebar").innerText = data.top_artist;
+
+  /* unused code but might be useful later */
+  // document.getElementById("topArtistSidebar").innerText = data.top_artist;
+
+  // Option B for the sidebar information
+  document.getElementById("setCountry").innerText = data.country;
+  document.getElementById("setAverageListen").innerText = data.average_listen + " songs / day";
 
   // ── Joined date ──
   if (data.joined_date) {
@@ -147,8 +156,11 @@ function renderProfile(data) {
 
   document.getElementById("statAchievements").innerText =
     lifetime.filter((a) => a.unlocked).length;
-  document.getElementById("statDaily").innerText =
-    daily.filter((a) => a.unlocked).length;
+  document.getElementById("statFriends").innerText = data.friend_count
+
+  /* unused code but might be useful later */
+  // document.getElementById("statDaily").innerText =
+  //   daily.filter((a) => a.unlocked).length;
 
   renderAchievements("dailyAchievements", daily);
   renderAchievements("achievements", lifetime);
