@@ -1,4 +1,6 @@
-const API_BASE = "http://localhost:8000";
+const API_BASE = window.location.hostname === "localhost"
+  ? "http://localhost:8000"
+  : "https://lastfm-gamify-services-fryr9.ondigitalocean.app";
 
 // ─── Achievement color palette (cycles through unlocked rows) ───
 const ACH_COLORS = ["ach-teal", "ach-blue", "ach-brown", "ach-pink", "ach-green", "ach-purple"];

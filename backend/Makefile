@@ -1,7 +1,7 @@
 .PHONY: serve format
 
 serve:
-	uvicorn main:app --reload
+	ENVIRONMENT=development uvicorn main:app --reload
 
 format:
 	black .
