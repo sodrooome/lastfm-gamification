@@ -1,5 +1,6 @@
 import uvicorn
 import os
+import logging
 from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,14 +19,25 @@ from lastfm import (
 from datetime import datetime, timezone
 
 
+origins = ["https://sodrooome.github.io"]
+
+if os.getenv("ENVIRONMENT") == "development":
+    origins.append("http://localhost:8000")
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET"],
     allow_headers=["*"],
 )
+
+# basic internal logging setup, can be expanded later
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 
 @app.get("/user/{username}")
@@ -116,8 +128,9 @@ async def get_user_profile(username: str):
         }
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        logger.exception(f"Unexpected error while processing username for: {username}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 
 # using absolute path is more reliable than relative one
@@ -128,4 +141,4 @@ if os.getenv("ENVIRONMENT") == "development":
     app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", reload=True)
+    uvicorn.run(app, host="0.0.0.0", reload=os.getenv("ENVIRONMENT") == "development")
