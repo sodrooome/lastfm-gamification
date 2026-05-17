@@ -22,7 +22,8 @@ from datetime import datetime, timezone
 origins = ["https://sodrooome.github.io"]
 
 if os.getenv("ENVIRONMENT") == "development":
-    origins.append("http://localhost:8000")
+    # extend allowed origins (just in case)
+    origins.extend(["http://localhost:8000", "http://127.0.0.1:8000"])
 
 app = FastAPI()
 app.add_middleware(
