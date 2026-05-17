@@ -1,4 +1,6 @@
-const API_BASE = window.location.hostname === "localhost"
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+const API_BASE = isLocal
   ? "http://localhost:8000"
   : "https://lastfm-gamify-services-fryr9.ondigitalocean.app";
 
@@ -24,6 +26,12 @@ function showError(msg) {
 
 function showUserNotFound() {
   toggle("userNotFound", true);
+}
+
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
 }
 
 // ─── View switching ────────────────────────────────────────────
@@ -81,7 +89,9 @@ async function _fetchAndRender(username) {
     const data = await res.json();
 
     renderProfile(data);
-    window.history.pushState({}, "", `?user=${username}`);
+    const params = new URLSearchParams(window.location.search);
+    params.set("user", username);
+    window.history.pushState({}, "", `?${params.toString()}`);
   } catch (err) {
     console.error(err)
     showError("Failed to load user");
@@ -170,7 +180,7 @@ function renderProfile(data) {
   // ── How-it-works link ──
   const howLink = document.querySelector(".how-does-work-link");
   if (howLink) {
-    howLink.href = "/how-to.html?user=" + encodeURIComponent(data.username);
+    howLink.href = "how-to.html?user=" + encodeURIComponent(data.username);
   }
 }
 
@@ -212,8 +222,8 @@ function renderAchievements(containerId, list) {
     row.innerHTML = `
       <div class="ach-icon-wrap">${iconSvg}</div>
       <div class="ach-text">
-        <p class="ach-name">${a.name}</p>
-        <p class="ach-desc">${a.description || ""}</p>
+        <p class="ach-name">${escapeHtml(a.name)}</p>
+        <p class="ach-desc">${escapeHtml(a.description) || ""}</p>
         ${unlockedLine}
       </div>
     `;
@@ -236,7 +246,7 @@ function _bindEnter(inputId, handler) {
 
 // ─── Init ──────────────────────────────────────────────────────
 
-window.onload = () => {
+document.addEventListener("DOMContentLoaded", () => {
   _bindEnter("usernameInput", () => loadUser());
   _bindEnter("usernameInputDash", loadUserFromDash);
 
@@ -246,4 +256,4 @@ window.onload = () => {
     // Jump straight to dashboard if arriving via URL
     loadUser(username);
   }
-};
+});
