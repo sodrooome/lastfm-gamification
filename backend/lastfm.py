@@ -12,7 +12,6 @@ async def fetch_user_information(username: str):
 
     async with httpx.AsyncClient() as client:
         response = await client.get(url=LASTFM_BASE_URL, params=params)
-        print(response.json())
         return response.json()
 
 
@@ -29,7 +28,6 @@ async def fetch_user_top_artists(username: str):
 
     async with httpx.AsyncClient() as client:
         response = await client.get(url=LASTFM_BASE_URL, params=params)
-        print(response.json())
         return response.json()
 
 
@@ -44,7 +42,6 @@ async def fetch_user_recent_tracks(username: str):
 
     async with httpx.AsyncClient() as client:
         response = await client.get(url=LASTFM_BASE_URL, params=params)
-        print(response.json())
         return response.json()
 
 
