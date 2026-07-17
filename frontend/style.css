@@ -870,6 +870,12 @@ body {
     line-height: 1.5;
 }
 
+.guide-xp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
 .guide-card {
     background: var(--surface-soft);
     border-radius: var(--rounded-lg);
@@ -1094,6 +1100,10 @@ body {
 
     .guide-page {
         padding: var(--spacing-md);
+    }
+
+    .guide-xp-grid {
+        grid-template-columns: 1fr;
     }
 
     .dash-layout {
