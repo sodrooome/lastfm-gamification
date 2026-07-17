@@ -732,16 +732,16 @@ body {
 
 .ach-row.locked {
     background: var(--surface-strong);
-    color: var(--muted);
-    opacity: 0.55;
+    color: var(--body-text);
+    opacity: 0.8;
 }
 
 .ach-row.locked .ach-name {
-    color: var(--muted);
+    color: var(--body-text);
 }
 
 .ach-row.locked .ach-icon-wrap {
-    color: var(--muted);
+    color: var(--body-text);
 }
 
 .ach-row.ach-teal {

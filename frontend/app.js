@@ -4,8 +4,8 @@ const API_BASE = isLocal
   ? "http://localhost:8000"
   : "https://lastfm-gamify-services-fryr9.ondigitalocean.app";
 
-// ─── Achievement color palette (cycles through unlocked rows) ───
-const ACH_COLORS = ["ach-teal", "ach-blue", "ach-brown", "ach-pink", "ach-green", "ach-purple"];
+// ─── Achievement color per category ───
+const ACH_CATEGORY_COLORS = { daily: "ach-teal", lifetime: "ach-blue" };
 
 // ─── Helpers ───────────────────────────────────────────────────
 
@@ -119,7 +119,9 @@ function renderProfile(data) {
   document.getElementById("level").innerText = levelText;
   document.getElementById("statsLevel").innerText = levelText;
   document.getElementById("statsProgress").innerText =
-    `${Math.round(data.progress_pct)}% to Level ${data.level + 1}`;
+    data.level === 10
+      ? "Max level — 100% complete"
+      : `${Math.round(data.progress_pct)}% to Level ${data.level + 1}`;
 
   document.getElementById("progressFill").style.width = `${data.progress_pct}%`;
   document.getElementById("statsProgressFill").style.width = `${data.progress_pct}%`;
@@ -174,8 +176,8 @@ function renderProfile(data) {
   // document.getElementById("statDaily").innerText =
   //   daily.filter((a) => a.unlocked).length;
 
-  renderAchievements("dailyAchievements", daily);
-  renderAchievements("achievements", lifetime);
+  renderAchievements("dailyAchievements", daily, "daily");
+  renderAchievements("achievements", lifetime, "lifetime");
 
   // ── How-it-works link ──
   const howLink = document.querySelector(".how-does-work-link");
@@ -190,15 +192,14 @@ function renderProfile(data) {
 
 // ─── Achievement row renderer ──────────────────────────────────
 
-function renderAchievements(containerId, list) {
+function renderAchievements(containerId, list, type) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
-  let colorIdx = 0;
 
   list.forEach((a) => {
     const row = document.createElement("div");
     const colorClass = a.unlocked
-      ? ACH_COLORS[colorIdx % ACH_COLORS.length]
+      ? ACH_CATEGORY_COLORS[type] || "ach-teal"
       : "locked";
     row.className = `ach-row ${colorClass}`;
 
@@ -233,7 +234,6 @@ function renderAchievements(containerId, list) {
     `;
 
     container.appendChild(row);
-    if (a.unlocked) colorIdx++;
   });
 
   if (list.length === 0) {
