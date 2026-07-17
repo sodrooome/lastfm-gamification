@@ -22,7 +22,7 @@
       <h1 class="landing-title">Turn your listening<br />into identity</h1>
       <p class="landing-sub">Enter your Last.fm username to see your scrobble achievements.</p>
       <div class="landing-search">
-        <input id="usernameInput" type="text" class="text-input" placeholder="username" />
+        <input id="usernameInput" type="text" class="text-input" placeholder="Enter your username here..." />
         <button class="btn btn-primary" onclick="loadUser()">View Profile</button>
       </div>
     </div>
@@ -132,24 +132,6 @@
             </div>
           </div>
 
-          <!-- Sidebar stats list -->
-          <ul class="sidebar-stats">
-            <li>
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z" stroke="currentColor" stroke-width="1.5"
-                  stroke-linejoin="round" />
-              </svg>
-              <span id="setCountry"></span>
-            </li>
-            <li>
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
-                <path d="M8 5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-              </svg>
-              <span id="setAverageListen"></span>
-            </li>
-          </ul>
-
           <!-- Activity timeline -->
           <div class="sidebar-timeline">
             <p class="timeline-label">Activity Timeline</p>
@@ -240,6 +222,26 @@
                 Friends Count
               </p>
               <p id="statFriends" class="stat-box-value"></p>
+            </div>
+            <div class="stat-box blue-tint">
+              <p class="stat-box-label">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z" stroke="currentColor" stroke-width="1.5"
+                    stroke-linejoin="round" />
+                </svg>
+                Country
+              </p>
+              <p id="statCountry" class="stat-box-value small-val"></p>
+            </div>
+            <div class="stat-box green-tint">
+              <p class="stat-box-label">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M8 5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                Avg Daily Listens
+              </p>
+              <p id="statAvgListen" class="stat-box-value small-val"></p>
             </div>
           </div>
         </div>

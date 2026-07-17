@@ -141,9 +141,8 @@ function renderProfile(data) {
   /* unused code but might be useful later */
   // document.getElementById("topArtistSidebar").innerText = data.top_artist;
 
-  // Option B for the sidebar information
-  document.getElementById("setCountry").innerText = data.country;
-  document.getElementById("setAverageListen").innerText = data.average_listen + " songs / day";
+  document.getElementById("statCountry").innerText = data.country;
+  document.getElementById("statAvgListen").innerText = data.average_listen + " songs / day";
 
   // ── Joined date ──
   if (data.joined_date) {
