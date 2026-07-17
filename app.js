@@ -182,6 +182,10 @@ function renderProfile(data) {
   if (howLink) {
     howLink.href = "how-to.html?user=" + encodeURIComponent(data.username);
   }
+  const mobileHowLink = document.getElementById("mobileMenuHowLink");
+  if (mobileHowLink) {
+    mobileHowLink.href = "how-to.html?user=" + encodeURIComponent(data.username);
+  }
 }
 
 // ─── Achievement row renderer ──────────────────────────────────
