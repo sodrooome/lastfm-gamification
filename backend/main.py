@@ -1,6 +1,8 @@
 import uvicorn
 import os
 import logging
+import httpx
+from config import LASTFM_API_KEY, LASTFM_BASE_URL
 from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,7 +19,6 @@ from lastfm import (
     fetch_user_friends,
 )
 from datetime import datetime, timezone
-
 
 origins = ["https://sodrooome.github.io"]
 
@@ -39,6 +40,56 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
+
+
+@app.get("/health")
+async def liveness_check():
+    # if this fails, container will be automatically restarted
+    return {"status": "ok", "timestamp": datetime.now(timezone.utc).isoformat()}
+
+
+@app.get("/ready")
+async def readiness_check():
+    # confirms the app is ready to receive the traffic
+    # if this fails, the container temporarily removed from the load balancer
+    first_checks = {"lastfm_api": False}
+    errors = {}
+    params = {
+        "method": "chart.getTopArtists",
+        "api_key": LASTFM_API_KEY,
+        "format": "json",
+        "limit": 1,
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(url=LASTFM_BASE_URL, params=params)
+
+            if response.status_code == 200:
+                data = response.json()
+                first_checks["lastfm_api"] = "error" not in data
+            else:
+                first_checks["lastfm_api"] = (
+                    f"Unexpected status code: {response.status_code}"
+                )
+    except Exception as e:
+        first_checks["lastfm_api"] = str(e)
+
+    all_ready = all(first_checks.values())
+
+    payload = {
+        "status": "ready" if all_ready else "not ready",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "checks": first_checks,
+    }
+
+    if errors:
+        payload["errors"] = errors
+
+    if not all_ready:
+        raise HTTPException(status_code=503, detail=payload)
+
+    return payload
 
 
 @app.get("/user/{username}")
