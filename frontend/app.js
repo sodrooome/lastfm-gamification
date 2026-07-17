@@ -4,8 +4,8 @@ const API_BASE = isLocal
   ? "http://localhost:8000"
   : "https://lastfm-gamify-services-fryr9.ondigitalocean.app";
 
-// ─── Achievement color per category ───
-const ACH_CATEGORY_COLORS = { daily: "ach-teal", lifetime: "ach-blue" };
+// ─── Achievement color palette (cycles through unlocked rows) ───
+const ACH_COLORS = ["ach-teal", "ach-blue", "ach-brown", "ach-pink", "ach-green", "ach-purple"];
 
 // ─── Helpers ───────────────────────────────────────────────────
 
@@ -112,7 +112,7 @@ function renderProfile(data) {
 
   // ── Username ──
   document.getElementById("username").innerText = data.username;
-  document.getElementById("statsTitle").innerText = data.username + " Farmer Stats";
+  document.getElementById("statsTitle").innerText = data.username + " Listening Stats";
 
   // ── Level ──
   const levelText = `Level ${data.level}`;
@@ -175,8 +175,8 @@ function renderProfile(data) {
   // document.getElementById("statDaily").innerText =
   //   daily.filter((a) => a.unlocked).length;
 
-  renderAchievements("dailyAchievements", daily, "daily");
-  renderAchievements("achievements", lifetime, "lifetime");
+  renderAchievements("dailyAchievements", daily);
+  renderAchievements("achievements", lifetime);
 
   // ── How-it-works link ──
   const howLink = document.querySelector(".how-does-work-link");
@@ -191,14 +191,15 @@ function renderProfile(data) {
 
 // ─── Achievement row renderer ──────────────────────────────────
 
-function renderAchievements(containerId, list, type) {
+function renderAchievements(containerId, list) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
+  let colorIdx = 0;
 
   list.forEach((a) => {
     const row = document.createElement("div");
     const colorClass = a.unlocked
-      ? ACH_CATEGORY_COLORS[type] || "ach-teal"
+      ? ACH_COLORS[colorIdx % ACH_COLORS.length]
       : "locked";
     row.className = `ach-row ${colorClass}`;
 
@@ -233,6 +234,7 @@ function renderAchievements(containerId, list, type) {
     `;
 
     container.appendChild(row);
+    if (a.unlocked) colorIdx++;
   });
 
   if (list.length === 0) {
