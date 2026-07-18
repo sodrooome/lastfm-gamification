@@ -254,6 +254,15 @@
         <div class="achievements-section">
           <p class="section-label">Daily Achievements</p>
           <div id="dailyAchievements" class="achievements-list"></div>
+          <a
+            id="dailyScrobbleCta"
+            class="btn-primary small daily-scrobble-cta d-none"
+            href="https://www.last.fm/about/trackmymusic"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Start Scrobbling
+          </a>
         </div>
 
         <!-- Lifetime Achievements -->
@@ -266,6 +275,18 @@
     </div>
   </div>
 
+  <!-- Achievement detail dialog (mobile: bottom sheet; desktop: centered modal) -->
+  <dialog id="achievementModal" class="ach-dialog" aria-labelledby="achievementModalTitle">
+    <div class="ach-dialog-content">
+      <button type="button" class="ach-dialog-close" aria-label="Close dialog">&times;</button>
+      <p class="ach-dialog-status" data-status-chip></p>
+      <h2 class="ach-dialog-title" id="achievementModalTitle"></h2>
+      <p class="ach-dialog-requirement"></p>
+      <p class="ach-dialog-date"></p>
+    </div>
+  </dialog>
+
+  <script src="./achievements-data.js"></script>
   <script src="./app.js?v=2"></script>
   <script>
     (function () {
