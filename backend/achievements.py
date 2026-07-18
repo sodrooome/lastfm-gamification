@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from collections import defaultdict
 
 ALL_ACHIEVEMENTS = [
@@ -192,3 +192,16 @@ def calculate_daily_achievements(recent_tracks):
         )
 
     return achievements
+
+
+def _compute_avg_listen(user_info, total_scrobbles) -> float:
+    registered = user_info["user"].get("registered", {})
+    average_listen_per_day = 0.0
+    if "unixtime" in registered:
+        joined_unix = int(registered["unixtime"])
+        joined_datetime = datetime.fromtimestamp(joined_unix, tz=timezone.utc)
+        now = datetime.now(timezone.utc)
+        days_since_join = (now - joined_datetime).days
+        if days_since_join > 0:
+            average_listen_per_day = round(total_scrobbles / days_since_join, 2)
+    return average_listen_per_day

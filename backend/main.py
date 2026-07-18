@@ -11,12 +11,22 @@ from achievements import (
     calculate_achievements,
     calculate_xp,
     calculate_daily_achievements,
+    _compute_avg_listen,
 )
 from lastfm import (
     fetch_user_information,
     fetch_user_recent_tracks,
     fetch_user_all_top_artists,
     fetch_user_friends,
+)
+from llm import (
+    get_or_cache_roast,
+    get_remaining_roasts,
+)
+from exceptions import (
+    RoastServiceUnavailableError,
+    RoastNotConfiguredError,
+    RoastLimitExceededError,
 )
 from datetime import datetime, timezone
 
@@ -52,7 +62,9 @@ async def liveness_check():
 async def readiness_check():
     # confirms the app is ready to receive the traffic
     # if this fails, the container temporarily removed from the load balancer
-    first_checks = {"lastfm_api": False}
+    first_checks: dict[str, bool] = {}
+    first_checks_erorrs: dict[str, str] = {}
+
     errors = {}
     params = {
         "method": "chart.getTopArtists",
@@ -69,11 +81,15 @@ async def readiness_check():
                 data = response.json()
                 first_checks["lastfm_api"] = "error" not in data
             else:
-                first_checks["lastfm_api"] = (
-                    f"Unexpected status code: {response.status_code}"
-                )
+                # avoid warning from static typing by keep the dict
+                # only stored boolean, and store the detailed error separately
+                first_checks["lastfm_api"] = False
+                first_checks_erorrs[
+                    "lastfm_api"
+                ] = f"Unexpected status code: {response.status_code}"
     except Exception as e:
-        first_checks["lastfm_api"] = str(e)
+        first_checks["lastfm_api"] = False
+        first_checks_erorrs["lastfm_api"] = str(e)
 
     all_ready = all(first_checks.values())
 
@@ -81,6 +97,7 @@ async def readiness_check():
         "status": "ready" if all_ready else "not ready",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "checks": first_checks,
+        "errors": first_checks_erorrs,  # only present if something failed
     }
 
     if errors:
@@ -182,6 +199,94 @@ async def get_user_profile(username: str):
         raise
     except Exception:
         logger.exception(f"Unexpected error while processing username for: {username}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@app.get("/roast/{username}")
+async def get_user_roast(username: str, consent: bool = False):
+    if not consent:
+        raise HTTPException(status_code=400, detail="Consent required")
+
+    try:
+        user_info = await fetch_user_information(username=username)
+
+        if "error" in user_info and user_info["error"] == 6:
+            raise HTTPException(
+                status_code=404, detail="The requested user does not exist"
+            )
+
+        top_artists_set, top_artists_response = await fetch_user_all_top_artists(
+            username=username
+        )
+        recent_tracks = await fetch_user_recent_tracks(username=username)
+
+        total_scrobbles = int(user_info["user"]["playcount"])
+        top_artist = (
+            top_artists_response["topartists"]["artist"][0]["name"]
+            if top_artists_response and top_artists_response["topartists"]["artist"]
+            else "Unknown"
+        )
+
+        lifetime_achievements = calculate_achievements(
+            user_info=user_info,
+            top_artists_set=top_artists_set,
+            recent_tracks=recent_tracks,
+        )
+
+        friends_data = await fetch_user_friends(username=username)
+        friend_count = 0
+        if "friends" in friends_data:
+            friend_count = int(friends_data["friends"]["@attr"]["total"])
+
+        country = user_info["user"].get("country", "")
+        average_listen_per_day = _compute_avg_listen(user_info, total_scrobbles)
+
+        registered = user_info["user"].get("registered", {})
+        account_age_years = 0.0
+        if "unixtime" in registered:
+            joined_unix = int(registered["unixtime"])
+            joined_datetime = datetime.fromtimestamp(joined_unix, tz=timezone.utc)
+            now = datetime.now(timezone.utc)
+            account_age_years = (now - joined_datetime).days / 365.25
+
+        unlocked_achievements = [
+            a["name"]
+            for a in lifetime_achievements
+            if a["unlocked"] and a.get("type") != "daily"
+        ]
+
+        context = {
+            "username": username,
+            "total_scrobbles": total_scrobbles,
+            "top_artist": top_artist,
+            "unique_artists_count": len(top_artists_set),
+            "account_age_years": account_age_years,
+            "average_listen_per_day": average_listen_per_day,
+            "friend_count": friend_count,
+            "country": country,
+            "unlocked_achievements": unlocked_achievements,
+        }
+
+        roast, cached = await get_or_cache_roast(username, lambda: context)
+
+        return {
+            "username": username,
+            "roast": roast,
+            "cached": cached,
+            "remaining": get_remaining_roasts(username),
+        }
+    except HTTPException:
+        raise
+    except RoastLimitExceededError:
+        raise HTTPException(status_code=429, detail="Roast limit reached")
+    except RoastNotConfiguredError:
+        raise HTTPException(status_code=503, detail="Roast feature not configured")
+    except RoastServiceUnavailableError:
+        raise HTTPException(
+            status_code=503, detail="Roast service unavailable, try again later"
+        )
+    except Exception:
+        logger.exception(f"Unexpected error while generating roast for: {username}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
