@@ -22,8 +22,13 @@
       <h1 class="landing-title">Turn your listening<br />into identity</h1>
       <p class="landing-sub">Enter your Last.fm username to see your scrobble achievements.</p>
       <div class="landing-search">
-        <input id="usernameInput" type="text" class="text-input" placeholder="Enter your username here..." />
-        <button class="btn btn-primary" onclick="loadUser()">View Profile</button>
+        <div class="search-input-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input id="usernameInput" type="text" class="text-input search-input" placeholder="Enter your username here..." />
+        </div>
       </div>
     </div>
   </div>
@@ -38,14 +43,13 @@
       </div>
       <div class="nav-center">
         <div class="search-group">
-          <input id="usernameInputDash" type="text" class="text-input small" placeholder="Search another user…" />
-          <button class="btn btn-primary small desktop-only" onclick="loadUserFromDash()">View</button>
-          <button class="btn-icon" onclick="loadUserFromDash()" aria-label="Search">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="pointer-events:none">
+          <div class="search-input-wrap small">
+            <svg class="search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
               <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-          </button>
+            <input id="usernameInputDash" type="text" class="text-input small search-input" placeholder="Search another user…" />
+          </div>
         </div>
       </div>
       <div class="nav-right">
@@ -229,7 +233,7 @@
                   <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z" stroke="currentColor" stroke-width="1.5"
                     stroke-linejoin="round" />
                 </svg>
-                Country
+                From
               </p>
               <p id="statCountry" class="stat-box-value small-val"></p>
             </div>

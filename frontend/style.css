@@ -128,7 +128,41 @@ body {
 
 .landing-search {
     display: flex;
-    gap: var(--spacing-sm);
+    justify-content: center;
+}
+
+.search-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 420px;
+}
+
+.search-input-wrap.small {
+    max-width: 280px;
+}
+
+.search-input-wrap .search-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--muted);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.search-input-wrap.small .search-icon {
+    left: 10px;
+}
+
+.search-input-wrap .search-input {
+    width: 100%;
+    padding-left: 40px;
+    border-radius: var(--rounded-lg);
+}
+
+.search-input-wrap.small .search-input {
+    padding-left: 32px;
 }
 
 /* ─── Inputs & Buttons ─── */
@@ -222,7 +256,6 @@ body {
 
 .nav-center .search-group {
     display: flex;
-    gap: var(--spacing-xs);
     max-width: 340px;
     width: 100%;
 }
@@ -980,6 +1013,8 @@ body {
     padding: var(--spacing-lg) var(--spacing-md);
     font-size: 12px;
     color: var(--muted);
+    border-top: 1px solid var(--hairline);
+    margin-top: var(--spacing-lg);
 }
 
 .lastfm-icon {
@@ -1054,7 +1089,9 @@ body {
         flex-direction: column;
     }
 
-    .landing-search .btn-primary {
+    .search-input-wrap,
+    .search-input-wrap.small {
+        max-width: none;
         width: 100%;
     }
 
@@ -1089,19 +1126,17 @@ body {
         width: 100%;
         display: flex;
         align-items: center;
-        gap: var(--spacing-xs);
     }
 
-    .nav-center .search-group .text-input.small {
+    .nav-center .search-group .search-input-wrap.small {
+        max-width: none;
+        width: 100%;
+    }
+
+    .nav-center .search-group .search-input-wrap.small .search-input {
         flex: 1;
         min-width: 80px;
         width: auto;
-        height: 36px;
-    }
-
-    .nav-center .search-group .btn-primary.small {
-        width: auto;
-        flex-shrink: 0;
         height: 36px;
     }
 
