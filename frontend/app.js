@@ -2,7 +2,7 @@ const isLocal = window.location.hostname === "localhost" || window.location.host
 
 const API_BASE = isLocal
   ? "http://localhost:8000"
-  : "https://lastfm-gamify-services-fryr9.ondigitalocean.app";
+  : "https://43-134-108-8.sslip.io";
 
 // ─── Achievement color palette (cycles through unlocked rows) ───
 const ACH_COLORS = ["ach-teal", "ach-blue", "ach-brown", "ach-pink", "ach-green", "ach-purple"];
@@ -176,6 +176,10 @@ function renderProfile(data) {
   //   daily.filter((a) => a.unlocked).length;
 
   renderAchievements("dailyAchievements", daily);
+  // Show "Start Scrobbling" CTA only when every daily achievement is locked
+  const allDailyLocked =
+    daily.length > 0 && daily.every((a) => !a.unlocked);
+  toggle("dailyScrobbleCta", allDailyLocked);
   renderAchievements("achievements", lifetime);
 
   // ── How-it-works link ──
@@ -201,7 +205,22 @@ function renderAchievements(containerId, list) {
     const colorClass = a.unlocked
       ? ACH_COLORS[colorIdx % ACH_COLORS.length]
       : "locked";
+    const isLifetime = containerId === "achievements";
     row.className = `ach-row ${colorClass}`;
+
+    if (isLifetime) {
+      row.classList.add("is-clickable");
+      row.setAttribute("role", "button");
+      row.setAttribute("tabindex", "0");
+      row.setAttribute("aria-haspopup", "dialog");
+      row.addEventListener("click", () => openAchievementModal(a, row));
+      row.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openAchievementModal(a, row);
+        }
+      });
+    }
 
     const iconSvg =
       a.icon ||
@@ -244,6 +263,72 @@ function renderAchievements(containerId, list) {
     container.innerHTML = `<p class="ach-empty">No achievements in this category.</p>`;
   }
 }
+
+// ─── Achievement detail dialog (mobile: bottom sheet, desktop: modal) ───
+
+const ACH_DIALOG = document.getElementById("achievementModal");
+const ACH_DIALOG_TITLE = document.getElementById("achievementModalTitle");
+const ACH_DIALOG_REQ = ACH_DIALOG.querySelector(".ach-dialog-requirement");
+const ACH_DIALOG_DATE = ACH_DIALOG.querySelector(".ach-dialog-date");
+const ACH_DIALOG_STATUS = ACH_DIALOG.querySelector("[data-status-chip]");
+const ACH_DIALOG_CLOSE_BTN = ACH_DIALOG.querySelector(".ach-dialog-close");
+
+// Two-tier locked tease: default phrase for locked lifetime achievements,
+// with bespoke overrides for the two near-impossible tier achievements.
+const ACHIEVEMENT_LOCKED_TEASE = {
+  "No Life? Pure Life": "This one's a long road.",
+  "LGTM": "Good luck with that.",
+};
+const DEFAULT_LOCKED_TEASE = "Do you think you can make it?";
+
+let achDialogReturnFocus = null;
+
+function openAchievementModal(ach, triggerEl) {
+  const description =
+    (typeof ACHIEVEMENT_DESCRIPTIONS !== "undefined" && ACHIEVEMENT_DESCRIPTIONS[ach.name]) ||
+    "Requirement details unavailable.";
+
+  ACH_DIALOG_TITLE.textContent = ach.name;
+  ACH_DIALOG_REQ.textContent = description;
+
+  ACH_DIALOG_STATUS.textContent = ach.unlocked ? "Unlocked" : "Locked";
+  ACH_DIALOG_STATUS.classList.toggle("is-unlocked", ach.unlocked);
+  ACH_DIALOG_STATUS.classList.toggle("is-locked", !ach.unlocked);
+
+  if (ach.unlocked && ach.unlocked_date) {
+    const d = new Date(ach.unlocked_date);
+    ACH_DIALOG_DATE.textContent = !isNaN(d)
+      ? d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+      : "";
+  } else if (ach.unlocked) {
+    ACH_DIALOG_DATE.textContent = "";
+  } else {
+    // Locked: two-tier tease — bespoke phrase for the absurd-tier achievements,
+    // default aspirational phrase for everything else.
+    ACH_DIALOG_DATE.textContent =
+      ACHIEVEMENT_LOCKED_TEASE[ach.name] || DEFAULT_LOCKED_TEASE;
+  }
+
+  achDialogReturnFocus = triggerEl || null;
+  if (!ACH_DIALOG.open) ACH_DIALOG.showModal();
+}
+
+function closeAchievementModal() {
+  if (ACH_DIALOG.open) ACH_DIALOG.close();
+}
+
+ACH_DIALOG_CLOSE_BTN.addEventListener("click", closeAchievementModal);
+
+ACH_DIALOG.addEventListener("click", (e) => {
+  if (e.target === ACH_DIALOG) closeAchievementModal();
+});
+
+ACH_DIALOG.addEventListener("close", () => {
+  if (achDialogReturnFocus && typeof achDialogReturnFocus.focus === "function") {
+    achDialogReturnFocus.focus();
+    achDialogReturnFocus = null;
+  }
+});
 
 // ─── Keyboard support ──────────────────────────────────────────
 

@@ -747,6 +747,144 @@ body {
     margin-bottom: var(--spacing-md);
 }
 
+.daily-scrobble-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xxs);
+    margin-top: var(--spacing-md);
+    text-decoration: none;
+    width: fit-content;
+}
+
+/* ─── Achievement Dialog (mobile: bottom sheet; desktop: modal) ─── */
+
+/* Lifetime rows become clickable (daily rows unchanged) */
+.ach-row.is-clickable {
+    cursor: pointer;
+    transition: background 0.12s ease;
+}
+.ach-row.is-clickable:hover {
+    filter: brightness(0.95);
+}
+.ach-row.is-clickable:focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: 2px;
+}
+
+/* Dialog element */
+.ach-dialog {
+    border: 1px solid var(--hairline);
+    border-radius: var(--rounded-lg);
+    padding: 0;
+    background: var(--canvas);
+    color: var(--ink);
+    max-width: min(480px, calc(100vw - 32px));
+    max-height: calc(100vh - 64px);
+    overflow: auto;
+    /* Center in the top layer — the universal margin:0 reset cancels the UA's default margin:auto */
+    margin: auto;
+    inset: 0;
+}
+.ach-dialog::backdrop {
+    background: rgba(24, 29, 38, 0.45);
+}
+
+/* Dialog content */
+.ach-dialog-content {
+    position: relative;
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+.ach-dialog-close {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: var(--rounded-sm);
+    transition: background 0.12s ease, color 0.12s ease;
+}
+.ach-dialog-close:hover {
+    background: var(--surface-soft);
+    color: var(--ink);
+}
+
+.ach-dialog-status {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    padding: 3px 8px;
+    border-radius: var(--rounded-pill);
+    display: inline-block;
+    width: fit-content;
+    margin-bottom: var(--spacing-xxs);
+}
+.ach-dialog-status.is-unlocked {
+    background: rgba(58, 122, 74, 0.12);
+    color: var(--ach-green);
+}
+.ach-dialog-status.is-locked {
+    background: var(--surface-strong);
+    color: var(--muted);
+}
+
+.ach-dialog-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0;
+    padding-right: var(--spacing-lg);
+}
+.ach-dialog-requirement {
+    font-size: 14px;
+    color: var(--body-text);
+    line-height: 1.5;
+    margin: 0;
+}
+.ach-dialog-date {
+    font-style: italic;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+}
+
+/* ─── Mobile: bottom-sheet presentation ─── */
+@media (max-width: 900px) {
+    .ach-dialog {
+        max-width: none;
+        width: 100vw;
+        max-height: 80vh;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        border-radius: var(--rounded-xl) var(--rounded-xl) 0 0;
+        margin: 0;  /* override desktop margin: auto */
+        position: fixed;
+        top: auto;  /* override browser default top:0, let bottom:0 win */
+        bottom: 0;
+        left: 0;
+        right: 0;
+        translate: 0 100%;
+    }
+    .ach-dialog[open] {
+        translate: 0 0;
+        transition: translate 0.25s ease;
+    }
+    .ach-dialog-content {
+        padding: var(--spacing-lg);
+        padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom, 0px));
+    }
+}
+
 /* ─── Achievement Rows ─── */
 .achievements-list {
     display: flex;
@@ -1061,7 +1199,7 @@ body {
         flex-direction: column;
         align-items: center;
         gap: var(--spacing-md);
-        overflow: hidden;
+        overflow: visible;
         border-radius: inherit;
     }
 
