@@ -1,5 +1,5 @@
 # simple deployment and pulling latest changes to the VPS server
-#!/bin/basb
+#!/bin/bash
 
 set -e # immediately exit
 
@@ -7,9 +7,6 @@ cd /home/ubuntu/lastfm-gamification
 
 echo "=== Pulling latest changes from Github ==="
 git pull origin master
-
-echo "=== Activating virtual environment ==="
-source venv/bin/activate
 
 echo "=== Restart Service ==="
 sudo systemctl restart lastfm-backend
