@@ -22,8 +22,13 @@
       <h1 class="landing-title">Turn your listening<br />into identity</h1>
       <p class="landing-sub">Enter your Last.fm username to see your scrobble achievements.</p>
       <div class="landing-search">
-        <input id="usernameInput" type="text" class="text-input" placeholder="username" />
-        <button class="btn btn-primary" onclick="loadUser()">View Profile</button>
+        <div class="search-input-wrap">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input id="usernameInput" type="text" class="text-input search-input" placeholder="Enter your username here..." />
+        </div>
       </div>
     </div>
   </div>
@@ -38,14 +43,13 @@
       </div>
       <div class="nav-center">
         <div class="search-group">
-          <input id="usernameInputDash" type="text" class="text-input small" placeholder="Search another user…" />
-          <button class="btn btn-primary small desktop-only" onclick="loadUserFromDash()">View</button>
-          <button class="btn-icon" onclick="loadUserFromDash()" aria-label="Search">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="pointer-events:none">
+          <div class="search-input-wrap small">
+            <svg class="search-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
               <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-          </button>
+            <input id="usernameInputDash" type="text" class="text-input small search-input" placeholder="Search another user…" />
+          </div>
         </div>
       </div>
       <div class="nav-right">
@@ -131,24 +135,6 @@
               <span class="progress-label" id="progressLabel"></span>
             </div>
           </div>
-
-          <!-- Sidebar stats list -->
-          <ul class="sidebar-stats">
-            <li>
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z" stroke="currentColor" stroke-width="1.5"
-                  stroke-linejoin="round" />
-              </svg>
-              <span id="setCountry"></span>
-            </li>
-            <li>
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
-                <path d="M8 5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-              </svg>
-              <span id="setAverageListen"></span>
-            </li>
-          </ul>
 
           <!-- Activity timeline -->
           <div class="sidebar-timeline">
@@ -241,6 +227,26 @@
               </p>
               <p id="statFriends" class="stat-box-value"></p>
             </div>
+            <div class="stat-box blue-tint">
+              <p class="stat-box-label">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z" stroke="currentColor" stroke-width="1.5"
+                    stroke-linejoin="round" />
+                </svg>
+                From
+              </p>
+              <p id="statCountry" class="stat-box-value small-val"></p>
+            </div>
+            <div class="stat-box green-tint">
+              <p class="stat-box-label">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5" />
+                  <path d="M8 5v3l2 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                Avg Daily Listens
+              </p>
+              <p id="statAvgListen" class="stat-box-value small-val"></p>
+            </div>
           </div>
         </div>
 
@@ -279,6 +285,16 @@
       });
     })();
   </script>
+
+  <footer class="page-footer">
+    <p>
+      <a href="https://www.last.fm/api" target="_blank" rel="noopener noreferrer" class="lastfm-link">
+        Powered by <img src="https://cdn-icons-png.flaticon.com/512/145/145806.png" alt="Last.fm" class="lastfm-icon" />
+      </a>
+      <span class="footer-divider">|</span>
+      <span>Ryan Febriansyah © 2026. All Rights Reserved</span>
+    </p>
+  </footer>
 </body>
 
 </html>

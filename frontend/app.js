@@ -112,14 +112,16 @@ function renderProfile(data) {
 
   // ── Username ──
   document.getElementById("username").innerText = data.username;
-  document.getElementById("statsTitle").innerText = data.username + " Farmer Stats";
+  document.getElementById("statsTitle").innerText = data.username + " Listening Stats";
 
   // ── Level ──
   const levelText = `Level ${data.level}`;
   document.getElementById("level").innerText = levelText;
   document.getElementById("statsLevel").innerText = levelText;
   document.getElementById("statsProgress").innerText =
-    `${Math.round(data.progress_pct)}% to Level ${data.level + 1}`;
+    data.level === 10
+      ? "Max level — 100% complete"
+      : `${Math.round(data.progress_pct)}% to Level ${data.level + 1}`;
 
   document.getElementById("progressFill").style.width = `${data.progress_pct}%`;
   document.getElementById("statsProgressFill").style.width = `${data.progress_pct}%`;
@@ -139,9 +141,8 @@ function renderProfile(data) {
   /* unused code but might be useful later */
   // document.getElementById("topArtistSidebar").innerText = data.top_artist;
 
-  // Option B for the sidebar information
-  document.getElementById("setCountry").innerText = data.country;
-  document.getElementById("setAverageListen").innerText = data.average_listen + " songs / day";
+  document.getElementById("statCountry").innerText = data.country;
+  document.getElementById("statAvgListen").innerText = data.average_listen + " songs / day";
 
   // ── Joined date ──
   if (data.joined_date) {
@@ -202,13 +203,16 @@ function renderAchievements(containerId, list) {
       : "locked";
     row.className = `ach-row ${colorClass}`;
 
-    // Fallback icon if none provided
     const iconSvg =
       a.icon ||
-      `<svg width="18" height="18" viewBox="0 0 16 16" fill="none">
-        <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z"
-          stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-      </svg>`;
+      (a.unlocked
+        ? `<svg width="18" height="18" viewBox="0 0 16 16" fill="#f5b342">
+             <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z" />
+           </svg>`
+        : `<svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+             <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z"
+               stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+           </svg>`);
 
     // Unlock date line
     let unlockedLine = "";
