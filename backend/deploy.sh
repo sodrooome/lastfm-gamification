@@ -6,7 +6,7 @@ set -e # immediately exit
 cd /home/ubuntu/lastfm-gamification
 
 echo "=== Pulling latest changes from Github ==="
-git pull origin master
+git pull origin main
 
 echo "=== Activating virtual environment ==="
 source venv/bin/activate
