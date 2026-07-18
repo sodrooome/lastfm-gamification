@@ -4,6 +4,8 @@ const API_BASE = isLocal
   ? "http://localhost:8000"
   : "https://43-134-108-8.sslip.io";
 
+let currentUsername = null;
+
 // ─── Achievement color palette (cycles through unlocked rows) ───
 const ACH_COLORS = ["ach-teal", "ach-blue", "ach-brown", "ach-pink", "ach-green", "ach-purple"];
 
@@ -88,6 +90,7 @@ async function _fetchAndRender(username) {
 
     const data = await res.json();
 
+    currentUsername = username;
     renderProfile(data);
     const params = new URLSearchParams(window.location.search);
     params.set("user", username);
@@ -303,7 +306,7 @@ function openAchievementModal(ach, triggerEl) {
   } else if (ach.unlocked) {
     ACH_DIALOG_DATE.textContent = "";
   } else {
-    // Locked: two-tier tease — bespoke phrase for the absurd-tier achievements,
+    // Locked: two-tier tease, bespoke phrase for the absurd-tier achievements,
     // default aspirational phrase for everything else.
     ACH_DIALOG_DATE.textContent =
       ACHIEVEMENT_LOCKED_TEASE[ach.name] || DEFAULT_LOCKED_TEASE;
@@ -337,11 +340,111 @@ function _bindEnter(inputId, handler) {
   if (el) el.addEventListener("keydown", (e) => { if (e.key === "Enter") handler(); });
 }
 
+// ─── Roast Me — consent + result dialogs ───────────────────────
+
+let _roastConsentBound = false;
+let _roastResultBound = false;
+
+function openRoastConsent() {
+  if (!currentUsername) return;
+  const dialog = document.getElementById("roastConsentDialog");
+  if (!dialog) return;
+
+  if (!_roastConsentBound) {
+    _roastConsentBound = true;
+    const closeBtn = dialog.querySelector(".ach-dialog-close");
+    if (closeBtn) closeBtn.addEventListener("click", () => dialog.close());
+    const cancelBtn = document.getElementById("roastConsentCancel");
+    if (cancelBtn) cancelBtn.addEventListener("click", () => dialog.close());
+    const confirmBtn = document.getElementById("roastConsentConfirm");
+    if (confirmBtn) confirmBtn.addEventListener("click", confirmRoast);
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+  }
+
+  if (!dialog.open) dialog.showModal();
+}
+
+async function confirmRoast() {
+  const consentDialog = document.getElementById("roastConsentDialog");
+  if (consentDialog && consentDialog.open) consentDialog.close();
+
+  const resultDialog = document.getElementById("roastResultDialog");
+  const resultText = document.getElementById("roastResultText");
+  const closeBtn = document.getElementById("roastResultClose");
+  if (!resultDialog || !resultText || !closeBtn) return;
+
+  if (!_roastResultBound) {
+    _roastResultBound = true;
+    closeBtn.addEventListener("click", () => resultDialog.close());
+    const innerClose = resultDialog.querySelector(".ach-dialog-close");
+    if (innerClose) innerClose.addEventListener("click", () => resultDialog.close());
+    resultDialog.addEventListener("click", (e) => {
+      if (e.target === resultDialog) resultDialog.close();
+    });
+  }
+
+  resultText.textContent = "Roasting…";
+  closeBtn.disabled = true;
+  if (!resultDialog.open) resultDialog.showModal();
+
+  const roastButton = document.getElementById("roastButton");
+
+  try {
+    const res = await fetch(
+      `${API_BASE}/roast/${encodeURIComponent(currentUsername)}?consent=true`
+    );
+
+    if (res.status === 200) {
+      const data = await res.json();
+      if (typeof data.remaining === "number" && data.remaining === 0 && data.cached) {
+        resultText.innerHTML =
+          `<div class="roast-limit-hint">` +
+          `<p class="roast-limit-hint-title">You've reached your roast limit!</p>` +
+          `<p class="roast-limit-hint-body">You've officially broken our limit meter! It'll magically reset... eventually. Please try again soon.</p>` +
+          `</div>`;
+        if (roastButton) {
+          roastButton.disabled = true;
+          roastButton.classList.add("is-limit-reached");
+          roastButton.title = "You've used all 3 roasts";
+        }
+      } else {
+        resultText.textContent = data.roast;
+      }
+    } else if (res.status === 429) {
+      resultText.innerHTML =
+        `<div class="roast-limit-hint">` +
+        `<p class="roast-limit-hint-title">You've reached your roast limit!</p>` +
+        `<p class="roast-limit-hint-body">You've officially broken our limit meter! It'll magically reset... eventually. Please try again soon.</p>` +
+        `</div>`;
+      if (roastButton) {
+        roastButton.disabled = true;
+        roastButton.classList.add("is-limit-reached");
+        roastButton.title = "You've used all 3 roasts";
+      }
+    } else if (res.status === 400) {
+      resultText.textContent = "Consent required, please try again";
+    } else {
+      resultText.textContent =
+        "Couldn't roast you right now, the AI is busy. Pleasee try again later.";
+    }
+  } catch (err) {
+    resultText.textContent =
+      "Couldn't roast you right now, the AI is busy. Please try again later.";
+  } finally {
+    closeBtn.disabled = false;
+  }
+}
+
 // ─── Init ──────────────────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", () => {
   _bindEnter("usernameInput", () => loadUser());
   _bindEnter("usernameInputDash", loadUserFromDash);
+
+  const roastButton = document.getElementById("roastButton");
+  if (roastButton) roastButton.addEventListener("click", openRoastConsent);
 
   const username = getUsernameFromURL();
   if (username) {

@@ -34,6 +34,9 @@
     --rounded-full: 50%;
     --rounded-pill: 9999px;
 
+    --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 2px 10px rgba(0,0,0,0.04);
+    --shadow-row: 0 1px 2px rgba(0,0,0,0.03), 0 1px 4px rgba(0,0,0,0.03);
+
     --spacing-xxs: 4px;
     --spacing-xs: 8px;
     --spacing-sm: 12px;
@@ -625,6 +628,7 @@ body {
     background: var(--canvas);
     border-radius: var(--rounded-xl);
     padding: var(--spacing-xl);
+    box-shadow: var(--shadow-card);
 }
 
 .stats-card-title {
@@ -736,6 +740,7 @@ body {
     padding: var(--spacing-xl);
     width: 100%;
     box-sizing: border-box;
+    box-shadow: var(--shadow-card);
 }
 
 .section-label {
@@ -885,6 +890,104 @@ body {
     }
 }
 
+/* ─── Roast Me ─── */
+.roast-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xxs);
+    margin-top: var(--spacing-md);
+    width: fit-content;
+}
+
+.roast-button.is-loading {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.roast-button:disabled,
+.roast-button.is-limit-reached {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.roast-consent-list {
+    margin-left: 1.5rem;
+    list-style-type: disc;
+    color: var(--body-text);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.roast-consent-list li {
+    margin-bottom: var(--spacing-xxs);
+}
+
+.roast-consent-note {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.roast-consent-actions,
+.roast-result-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    justify-content: flex-end;
+    margin-top: var(--spacing-sm);
+}
+
+.roast-result-text {
+    line-height: 1.6;
+    padding: var(--spacing-xs) 0;
+    color: var(--body-text);
+    font-size: 14px;
+}
+
+.roast-limit-hint {
+    background: var(--surface-soft);
+    border-radius: var(--rounded-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin-top: var(--spacing-xs);
+}
+
+.roast-limit-hint-title {
+    color: #e74c3c;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.roast-limit-hint-body {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.btn-ghost {
+    background: transparent;
+    border: 1px solid var(--hairline);
+    color: var(--ink);
+    border-radius: var(--rounded-lg);
+    padding: 12px 20px;
+    height: 44px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+
+.btn-ghost:active {
+    background: var(--surface-soft);
+}
+
+@media (max-width: 768px) {
+    .roast-button {
+        width: fit-content;
+    }
+}
+
 /* ─── Achievement Rows ─── */
 .achievements-list {
     display: flex;
@@ -899,6 +1002,7 @@ body {
     border-radius: var(--rounded-lg);
     padding: var(--spacing-md) var(--spacing-lg);
     color: white;
+    box-shadow: var(--shadow-row);
 }
 
 .ach-row.locked {
