@@ -74,6 +74,26 @@ Total max XP is 2,585, distributed across five sources:
 
 You may refer to the [LEVELS.md](LEVELS.md) for complete threshold tables, formulas, and example calculations.
 
+## AI Roast (beta)
+
+The app can generate a playful, AI-powered roast (powered by Google Gemini 3.5 Flash) of a user's listening habits. Before the roast is shown, an in-page consent gate asks the user to opt in. The roast is generated via [OpenRouter](https://openrouter.ai/) (third-party LLM API) and cached in memory for 24 hours per username (roast counter resets on server restart) to reduce API calls and improve response times. Each Last.fm username gets 3 roasts: cached responses don't count against the limit. If the roast is unavailable, the AI may be rate-limited and you must try again later.
+
+To enable the feature, add an optional API key to your `.env`. Note that your OpenRouter key needs billing enabled (the free tier is not sufficient):
+
+```
+LLM_API_KEY=your_openrouter_key_here
+```
+
+The endpoint is `GET /roast/{username}?consent=true` and returns:
+
+```json
+{
+  "username": "string",
+  "roast": "string",
+  "cached": false
+}
+```
+
 ## Achievements
 
 ### Scrobbles
@@ -129,6 +149,9 @@ pip install -r requirements.txt
 ```
 LASTFM_API_KEY=your_api_key_here
 LASTFM_SHARED_SECRET=your_shared_secret_here
+
+# Optional: enables the AI roast feature
+LLM_API_KEY=your_openrouter_key_here
 ```
 
 4. Start the server:

@@ -143,3 +143,4 @@ Refer to LEVELS.md for complete threshold tables, formulas, and examples. Core r
 - `API_BASE` in `app.js` is hardcoded to localhost
 - No linting configured for frontend (ESLint, Prettier)
 - `fetch_user_recent_tracks()` only fetches 50 tracks, which means daily achievements requiring 100+ daily scrobbles can never trigger
+- The AI roast in-memory cache is single-process and non-persistent; a multi-process cache (Redis/SQLite) would be needed for gunicorn deployments
