@@ -75,7 +75,7 @@ def calculate_achievements(user_info, top_artists_set, recent_tracks):
     has_image = any(
         img.get("#text", "").strip() for img in user_info["user"].get("image", [])
     )
-    if name and country and has_image:
+    if name and country != "None" and has_image:
         unlocked.add("The Completion")
 
     for a_name in ALL_ACHIEVEMENTS:
