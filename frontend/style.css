@@ -98,7 +98,7 @@ body {
 .logo-dot {
     width: 10px;
     height: 10px;
-    background: var(--primary);
+    background: #d51007;
     border-radius: var(--rounded-full);
     display: inline-block;
 }
@@ -325,6 +325,7 @@ body {
     border-radius: var(--rounded-lg);
     padding: var(--spacing-xxl);
     margin: var(--spacing-xl);
+    box-shadow: var(--shadow-card);
 }
 
 .user-not-found-body {
@@ -334,8 +335,11 @@ body {
     gap: var(--spacing-lg);
 }
 
-.user-not-found-icon {
-    color: var(--muted);
+.user-not-found-image {
+    max-width: 280px;
+    width: 100%;
+    height: auto;
+    mix-blend-mode: multiply;
 }
 
 .user-not-found-title {
@@ -978,6 +982,12 @@ body {
     transition: background 0.15s;
 }
 
+.btn-ghost.small {
+    height: 36px;
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
 .btn-ghost:active {
     background: var(--surface-soft);
 }
@@ -1279,6 +1289,50 @@ body {
 .footer-divider {
     margin: 0 8px;
     color: var(--muted);
+}
+
+/* ─── 404 Page ─── */
+.not-found-view {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xxl) var(--spacing-lg);
+}
+
+.not-found-inner {
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.not-found-image {
+    max-width: 340px;
+    width: 100%;
+    height: auto;
+    margin: var(--spacing-md) 0;
+    mix-blend-mode: multiply;
+}
+
+.not-found-title {
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+}
+
+.not-found-sub {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: var(--spacing-md);
+}
+
+.not-found-cta {
+    text-decoration: none;
 }
 
 /* ─── Responsive ─── */
