@@ -144,7 +144,8 @@ function renderProfile(data) {
   /* unused code but might be useful later */
   // document.getElementById("topArtistSidebar").innerText = data.top_artist;
 
-  document.getElementById("statCountry").innerText = data.country;
+  document.getElementById("statCountry").innerText =
+    data.country && data.country !== "None" ? data.country : "-";
   document.getElementById("statAvgListen").innerText = data.average_listen + " songs / day";
 
   // ── Joined date ──
