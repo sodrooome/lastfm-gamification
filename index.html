@@ -85,16 +85,9 @@
     <!-- User Not Found -->
     <div id="userNotFound" class="user-not-found-card d-none text-center">
       <div class="user-not-found-body">
-        <svg class="user-not-found-icon" width="48" height="48" viewBox="0 0 48 48" fill="none"
-          xmlns="http://www.w3.org/2000/svg">
-          <circle cx="24" cy="16" r="8" stroke="currentColor" stroke-width="2" />
-          <path d="M8 40c0-8.837 7.163-16 16-16s16 7.163 16 16" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" />
-          <line x1="32" y1="32" x2="42" y2="42" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-        </svg>
-        <h2 class="display-md user-not-found-title">User not found</h2>
-        <p class="user-not-found-desc">The Last.fm username you entered doesn't exist or may have been changed. Try
-          another username.</p>
+        <img src="./assets/404-not-found.png" alt="User not found" class="user-not-found-image" />
+        <h2 class="user-not-found-title">User not found</h2>
+        <p class="user-not-found-desc">The Last.fm username you entered doesn't exist or may have been changed. Try another username.</p>
       </div>
     </div>
 
@@ -313,8 +306,8 @@
         choose to cancel if you are uncomfortable with this.
       </p>
       <div class="roast-consent-actions">
-        <button id="roastConsentCancel" class="btn-ghost" type="button">Cancel</button>
-        <button id="roastConsentConfirm" class="btn-primary" type="button">Roast me</button>
+        <button id="roastConsentCancel" class="btn-ghost small" type="button">Cancel</button>
+        <button id="roastConsentConfirm" class="btn-primary small" type="button">Roast Me</button>
       </div>
     </div>
   </dialog>
@@ -326,7 +319,7 @@
       <h2 class="ach-dialog-title" id="roastResultTitle">Get roasted!</h2>
       <p id="roastResultText" class="roast-result-text">Roasting…</p>
       <div class="roast-result-actions">
-        <button id="roastResultClose" class="btn-primary" type="button">Close</button>
+        <button id="roastResultClose" class="btn-primary small" type="button">Close</button>
       </div>
     </div>
   </dialog>
