@@ -163,9 +163,26 @@ function renderProfile(data) {
   const now = new Date();
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  document.getElementById("fetchedDate").innerText =
-    `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}, ` +
-    now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+  const timestamp = data.last_active_play;
+  if (timestamp) {
+    const playedDate = new Date(timestamp * 1000);
+
+    const formattedDate = playedDate.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+
+    const formattedTime = playedDate.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    document.getElementById("fetchedDate").innerText = `${formattedDate}`;
+  } else {
+    // When last_active_play is NULL, user is currently (maybe) listening to a song
+    document.getElementById("fetchedDate").innerText = "Now Playing"
+  }
 
   // ── Achievements ──
   const daily = data.achievements.filter((a) => a.type === "daily");
