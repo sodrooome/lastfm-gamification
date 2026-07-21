@@ -124,6 +124,16 @@ async def get_user_profile(username: str):
         )
         recent_tracks = await fetch_user_recent_tracks(username=username)
 
+        tracks = recent_tracks["recenttracks"]["track"]
+
+        last_active_play = None
+        if tracks:
+            # the latest recent tracks is always first
+            latest_track = tracks[0]
+            # now playing tracks don't have a date field
+            is_now_playing = latest_track.get("@attr", {}).get("nowplaying") == "true"
+            last_active_play = None if is_now_playing else latest_track["date"]["uts"]
+
         total_scrobbles = int(user_info["user"]["playcount"])
         get_top_artist = (
             top_artists_response["topartists"]["artist"][0]["name"]
@@ -194,6 +204,7 @@ async def get_user_profile(username: str):
             "friend_count": friend_count,
             "country": get_country,
             "average_listen": average_listen_per_day,
+            "last_active_play": last_active_play
         }
     except HTTPException:
         raise
