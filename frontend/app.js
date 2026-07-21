@@ -280,8 +280,11 @@ const ACH_DIALOG_CLOSE_BTN = ACH_DIALOG.querySelector(".ach-dialog-close");
 // Two-tier locked tease: default phrase for locked lifetime achievements,
 // with bespoke overrides for the two near-impossible tier achievements.
 const ACHIEVEMENT_LOCKED_TEASE = {
-  "No Life? Pure Life": "This one's a long road.",
+  "No Life? Pure Life": "This wasn't a phase, it was a pilgrimage.",
   "LGTM": "Good luck with that.",
+  "Spotify Wasn't Even Born Yet": "You were here before Spotify had a business plan.",
+  "Are You an Elitist or Identity Crisis?": "Your algorithm has given up trying to categorize you.",
+  "The Completion": "You did the bare minimum. We're still proud of you.",
 };
 const DEFAULT_LOCKED_TEASE = "Do you think you can make it?";
 
