@@ -163,9 +163,26 @@ function renderProfile(data) {
   const now = new Date();
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  document.getElementById("fetchedDate").innerText =
-    `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}, ` +
-    now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+  const timestamp = data.last_active_play;
+  if (timestamp) {
+    const playedDate = new Date(timestamp * 1000);
+
+    const formattedDate = playedDate.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+
+    const formattedTime = playedDate.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    document.getElementById("fetchedDate").innerText = `${formattedDate}`;
+  } else {
+    // When last_active_play is NULL, user is currently (maybe) listening to a song
+    document.getElementById("fetchedDate").innerText = "Now Playing"
+  }
 
   // ── Achievements ──
   const daily = data.achievements.filter((a) => a.type === "daily");
@@ -280,8 +297,11 @@ const ACH_DIALOG_CLOSE_BTN = ACH_DIALOG.querySelector(".ach-dialog-close");
 // Two-tier locked tease: default phrase for locked lifetime achievements,
 // with bespoke overrides for the two near-impossible tier achievements.
 const ACHIEVEMENT_LOCKED_TEASE = {
-  "No Life? Pure Life": "This one's a long road.",
+  "No Life? Pure Life": "This wasn't a phase, it was a pilgrimage.",
   "LGTM": "Good luck with that.",
+  "Spotify Wasn't Even Born Yet": "You were here before Spotify had a business plan.",
+  "Are You an Elitist or Identity Crisis?": "Your algorithm has given up trying to categorize you.",
+  "The Completion": "You did the bare minimum. We're still proud of you.",
 };
 const DEFAULT_LOCKED_TEASE = "Do you think you can make it?";
 
