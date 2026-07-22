@@ -771,7 +771,7 @@ body {
 
 /* ─── Achievement Dialog (mobile: bottom sheet; desktop: modal) ─── */
 
-/* Lifetime rows become clickable (daily rows unchanged) */
+/* All achievement rows are clickable (daily + lifetime) */
 .ach-row.is-clickable {
     cursor: pointer;
     transition: background 0.12s ease;

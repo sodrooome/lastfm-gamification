@@ -226,22 +226,18 @@ function renderAchievements(containerId, list) {
     const colorClass = a.unlocked
       ? ACH_COLORS[colorIdx % ACH_COLORS.length]
       : "locked";
-    const isLifetime = containerId === "achievements";
     row.className = `ach-row ${colorClass}`;
-
-    if (isLifetime) {
-      row.classList.add("is-clickable");
-      row.setAttribute("role", "button");
-      row.setAttribute("tabindex", "0");
-      row.setAttribute("aria-haspopup", "dialog");
-      row.addEventListener("click", () => openAchievementModal(a, row));
-      row.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          openAchievementModal(a, row);
-        }
-      });
-    }
+    row.classList.add("is-clickable");
+    row.setAttribute("role", "button");
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("aria-haspopup", "dialog");
+    row.addEventListener("click", () => openAchievementModal(a, row));
+    row.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openAchievementModal(a, row);
+      }
+    });
 
     const iconSvg =
       a.icon ||
@@ -302,6 +298,9 @@ const ACHIEVEMENT_LOCKED_TEASE = {
   "Spotify Wasn't Even Born Yet": "You were here before Spotify had a business plan.",
   "Are You an Elitist or Identity Crisis?": "Your algorithm has given up trying to categorize you.",
   "The Completion": "You did the bare minimum. We're still proud of you.",
+  "Scrobble of the Day": "Come on, just one song won't hurt",
+  "Having Fun with Yourself?": "Somebody's avoiding their group chat.",
+  "How about Take a Break": "Tutorial: Locate grass. Touch grass. Remain quiet",
 };
 const DEFAULT_LOCKED_TEASE = "Do you think you can make it?";
 
