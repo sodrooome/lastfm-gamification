@@ -82,6 +82,7 @@ async function _fetchAndRender(username) {
 
     if (!res.ok) {
       if (res.status === 404) {
+        if (window.analytics) window.analytics.trackProfileSearched(false);
         showUserNotFound();
         return;
       }
@@ -89,6 +90,8 @@ async function _fetchAndRender(username) {
     }
 
     const data = await res.json();
+
+    if (window.analytics) window.analytics.trackProfileSearched(true);
 
     currentUsername = username;
     renderProfile(data);
@@ -201,6 +204,12 @@ function renderProfile(data) {
   const allDailyLocked =
     daily.length > 0 && daily.every((a) => !a.unlocked);
   toggle("dailyScrobbleCta", allDailyLocked);
+  if (!window._dailyScrobbleCtaBound) {
+    window._dailyScrobbleCtaBound = true;
+    document.getElementById("dailyScrobbleCta")?.addEventListener("click", () => {
+      if (window.analytics) window.analytics.trackStartScrobblingClicked();
+    });
+  }
   renderAchievements("achievements", lifetime);
 
   // ── How-it-works link ──
@@ -226,22 +235,18 @@ function renderAchievements(containerId, list) {
     const colorClass = a.unlocked
       ? ACH_COLORS[colorIdx % ACH_COLORS.length]
       : "locked";
-    const isLifetime = containerId === "achievements";
     row.className = `ach-row ${colorClass}`;
-
-    if (isLifetime) {
-      row.classList.add("is-clickable");
-      row.setAttribute("role", "button");
-      row.setAttribute("tabindex", "0");
-      row.setAttribute("aria-haspopup", "dialog");
-      row.addEventListener("click", () => openAchievementModal(a, row));
-      row.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          openAchievementModal(a, row);
-        }
-      });
-    }
+    row.classList.add("is-clickable");
+    row.setAttribute("role", "button");
+    row.setAttribute("tabindex", "0");
+    row.setAttribute("aria-haspopup", "dialog");
+    row.addEventListener("click", () => openAchievementModal(a, row));
+    row.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openAchievementModal(a, row);
+      }
+    });
 
     const iconSvg =
       a.icon ||
@@ -302,12 +307,16 @@ const ACHIEVEMENT_LOCKED_TEASE = {
   "Spotify Wasn't Even Born Yet": "You were here before Spotify had a business plan.",
   "Are You an Elitist or Identity Crisis?": "Your algorithm has given up trying to categorize you.",
   "The Completion": "You did the bare minimum. We're still proud of you.",
+  "Scrobble of the Day": "Come on, just one song won't hurt",
+  "Having Fun with Yourself?": "Somebody's avoiding their group chat.",
+  "How about Take a Break": "Tutorial: Locate grass. Touch grass. Remain quiet",
 };
 const DEFAULT_LOCKED_TEASE = "Do you think you can make it?";
 
 let achDialogReturnFocus = null;
 
 function openAchievementModal(ach, triggerEl) {
+  if (window.analytics) window.analytics.trackAchievementDialogOpened(ach.name, ach.type, ach.unlocked);
   const description =
     (typeof ACHIEVEMENT_DESCRIPTIONS !== "undefined" && ACHIEVEMENT_DESCRIPTIONS[ach.name]) ||
     "Requirement details unavailable.";
@@ -465,7 +474,12 @@ document.addEventListener("DOMContentLoaded", () => {
   _bindEnter("usernameInputDash", loadUserFromDash);
 
   const roastButton = document.getElementById("roastButton");
-  if (roastButton) roastButton.addEventListener("click", openRoastConsent);
+  if (roastButton) {
+    roastButton.addEventListener("click", () => {
+      if (window.analytics) window.analytics.trackRoastMeClicked();
+      openRoastConsent();
+    });
+  }
 
   const username = getUsernameFromURL();
   if (username) {
