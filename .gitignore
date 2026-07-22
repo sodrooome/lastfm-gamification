@@ -3,6 +3,7 @@ __pycache__/
 .playwright-mcp
 .DS_Store
 .omo/
+.pytest_cache/
 
 # ignore the virtual environment which is created on VPS
 venv/

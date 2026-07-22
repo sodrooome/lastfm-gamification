@@ -1,4 +1,4 @@
-.PHONY: serve format
+.PHONY: serve format test
 
 serve-dev:
 	ENVIRONMENT=development uvicorn main:app --reload
@@ -8,3 +8,6 @@ serve-prod:
 
 format:
 	black .
+
+test:
+	pytest tests/ -v

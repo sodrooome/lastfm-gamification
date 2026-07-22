@@ -204,7 +204,7 @@ async def get_user_profile(username: str):
             "friend_count": friend_count,
             "country": get_country,
             "average_listen": average_listen_per_day,
-            "last_active_play": last_active_play
+            "last_active_play": last_active_play,
         }
     except HTTPException:
         raise
