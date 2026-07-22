@@ -84,9 +84,9 @@ async def readiness_check():
                 # avoid warning from static typing by keep the dict
                 # only stored boolean, and store the detailed error separately
                 first_checks["lastfm_api"] = False
-                first_checks_erorrs[
-                    "lastfm_api"
-                ] = f"Unexpected status code: {response.status_code}"
+                first_checks_erorrs["lastfm_api"] = (
+                    f"Unexpected status code: {response.status_code}"
+                )
     except Exception as e:
         first_checks["lastfm_api"] = False
         first_checks_erorrs["lastfm_api"] = str(e)
@@ -204,7 +204,7 @@ async def get_user_profile(username: str):
             "friend_count": friend_count,
             "country": get_country,
             "average_listen": average_listen_per_day,
-            "last_active_play": last_active_play
+            "last_active_play": last_active_play,
         }
     except HTTPException:
         raise
