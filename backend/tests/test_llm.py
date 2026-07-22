@@ -23,6 +23,15 @@ def reset_roast_state():
     llm._ROAST_COUNTS.clear()
 
 
+@pytest.fixture(autouse=True)
+def ensure_llm_api_key_configured(monkeypatch):
+    """LLM_API_KEY normally comes from an environment variable, which
+    may be not set in CI. Force a deterministic value for every test so tests
+    don't depend on the runner's environment. The one test that specifically
+    covers the 'not configured' path overrides this itself"""
+    monkeypatch.setattr(llm.config, "LLM_API_KEY", "test-key-for-tests")
+
+
 def make_response(
     status_code: int = 200, json_data=None, json_error: bool = False
 ) -> MagicMock:
