@@ -29,11 +29,13 @@ def make_user_information(
     user = {"playcount": str(playcount), "name": name, "country": country}
 
     if has_image:
+        # need to readjust the pointing parameter since it has pylance warning message
         user["image"] = [{"size": "large", "#text": "http://example.com/img.png"}]
     else:
         user["image"] = [{"size": "large", "#text": ""}]
 
     if registered_unixtime is not None:
+        # same: it has pylance warning message
         user["registered"] = {"unixtime": str(registered_unixtime)}
 
     return {"user": user}
