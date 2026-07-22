@@ -1492,4 +1492,22 @@ body {
         min-width: auto;
         width: 100%;
     }
+
+    .page-footer p {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .page-footer .footer-divider {
+        display: none;
+    }
+}
+
+/* ─── Privacy Page ─── */
+.privacy-divider {
+    border: none;
+    border-top: 1px solid var(--hairline);
+    margin: var(--spacing-xl) auto;
+    max-width: 80px;
 }

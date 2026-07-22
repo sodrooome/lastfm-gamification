@@ -82,6 +82,7 @@ async function _fetchAndRender(username) {
 
     if (!res.ok) {
       if (res.status === 404) {
+        if (window.analytics) window.analytics.trackProfileSearched(false);
         showUserNotFound();
         return;
       }
@@ -89,6 +90,8 @@ async function _fetchAndRender(username) {
     }
 
     const data = await res.json();
+
+    if (window.analytics) window.analytics.trackProfileSearched(true);
 
     currentUsername = username;
     renderProfile(data);
@@ -201,6 +204,12 @@ function renderProfile(data) {
   const allDailyLocked =
     daily.length > 0 && daily.every((a) => !a.unlocked);
   toggle("dailyScrobbleCta", allDailyLocked);
+  if (!window._dailyScrobbleCtaBound) {
+    window._dailyScrobbleCtaBound = true;
+    document.getElementById("dailyScrobbleCta")?.addEventListener("click", () => {
+      if (window.analytics) window.analytics.trackStartScrobblingClicked();
+    });
+  }
   renderAchievements("achievements", lifetime);
 
   // ── How-it-works link ──
@@ -307,6 +316,7 @@ const DEFAULT_LOCKED_TEASE = "Do you think you can make it?";
 let achDialogReturnFocus = null;
 
 function openAchievementModal(ach, triggerEl) {
+  if (window.analytics) window.analytics.trackAchievementDialogOpened(ach.name, ach.type, ach.unlocked);
   const description =
     (typeof ACHIEVEMENT_DESCRIPTIONS !== "undefined" && ACHIEVEMENT_DESCRIPTIONS[ach.name]) ||
     "Requirement details unavailable.";
@@ -464,7 +474,12 @@ document.addEventListener("DOMContentLoaded", () => {
   _bindEnter("usernameInputDash", loadUserFromDash);
 
   const roastButton = document.getElementById("roastButton");
-  if (roastButton) roastButton.addEventListener("click", openRoastConsent);
+  if (roastButton) {
+    roastButton.addEventListener("click", () => {
+      if (window.analytics) window.analytics.trackRoastMeClicked();
+      openRoastConsent();
+    });
+  }
 
   const username = getUsernameFromURL();
   if (username) {
