@@ -131,6 +131,7 @@ body {
   font-size: 15px;
   color: var(--muted);
   margin-bottom: var(--spacing-xl);
+  line-height: 1.5;
 }
 
 .landing-search {
@@ -176,6 +177,14 @@ body {
 
 .search-input-wrap.small .search-input {
   padding-left: 32px;
+}
+
+.landing-title-tagline {
+  font-size: 1.1rem;
+  font-style: italic;
+  opacity: 0.65;
+  margin-top: -0.5rem;
+  margin-bottom: 1.75rem; /*gives it room to breathe before the next paragraph */
 }
 
 /* ─── Inputs & Buttons ─── */
@@ -1781,7 +1790,7 @@ body {
   align-items: center;
   gap: var(--spacing-xs);
   box-shadow: var(--shadow-card);
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
 }
 
 .compare-score-label {
@@ -1811,13 +1820,13 @@ body {
 .compare-users-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-xl);
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
 }
 
 /* ── Joint Roast ── */
 .compare-joint-roast {
-  background: #8db87a;
+  background: var(--canvas);
   border-radius: var(--rounded-xl);
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-card);
@@ -1833,20 +1842,20 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--muted);
 }
 
 .compare-joint-roast-consent {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--muted);
   line-height: 1.4;
   max-width: 400px;
 }
 
 .compare-roast-btn {
-  background: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: var(--primary);
+  color: var(--on-primary);
+  border: none;
   border-radius: var(--rounded-lg);
   padding: 12px 20px;
   height: 44px;
@@ -1859,11 +1868,11 @@ body {
 }
 
 .compare-roast-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--primary-active);
 }
 
 .compare-roast-btn:active {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--primary-active);
 }
 
 .compare-roast-btn:disabled {
@@ -1874,17 +1883,26 @@ body {
 .compare-joint-roast-result {
   font-size: 16px;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--body-text);
   line-height: 1.5;
   max-width: 500px;
 }
 
+.compare-joint-roast-result::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--hairline);
+  margin-bottom: var(--spacing-md);
+}
+
 .compare-joint-roast-error {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--body-text);
   line-height: 1.5;
   max-width: 400px;
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--surface-soft);
   border-radius: var(--rounded-md);
   padding: var(--spacing-sm) var(--spacing-md);
 }
@@ -1897,12 +1915,12 @@ body {
 }
 
 .compare-joint-roast-loading .spinner {
-  border-color: rgba(255, 255, 255, 0.25);
-  border-top-color: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  border-top-color: var(--primary);
 }
 
 .compare-joint-roast-loading .loading-text {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--body-text);
 }
 
 /* ── Shared Artists ── */
@@ -1911,7 +1929,7 @@ body {
   border-radius: var(--rounded-xl);
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-card);
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
