@@ -11,11 +11,14 @@ from exceptions import (
 
 logger = logging.getLogger(__name__)
 
+# roasting configuration model through OpenRouter services
 ROAST_MODEL = "google/gemini-2.5-flash"
 ROAST_TEMPERATURE = 0.9
 ROAST_MAX_TOKENS = 256
 LLM_TIMEOUT_SECONDS = 30.0
 ROAST_LIMIT_PER_USER = 3
+JOINT_ROAST_MAX_TOKENS = 300
+JOINT_ROAST_TEMPERATURE = 0.9
 
 ROAST_SYSTEM_PROMPT = (
     "You're a witty, passive-aggressive music critic who roasts Last.fm listeners "
@@ -337,10 +340,6 @@ JOINT_ROAST_SYSTEM_PROMPT = (
     "Plain text ready to display directly on a card."
 )
 
-JOINT_ROAST_MODEL = "google/gemini-2.5-flash"
-JOINT_ROAST_MAX_TOKENS = 300
-JOINT_ROAST_TEMPERATURE = 0.9
-
 
 def _format_joint_roast_prompt(ctx: dict[str, Any]) -> str:
     parts: list[str] = []
@@ -383,7 +382,7 @@ async def roast_joint_listener(ctx: dict[str, Any]) -> str:
     }
 
     payload = {
-        "model": JOINT_ROAST_MODEL,
+        "model": ROAST_MODEL,
         "messages": messages,
         "temperature": JOINT_ROAST_TEMPERATURE,
         "max_tokens": JOINT_ROAST_MAX_TOKENS,

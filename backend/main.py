@@ -44,7 +44,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -87,9 +87,9 @@ async def readiness_check():
                 # avoid warning from static typing by keep the dict
                 # only stored boolean, and store the detailed error separately
                 first_checks["lastfm_api"] = False
-                first_checks_erorrs["lastfm_api"] = (
-                    f"Unexpected status code: {response.status_code}"
-                )
+                first_checks_erorrs[
+                    "lastfm_api"
+                ] = f"Unexpected status code: {response.status_code}"
     except Exception as e:
         first_checks["lastfm_api"] = False
         first_checks_erorrs["lastfm_api"] = str(e)
