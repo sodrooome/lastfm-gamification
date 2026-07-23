@@ -329,6 +329,23 @@
     </div>
   </dialog>
 
+  <!-- Roast Me — loading modal -->
+  <dialog id="roastLoadingDialog" class="ach-dialog roast-loading-dialog" aria-labelledby="roastLoadingTitle">
+    <div class="roast-loading-content">
+      <div class="roast-loading-icon">
+        <svg width="32" height="32" viewBox="0 0 16 16" fill="none">
+          <path d="M2 12L6 6L9 9L14 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M10 3H14V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 class="roast-loading-title" id="roastLoadingTitle">Roasting Your Profile…</h2>
+      <p class="roast-loading-status" id="roastLoadingStatus">Analyzing your scrobbles…</p>
+      <div class="roast-loading-progress">
+        <div class="roast-loading-progress-fill" id="roastLoadingFill"></div>
+      </div>
+    </div>
+  </dialog>
+
   <script src="./tracking.js"></script>
   <script src="./achievements-data.js"></script>
   <script src="./app.js?v=2"></script>
@@ -357,9 +374,13 @@
         Powered by <img src="https://cdn-icons-png.flaticon.com/512/145/145806.png" alt="Last.fm" class="lastfm-icon" />
       </a>
       <span class="footer-divider">·</span>
-      <span>Ryan Febriansyah © 2026. All Rights Reserved</span>
+      <span>© Ryan Febriansyah 2026. All Rights Reserved</span>
       <span class="footer-divider">·</span>
-      <a href="./privacy.html" style="color: inherit;">Privacy Policy</a>
+      <span class="footer-legal">
+        <a href="./privacy.html" style="color: inherit;">Privacy Policy</a>
+        <span class="footer-divider">·</span>
+        <a href="./terms.html" style="color: inherit;">Terms and Conditions</a>
+      </span>
     </p>
   </footer>
 </body>
