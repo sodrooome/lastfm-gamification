@@ -323,8 +323,14 @@ async def compare_users(first_user: str, second_user: str):
             username=second_user
         )
 
-        user1_top_artists_raw = await fetch_user_top_artists(username=first_user)
-        user2_top_artists_raw = await fetch_user_top_artists(username=second_user)
+        # causing an internal server error whenever the period is set to 'overall'
+        # for now, i will try to limit fetching the top artist on the past year
+        user1_top_artists_raw = await fetch_user_top_artists(
+            username=first_user, period="12month"
+        )
+        user2_top_artists_raw = await fetch_user_top_artists(
+            username=second_user, period="12month"
+        )
 
         user1_12month = await fetch_user_top_artists_12month(username=first_user)
         user2_12month = await fetch_user_top_artists_12month(username=second_user)

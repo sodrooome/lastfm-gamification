@@ -15,11 +15,11 @@ async def fetch_user_information(username: str):
         return response.json()
 
 
-async def fetch_user_top_artists(username: str):
+async def fetch_user_top_artists(username: str, period: str = "overall"):
     params = {
         "method": "user.gettopartists",
         "user": username,
-        "period": "overall",
+        "period": period,
         "api_key": LASTFM_API_KEY,
         "format": "json",
         "page": 1,
