@@ -61,7 +61,14 @@ async def fetch_user_recent_tracks(username: str):
 
     async with httpx.AsyncClient() as client:
         response = await client.get(url=LASTFM_BASE_URL, params=params)
-        return response.json()
+
+    data = response.json()
+
+    if response.status_code != 200 or "error" in data:
+        # handle a cases where a particular users thrown 403,
+        # possibly the user's listening info is private or something else
+        return None
+    return data
 
 
 async def fetch_user_all_top_artists(username: str, limit=10000):

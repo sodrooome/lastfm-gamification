@@ -127,7 +127,14 @@ async def get_user_profile(username: str):
         )
         recent_tracks = await fetch_user_recent_tracks(username=username)
 
-        tracks = recent_tracks["recenttracks"]["track"]
+        # if recent tracks are private or unavailable, give downstream
+        # an empty but with valid response body instead just as None
+        if recent_tracks is None:
+            recent_tracks = {"recenttracks": {"track": []}}
+
+        tracks = []
+        raw_tracks = recent_tracks.get("recenttracks", {}).get("track", [])
+        tracks = raw_tracks if isinstance(raw_tracks, list) else [raw_tracks]
 
         last_active_play = None
         if tracks:
@@ -440,10 +447,10 @@ async def compare_users(first_user: str, second_user: str):
 
 @app.post("/compare/roast")
 async def compare_roast(data: dict = Body(...)):
-    try:
-        user1 = data.get("user1", "")
-        user2 = data.get("user2", "")
+    user1 = data.get("user1", "")
+    user2 = data.get("user2", "")
 
+    try:
         if not user1 or not user2:
             raise HTTPException(
                 status_code=400, detail="Both first and second user are required"
