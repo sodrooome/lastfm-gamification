@@ -1,4 +1,6 @@
-const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+const isLocal =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
 
 const API_BASE = isLocal
   ? "http://localhost:8000"
@@ -7,7 +9,60 @@ const API_BASE = isLocal
 let currentUsername = null;
 
 // ─── Achievement color palette (cycles through unlocked rows) ───
-const ACH_COLORS = ["ach-teal", "ach-blue", "ach-brown", "ach-pink", "ach-green", "ach-purple"];
+const ACH_COLORS = [
+  "ach-teal",
+  "ach-blue",
+  "ach-brown",
+  "ach-pink",
+  "ach-green",
+  "ach-purple",
+];
+
+// ─── Roast loading animation ───
+const ROAST_STATUS_MESSAGES = [
+  "Analyzing your scrobbles…",
+  "Judging your taste in music…",
+  "Consulting with music elitist…",
+  "Finding your most embarrassing track…",
+  "Calculating how much time you've wasted…",
+  "Preparing the roast…",
+];
+
+var roastProgressInterval = null;
+var roastStatusInterval = null;
+var roastStatusIdx = 0;
+
+function startRoastLoadingAnimation() {
+  var loadingFill = document.getElementById("roastLoadingFill");
+  var loadingStatus = document.getElementById("roastLoadingStatus");
+  if (!loadingFill || !loadingStatus) return;
+
+  loadingFill.style.width = "0%";
+  roastStatusIdx = 0;
+  loadingStatus.textContent = ROAST_STATUS_MESSAGES[0];
+
+  var progress = 0;
+  roastProgressInterval = setInterval(function () {
+    progress += 2;
+    if (progress >= 80) {
+      clearInterval(roastProgressInterval);
+      progress = 80;
+    }
+    loadingFill.style.width = progress + "%";
+  }, 60);
+
+  roastStatusInterval = setInterval(function () {
+    roastStatusIdx = (roastStatusIdx + 1) % ROAST_STATUS_MESSAGES.length;
+    loadingStatus.textContent = ROAST_STATUS_MESSAGES[roastStatusIdx];
+  }, 800);
+}
+
+function stopRoastLoadingAnimation() {
+  clearInterval(roastProgressInterval);
+  clearInterval(roastStatusInterval);
+  var loadingFill = document.getElementById("roastLoadingFill");
+  if (loadingFill) loadingFill.style.width = "100%";
+}
 
 // ─── Helpers ───────────────────────────────────────────────────
 
@@ -99,7 +154,7 @@ async function _fetchAndRender(username) {
     params.set("user", username);
     window.history.pushState({}, "", `?${params.toString()}`);
   } catch (err) {
-    console.error(err)
+    console.error(err);
     showError("Failed to load user");
   } finally {
     toggle("loading", false);
@@ -118,7 +173,8 @@ function renderProfile(data) {
 
   // ── Username ──
   document.getElementById("username").innerText = data.username;
-  document.getElementById("statsTitle").innerText = data.username + " Listening Stats";
+  document.getElementById("statsTitle").innerText =
+    data.username + " Listening Stats";
 
   // ── Level ──
   const levelText = `Level ${data.level}`;
@@ -130,7 +186,8 @@ function renderProfile(data) {
       : `${Math.round(data.progress_pct)}% to Level ${data.level + 1}`;
 
   document.getElementById("progressFill").style.width = `${data.progress_pct}%`;
-  document.getElementById("statsProgressFill").style.width = `${data.progress_pct}%`;
+  document.getElementById("statsProgressFill").style.width =
+    `${data.progress_pct}%`;
   document.getElementById("progressLabel").innerText =
     `${data.current_xp} / ${data.max_xp} XP`;
 
@@ -149,13 +206,26 @@ function renderProfile(data) {
 
   document.getElementById("statCountry").innerText =
     data.country && data.country !== "None" ? data.country : "-";
-  document.getElementById("statAvgListen").innerText = data.average_listen + " songs / day";
+  document.getElementById("statAvgListen").innerText =
+    data.average_listen + " songs / day";
 
   // ── Joined date ──
   if (data.joined_date) {
     const date = new Date(data.joined_date * 1000);
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
     const formatted = `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
     document.getElementById("joinedDate").innerText = formatted;
   } else {
@@ -164,8 +234,20 @@ function renderProfile(data) {
 
   // ── "Data fetched" timestamp ──
   const now = new Date();
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   const timestamp = data.last_active_play;
   if (timestamp) {
     const playedDate = new Date(timestamp * 1000);
@@ -184,16 +266,17 @@ function renderProfile(data) {
     document.getElementById("fetchedDate").innerText = `${formattedDate}`;
   } else {
     // When last_active_play is NULL, user is currently (maybe) listening to a song
-    document.getElementById("fetchedDate").innerText = "Now Playing"
+    document.getElementById("fetchedDate").innerText = "Now Playing";
   }
 
   // ── Achievements ──
   const daily = data.achievements.filter((a) => a.type === "daily");
   const lifetime = data.achievements.filter((a) => a.type === "lifetime");
 
-  document.getElementById("statAchievements").innerText =
-    lifetime.filter((a) => a.unlocked).length;
-  document.getElementById("statFriends").innerText = data.friend_count
+  document.getElementById("statAchievements").innerText = lifetime.filter(
+    (a) => a.unlocked,
+  ).length;
+  document.getElementById("statFriends").innerText = data.friend_count;
 
   /* unused code but might be useful later */
   // document.getElementById("statDaily").innerText =
@@ -201,14 +284,15 @@ function renderProfile(data) {
 
   renderAchievements("dailyAchievements", daily);
   // Show "Start Scrobbling" CTA only when every daily achievement is locked
-  const allDailyLocked =
-    daily.length > 0 && daily.every((a) => !a.unlocked);
+  const allDailyLocked = daily.length > 0 && daily.every((a) => !a.unlocked);
   toggle("dailyScrobbleCta", allDailyLocked);
   if (!window._dailyScrobbleCtaBound) {
     window._dailyScrobbleCtaBound = true;
-    document.getElementById("dailyScrobbleCta")?.addEventListener("click", () => {
-      if (window.analytics) window.analytics.trackStartScrobblingClicked();
-    });
+    document
+      .getElementById("dailyScrobbleCta")
+      ?.addEventListener("click", () => {
+        if (window.analytics) window.analytics.trackStartScrobblingClicked();
+      });
   }
   renderAchievements("achievements", lifetime);
 
@@ -219,7 +303,8 @@ function renderProfile(data) {
   }
   const mobileHowLink = document.getElementById("mobileMenuHowLink");
   if (mobileHowLink) {
-    mobileHowLink.href = "how-to.html?user=" + encodeURIComponent(data.username);
+    mobileHowLink.href =
+      "how-to.html?user=" + encodeURIComponent(data.username);
   }
 }
 
@@ -265,8 +350,10 @@ function renderAchievements(containerId, list) {
       const d = new Date(a.unlocked_date);
       unlockedLine = !isNaN(d)
         ? `<span class="ach-date">Unlocked on ${d.toLocaleDateString("en-US", {
-          month: "long", day: "numeric", year: "numeric"
-        })}</span>`
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          })}</span>`
         : `<span class="ach-date">Unlocked</span>`;
     } else if (a.unlocked) {
       unlockedLine = `<span class="ach-date">Unlocked</span>`;
@@ -303,9 +390,11 @@ const ACH_DIALOG_CLOSE_BTN = ACH_DIALOG.querySelector(".ach-dialog-close");
 // with bespoke overrides for the two near-impossible tier achievements.
 const ACHIEVEMENT_LOCKED_TEASE = {
   "No Life? Pure Life": "This wasn't a phase, it was a pilgrimage.",
-  "LGTM": "Good luck with that.",
-  "Spotify Wasn't Even Born Yet": "You were here before Spotify had a business plan.",
-  "Are You an Elitist or Identity Crisis?": "Your algorithm has given up trying to categorize you.",
+  LGTM: "Good luck with that.",
+  "Spotify Wasn't Even Born Yet":
+    "You were here before Spotify had a business plan.",
+  "Are You an Elitist or Identity Crisis?":
+    "Your algorithm has given up trying to categorize you.",
   "The Completion": "You did the bare minimum. We're still proud of you.",
   "Scrobble of the Day": "Come on, just one song won't hurt",
   "Having Fun with Yourself?": "Somebody's avoiding their group chat.",
@@ -316,9 +405,15 @@ const DEFAULT_LOCKED_TEASE = "Do you think you can make it?";
 let achDialogReturnFocus = null;
 
 function openAchievementModal(ach, triggerEl) {
-  if (window.analytics) window.analytics.trackAchievementDialogOpened(ach.name, ach.type, ach.unlocked);
+  if (window.analytics)
+    window.analytics.trackAchievementDialogOpened(
+      ach.name,
+      ach.type,
+      ach.unlocked,
+    );
   const description =
-    (typeof ACHIEVEMENT_DESCRIPTIONS !== "undefined" && ACHIEVEMENT_DESCRIPTIONS[ach.name]) ||
+    (typeof ACHIEVEMENT_DESCRIPTIONS !== "undefined" &&
+      ACHIEVEMENT_DESCRIPTIONS[ach.name]) ||
     "Requirement details unavailable.";
 
   ACH_DIALOG_TITLE.textContent = ach.name;
@@ -331,7 +426,11 @@ function openAchievementModal(ach, triggerEl) {
   if (ach.unlocked && ach.unlocked_date) {
     const d = new Date(ach.unlocked_date);
     ACH_DIALOG_DATE.textContent = !isNaN(d)
-      ? d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+      ? d.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })
       : "";
   } else if (ach.unlocked) {
     ACH_DIALOG_DATE.textContent = "";
@@ -357,7 +456,10 @@ ACH_DIALOG.addEventListener("click", (e) => {
 });
 
 ACH_DIALOG.addEventListener("close", () => {
-  if (achDialogReturnFocus && typeof achDialogReturnFocus.focus === "function") {
+  if (
+    achDialogReturnFocus &&
+    typeof achDialogReturnFocus.focus === "function"
+  ) {
     achDialogReturnFocus.focus();
     achDialogReturnFocus = null;
   }
@@ -367,7 +469,10 @@ ACH_DIALOG.addEventListener("close", () => {
 
 function _bindEnter(inputId, handler) {
   const el = document.getElementById(inputId);
-  if (el) el.addEventListener("keydown", (e) => { if (e.key === "Enter") handler(); });
+  if (el)
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handler();
+    });
 }
 
 // ─── Roast Me — consent + result dialogs ───────────────────────
@@ -400,6 +505,7 @@ async function confirmRoast() {
   const consentDialog = document.getElementById("roastConsentDialog");
   if (consentDialog && consentDialog.open) consentDialog.close();
 
+  const loadingDialog = document.getElementById("roastLoadingDialog");
   const resultDialog = document.getElementById("roastResultDialog");
   const resultText = document.getElementById("roastResultText");
   const closeBtn = document.getElementById("roastResultClose");
@@ -409,7 +515,8 @@ async function confirmRoast() {
     _roastResultBound = true;
     closeBtn.addEventListener("click", () => resultDialog.close());
     const innerClose = resultDialog.querySelector(".ach-dialog-close");
-    if (innerClose) innerClose.addEventListener("click", () => resultDialog.close());
+    if (innerClose)
+      innerClose.addEventListener("click", () => resultDialog.close());
     resultDialog.addEventListener("click", (e) => {
       if (e.target === resultDialog) resultDialog.close();
     });
@@ -417,18 +524,25 @@ async function confirmRoast() {
 
   resultText.textContent = "Roasting…";
   closeBtn.disabled = true;
-  if (!resultDialog.open) resultDialog.showModal();
+  if (!loadingDialog.open) loadingDialog.showModal();
+  startRoastLoadingAnimation();
 
   const roastButton = document.getElementById("roastButton");
 
   try {
     const res = await fetch(
-      `${API_BASE}/roast/${encodeURIComponent(currentUsername)}?consent=true`
+      `${API_BASE}/roast/${encodeURIComponent(currentUsername)}?consent=true`,
     );
+
+    stopRoastLoadingAnimation();
 
     if (res.status === 200) {
       const data = await res.json();
-      if (typeof data.remaining === "number" && data.remaining === 0 && data.cached) {
+      if (
+        typeof data.remaining === "number" &&
+        data.remaining === 0 &&
+        data.cached
+      ) {
         resultText.innerHTML =
           `<div class="roast-limit-hint">` +
           `<p class="roast-limit-hint-title">You've reached your roast limit!</p>` +
@@ -457,11 +571,17 @@ async function confirmRoast() {
       resultText.textContent = "Consent required, please try again";
     } else {
       resultText.textContent =
-        "Couldn't roast you right now, the AI is busy. Pleasee try again later.";
+        "Couldn't roast you right now, the AI is busy. Please try again later.";
     }
+
+    loadingDialog.close();
+    if (!resultDialog.open) resultDialog.showModal();
   } catch (err) {
+    stopRoastLoadingAnimation();
     resultText.textContent =
       "Couldn't roast you right now, the AI is busy. Please try again later.";
+    loadingDialog.close();
+    if (!resultDialog.open) resultDialog.showModal();
   } finally {
     closeBtn.disabled = false;
   }
