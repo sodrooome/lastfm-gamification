@@ -4,7 +4,7 @@ import logging
 import httpx
 from config import LASTFM_API_KEY, LASTFM_BASE_URL
 from pathlib import Path
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from achievements import (
@@ -17,11 +17,14 @@ from lastfm import (
     fetch_user_information,
     fetch_user_recent_tracks,
     fetch_user_all_top_artists,
+    fetch_user_top_artists,
+    fetch_user_top_artists_12month,
     fetch_user_friends,
 )
 from llm import (
     get_or_cache_roast,
     get_remaining_roasts,
+    roast_joint_listener,
 )
 from exceptions import (
     RoastServiceUnavailableError,
@@ -41,7 +44,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -124,7 +127,14 @@ async def get_user_profile(username: str):
         )
         recent_tracks = await fetch_user_recent_tracks(username=username)
 
-        tracks = recent_tracks["recenttracks"]["track"]
+        # if recent tracks are private or unavailable, give downstream
+        # an empty but with valid response body instead just as None
+        if recent_tracks is None:
+            recent_tracks = {"recenttracks": {"track": []}}
+
+        tracks = []
+        raw_tracks = recent_tracks.get("recenttracks", {}).get("track", [])
+        tracks = raw_tracks if isinstance(raw_tracks, list) else [raw_tracks]
 
         last_active_play = None
         if tracks:
@@ -298,6 +308,202 @@ async def get_user_roast(username: str, consent: bool = False):
         )
     except Exception:
         logger.exception(f"Unexpected error while generating roast for: {username}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@app.get("/compare/{first_user}/{second_user}")
+async def compare_users(first_user: str, second_user: str):
+    try:
+        user1_info = await fetch_user_information(username=first_user)
+        user2_info = await fetch_user_information(username=second_user)
+
+        for user_info, _ in [(user1_info, first_user), (user2_info, second_user)]:
+            if "error" in user_info and user_info["error"] == 6:
+                raise HTTPException(
+                    status_code=404, detail="The requested user does not exist"
+                )
+
+        user1_top_set, user1_top_response = await fetch_user_all_top_artists(
+            username=first_user
+        )
+        user2_top_set, user2_top_response = await fetch_user_all_top_artists(
+            username=second_user
+        )
+
+        # causing an internal server error whenever the period is set to 'overall'
+        # for now, i will try to limit fetching the top artist on the past year
+        user1_top_artists_raw = await fetch_user_top_artists(
+            username=first_user, period="12month"
+        )
+        user2_top_artists_raw = await fetch_user_top_artists(
+            username=second_user, period="12month"
+        )
+
+        user1_12month = await fetch_user_top_artists_12month(username=first_user)
+        user2_12month = await fetch_user_top_artists_12month(username=second_user)
+
+        # only picks at least top 5 artists on the past year,
+        # this prevent resources exhaustion when requesting the API from lastfm
+        shared_12month = [
+            artist for artist in user1_12month if artist in user2_12month
+        ][:5]
+
+        user1_recent = await fetch_user_recent_tracks(username=first_user)
+        user2_recent = await fetch_user_recent_tracks(username=second_user)
+
+        user1_achievements = calculate_achievements(
+            user_info=user1_info,
+            top_artists_set=user1_top_set,
+            recent_tracks=user1_recent,
+        )
+        user2_achievements = calculate_achievements(
+            user_info=user2_info,
+            top_artists_set=user2_top_set,
+            recent_tracks=user2_recent,
+        )
+
+        user1_unlocked = set(
+            a["name"]
+            for a in user1_achievements
+            if a["unlocked"] and a.get("type") == "lifetime"
+        )
+        user2_unlocked = set(
+            a["name"]
+            for a in user2_achievements
+            if a["unlocked"] and a.get("type") == "lifetime"
+        )
+
+        shared = user1_unlocked & user2_unlocked
+        total_unique = user1_unlocked | user2_unlocked
+
+        if len(total_unique) == 0:
+            compatibility_score = 0
+        else:
+            compatibility_score = round((len(shared) / len(total_unique)) * 100)
+
+        # at the moment, the compatibility score is solely based on
+        # how many achievements which are being unlocked/locked by particular users
+        if compatibility_score >= 80:
+            tagline = "You two are basically the same person."
+        elif compatibility_score >= 60:
+            tagline = "You two would survive a road trip, barely."
+        elif compatibility_score >= 40:
+            tagline = "Different worlds, same playlist."
+        elif compatibility_score >= 20:
+            tagline = "Your music tastes are... an interesting contrast."
+        else:
+            tagline = "You have nothing in common. At all."
+
+        def _get_profile_image(user_info):
+            image_list = user_info["user"].get("image", [])
+            for image in image_list:
+                if image.get("size") == "large":
+                    return image["#text"]
+            return ""
+
+        def _get_top_3_artists(top_artists_raw):
+            artists = top_artists_raw.get("topartists", {}).get("artist", [])
+            result = []
+            for artist in artists[:3]:
+                result.append(
+                    {"name": artist["name"], "playcount": int(artist["playcount"])}
+                )
+            return result
+
+        def _get_top_artist(top_artists_response):
+            if top_artists_response and top_artists_response.get("topartists", {}).get(
+                "artist"
+            ):
+                return top_artists_response["topartists"]["artist"][0]["name"]
+            return "Unknown"
+
+        return {
+            "compatibility_score": compatibility_score,
+            "compatibility_tagline": tagline,
+            "shared_artists": shared_12month,
+            "user1": {
+                "username": first_user,
+                "profile_image": _get_profile_image(user1_info),
+                "top_artist": _get_top_artist(user1_top_response),
+                "total_scrobbles": int(user1_info["user"]["playcount"]),
+                "top_3_artists": _get_top_3_artists(user1_top_artists_raw),
+            },
+            "user2": {
+                "username": second_user,
+                "profile_image": _get_profile_image(user2_info),
+                "top_artist": _get_top_artist(user2_top_response),
+                "total_scrobbles": int(user2_info["user"]["playcount"]),
+                "top_3_artists": _get_top_3_artists(user2_top_artists_raw),
+            },
+        }
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception(
+            f"Unexpected error while comparing users: {first_user} and {second_user}"
+        )
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@app.post("/compare/roast")
+async def compare_roast(data: dict = Body(...)):
+    user1 = data.get("user1", "")
+    user2 = data.get("user2", "")
+
+    try:
+        if not user1 or not user2:
+            raise HTTPException(
+                status_code=400, detail="Both first and second user are required"
+            )
+
+        user1_info = await fetch_user_information(username=user1)
+        user2_info = await fetch_user_information(username=user2)
+
+        account_age_1 = 0.0
+        registered = user1_info.get("user", {}).get("registered", {})
+        if "unixtime" in registered:
+            joined = datetime.fromtimestamp(
+                int(registered["unixtime"]), tz=timezone.utc
+            )
+            account_age_1 = (datetime.now(timezone.utc) - joined).days / 365.25
+
+        account_age_2 = 0.0
+        registered = user2_info.get("user", {}).get("registered", {})
+        if "unixtime" in registered:
+            joined = datetime.fromtimestamp(
+                int(registered["unixtime"]), tz=timezone.utc
+            )
+            account_age_2 = (datetime.now(timezone.utc) - joined).days / 365.25
+
+        ctx = {
+            "user1": user1,
+            "user2": user2,
+            "compatibility_score": data.get("compatibility_score", 0),
+            "shared_artists": data.get("shared_artists", []),
+            "user1_top_artists": data.get("user1_top_artists", []),
+            "user2_top_artists": data.get("user2_top_artists", []),
+            "user1_scrobbles": data.get("user1_scrobbles", 0),
+            "user2_scrobbles": data.get("user2_scrobbles", 0),
+            "user1_account_age": account_age_1,
+            "user2_account_age": account_age_2,
+        }
+
+        roast = await roast_joint_listener(ctx)
+
+        return {"roast": roast}
+
+    except HTTPException:
+        raise
+    except RoastNotConfiguredError:
+        raise HTTPException(status_code=503, detail="Roast feature not configured")
+    except RoastServiceUnavailableError:
+        raise HTTPException(
+            status_code=503, detail="Roast service unavailable, try again later"
+        )
+    except Exception:
+        logger.exception(
+            f"Unexpected error generating joint roast for: {user1} and {user2}"
+        )
         raise HTTPException(status_code=500, detail="Internal server error")
 
 

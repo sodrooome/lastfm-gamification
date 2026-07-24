@@ -11,11 +11,14 @@ from exceptions import (
 
 logger = logging.getLogger(__name__)
 
+# roasting configuration model through OpenRouter services
 ROAST_MODEL = "google/gemini-2.5-flash"
 ROAST_TEMPERATURE = 0.9
 ROAST_MAX_TOKENS = 256
 LLM_TIMEOUT_SECONDS = 30.0
 ROAST_LIMIT_PER_USER = 3
+JOINT_ROAST_MAX_TOKENS = 300
+JOINT_ROAST_TEMPERATURE = 0.9
 
 ROAST_SYSTEM_PROMPT = (
     "You're a witty, passive-aggressive music critic who roasts Last.fm listeners "
@@ -306,3 +309,111 @@ async def get_or_cache_roast(
 def get_remaining_roasts(username: str) -> int:
     """Return the number of remaining roasts for a user."""
     return max(0, ROAST_LIMIT_PER_USER - _ROAST_COUNTS.get(username, 0))
+
+
+JOINT_ROAST_SYSTEM_PROMPT = (
+    "You are a witty, slightly savage music critic writing a short roast comparing "
+    "two people's Last.fm listening habits. Be funny and playful, never genuinely "
+    "mean, insulting, or offensive — like a friend teasing two other friends at a "
+    "party. Sharp enough to sting a little, warm enough that everyone laughs.\n\n"
+    "Tone: lean passive-aggressive. Favor backhanded compliments, faux-concern, and "
+    "'I'm not mad, just disappointed' energy over direct insults. A good line sounds "
+    "supportive on the surface and cutting underneath — e.g. 'it's sweet that you both "
+    "still listen to that' lands better than 'your taste is bad'. Avoid outright "
+    "meanness; the passive-aggression should still read as affectionate teasing, not "
+    "contempt.\n\n"
+    "Write 2-4 sentences that:\n"
+    "1. Characterize each person's music taste in one punchy phrase.\n"
+    "2. Make a joke about how they'd get along or clash based on their overlap or "
+    "lack of it. Reference the compatibility score or shared artists naturally.\n"
+    "3. Land on a single closing line that sums up the verdict, this should be "
+    "the most quotable, shareable line.\n\n"
+    "Tone rules: playful and teasing, never cruel. Always ground jokes in a "
+    "specific detail from the data. No profanity unless mild and comedic. If zero "
+    "overlap, treat it as comedy gold, not a failure. If high overlap, tease them "
+    "for being predictable together. Keep it 40-70 words total, concise and dry, "
+    "no hashtags, no emoji, no exclamation-point hype.\n\n"
+    "Do not make factual claims beyond the provided data. Do not mention age, "
+    "gender, appearance, or any protected characteristic. Do not break character "
+    "to explain the joke or add disclaimers. Vary the joke angle each time.\n\n"
+    "Output ONLY the roast text, no preamble, no labels, no quotation marks. "
+    "Plain text ready to display directly on a card."
+)
+
+
+def _format_joint_roast_prompt(ctx: dict[str, Any]) -> str:
+    parts: list[str] = []
+    parts.append(f"User A: {ctx.get('user1', 'Unknown')}")
+    parts.append(f"User B: {ctx.get('user2', 'Unknown')}")
+    parts.append(f"Compatibility score: {ctx.get('compatibility_score', 'N/A')}%")
+    if ctx.get("shared_artists"):
+        parts.append(f"Shared artists: {', '.join(ctx['shared_artists'])}")
+    else:
+        parts.append("Shared artists: none")
+    parts.append(
+        f"User A top artists: {', '.join(ctx.get('user1_top_artists', ['Unknown']))}"
+    )
+    parts.append(
+        f"User B top artists: {', '.join(ctx.get('user2_top_artists', ['Unknown']))}"
+    )
+    parts.append(f"User A scrobbles: {ctx.get('user1_scrobbles', 'N/A')}")
+    parts.append(f"User B scrobbles: {ctx.get('user2_scrobbles', 'N/A')}")
+    if ctx.get("user1_account_age"):
+        parts.append(f"User A account age: {ctx['user1_account_age']:.1f} years")
+    if ctx.get("user2_account_age"):
+        parts.append(f"User B account age: {ctx['user2_account_age']:.1f} years")
+    return "\n".join(parts)
+
+
+async def roast_joint_listener(ctx: dict[str, Any]) -> str:
+    if not config.LLM_API_KEY:
+        raise RoastNotConfiguredError("LLM_API_KEY is not configured")
+
+    messages = [
+        {"role": "system", "content": JOINT_ROAST_SYSTEM_PROMPT},
+        {"role": "user", "content": _format_joint_roast_prompt(ctx)},
+    ]
+
+    headers = {
+        "Authorization": f"Bearer {config.LLM_API_KEY}",
+        "HTTP-Referer": "https://github.com/sodrooome/lastfm-achievements",
+        "X-Title": "lastfm-achievements",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "model": ROAST_MODEL,
+        "messages": messages,
+        "temperature": JOINT_ROAST_TEMPERATURE,
+        "max_tokens": JOINT_ROAST_MAX_TOKENS,
+        "stream": False,
+    }
+
+    url = f"{config.OPENROUTER_BASE_URL}/chat/completions"
+
+    async with httpx.AsyncClient(timeout=LLM_TIMEOUT_SECONDS) as client:
+        try:
+            response = await client.post(url, headers=headers, json=payload)
+            logger.info(f"OpenRouter joint roast response: {response.status_code}")
+        except httpx.HTTPError as exc:
+            raise RoastServiceUnavailableError(
+                f"HTTP error calling OpenRouter: {exc}"
+            ) from exc
+
+    if response.status_code >= 400:
+        raise RoastServiceUnavailableError(
+            f"OpenRouter returned HTTP {response.status_code}"
+        )
+
+    try:
+        data: dict[str, Any] = response.json()
+    except Exception as exc:
+        raise RoastServiceUnavailableError(f"Invalid JSON response: {exc}") from exc
+
+    try:
+        roast: str = data["choices"][0]["message"]["content"].strip()
+    except (KeyError, IndexError, AttributeError) as exc:
+        raise RoastServiceUnavailableError(f"Unexpected response shape: {exc}") from exc
+
+    roast = _clean_roast_output(roast)
+    return roast
