@@ -1,0 +1,33 @@
+# on-demand independent check which is trigger
+# the Playwright automation UI tests (only for sanity/quick check)
+name: frontend-smoke-tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  frontend-smoke-tests:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install NPM Dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        working-directory: frontend
+        run: npx playwright install --with-deps
+
+      - name: Run Frontend Smoke Tests
+        working-directory: frontend
+        run: npx playwright test
