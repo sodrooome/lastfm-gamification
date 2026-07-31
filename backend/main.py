@@ -32,6 +32,9 @@ from exceptions import (
     RoastLimitExceededError,
 )
 from datetime import datetime, timezone
+from _logging import configure_logging
+
+configure_logging()
 
 origins = ["https://sodrooome.github.io"]
 
@@ -48,10 +51,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# basic internal logging setup, can be expanded later
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
 logger = logging.getLogger(__name__)
 
 
@@ -87,9 +86,9 @@ async def readiness_check():
                 # avoid warning from static typing by keep the dict
                 # only stored boolean, and store the detailed error separately
                 first_checks["lastfm_api"] = False
-                first_checks_erorrs[
-                    "lastfm_api"
-                ] = f"Unexpected status code: {response.status_code}"
+                first_checks_erorrs["lastfm_api"] = (
+                    f"Unexpected status code: {response.status_code}"
+                )
     except Exception as e:
         first_checks["lastfm_api"] = False
         first_checks_erorrs["lastfm_api"] = str(e)
@@ -219,7 +218,10 @@ async def get_user_profile(username: str):
     except HTTPException:
         raise
     except Exception:
-        logger.exception(f"Unexpected error while processing username for: {username}")
+        logger.exception(
+            f"Unexpected error while processing username for: {username}",
+            extra={"endpoint": f"/user/{username}", "username": username},
+        )
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
@@ -307,7 +309,10 @@ async def get_user_roast(username: str, consent: bool = False):
             status_code=503, detail="Roast service unavailable, try again later"
         )
     except Exception:
-        logger.exception(f"Unexpected error while generating roast for: {username}")
+        logger.exception(
+            f"Unexpected error while generating roast for: {username}",
+            extra={"endpoint": f"/roast/{username}", "username": username},
+        )
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
@@ -440,7 +445,12 @@ async def compare_users(first_user: str, second_user: str):
         raise
     except Exception:
         logger.exception(
-            f"Unexpected error while comparing users: {first_user} and {second_user}"
+            f"Unexpected error while comparing users: {first_user} and {second_user}",
+            extra={
+                "endpoint": f"/compare/{first_user}/{second_user}",
+                "user1": first_user,
+                "user2": second_user,
+            },
         )
         raise HTTPException(status_code=500, detail="Internal server error")
 
@@ -502,7 +512,12 @@ async def compare_roast(data: dict = Body(...)):
         )
     except Exception:
         logger.exception(
-            f"Unexpected error generating joint roast for: {user1} and {user2}"
+            f"Unexpected error generating joint roast for: {user1} and {user2}",
+            extra={
+                "endpoint": "/compare/roast",
+                "user1": user1,
+                "user2": user2,
+            },
         )
         raise HTTPException(status_code=500, detail="Internal server error")
 
