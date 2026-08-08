@@ -184,7 +184,8 @@ body {
   font-style: italic;
   opacity: 0.65;
   margin-top: -0.5rem;
-  margin-bottom: 1.75rem; /*gives it room to breathe before the next paragraph */
+  margin-bottom: 1.75rem;
+  /*gives it room to breathe before the next paragraph */
 }
 
 /* ─── Inputs & Buttons ─── */
@@ -645,7 +646,7 @@ body {
   min-width: 0;
 }
 
-.main-panel > * {
+.main-panel>* {
   width: 100%;
 }
 
@@ -794,9 +795,11 @@ body {
   cursor: pointer;
   transition: background 0.12s ease;
 }
+
 .ach-row.is-clickable:hover {
   filter: brightness(0.95);
 }
+
 .ach-row.is-clickable:focus-visible {
   outline: 2px solid var(--link);
   outline-offset: 2px;
@@ -816,6 +819,7 @@ body {
   margin: auto;
   inset: 0;
 }
+
 .ach-dialog::backdrop {
   background: rgba(24, 29, 38, 0.45);
 }
@@ -828,6 +832,7 @@ body {
   flex-direction: column;
   gap: var(--spacing-sm);
 }
+
 .ach-dialog-close {
   position: absolute;
   top: var(--spacing-sm);
@@ -845,6 +850,7 @@ body {
     background 0.12s ease,
     color 0.12s ease;
 }
+
 .ach-dialog-close:hover {
   background: var(--surface-soft);
   color: var(--ink);
@@ -861,10 +867,12 @@ body {
   width: fit-content;
   margin-bottom: var(--spacing-xxs);
 }
+
 .ach-dialog-status.is-unlocked {
   background: rgba(58, 122, 74, 0.12);
   color: var(--ach-green);
 }
+
 .ach-dialog-status.is-locked {
   background: var(--surface-strong);
   color: var(--muted);
@@ -877,12 +885,14 @@ body {
   margin: 0;
   padding-right: var(--spacing-lg);
 }
+
 .ach-dialog-requirement {
   font-size: 14px;
   color: var(--body-text);
   line-height: 1.5;
   margin: 0;
 }
+
 .ach-dialog-date {
   font-style: italic;
   font-size: 12px;
@@ -900,18 +910,22 @@ body {
     border-right: none;
     border-bottom: none;
     border-radius: var(--rounded-xl) var(--rounded-xl) 0 0;
-    margin: 0; /* override desktop margin: auto */
+    margin: 0;
+    /* override desktop margin: auto */
     position: fixed;
-    top: auto; /* override browser default top:0, let bottom:0 win */
+    top: auto;
+    /* override browser default top:0, let bottom:0 win */
     bottom: 0;
     left: 0;
     right: 0;
     translate: 0 100%;
   }
+
   .ach-dialog[open] {
     translate: 0 0;
     transition: translate 0.25s ease;
   }
+
   .ach-dialog-content {
     padding: var(--spacing-lg);
     padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom, 0px));
@@ -1666,11 +1680,13 @@ body {
 }
 
 @keyframes roast-pulse {
+
   0%,
   100% {
     transform: scale(1);
     opacity: 1;
   }
+
   50% {
     transform: scale(1.1);
     opacity: 0.8;
@@ -1724,15 +1740,15 @@ body {
     right: 0;
     translate: 0 100%;
   }
+
   .roast-loading-dialog[open] {
     translate: 0 0;
     transition: translate 0.25s ease;
   }
+
   .roast-loading-content {
     padding: var(--spacing-lg);
-    padding-bottom: calc(
-      var(--spacing-lg) + env(safe-area-inset-bottom, 0px)
-    );
+    padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -1967,6 +1983,14 @@ body {
   letter-spacing: 0.07em;
   color: var(--muted);
   font-family: "DM Mono", monospace;
+  margin-bottom: 2px;
+}
+
+.compare-shared-caption {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+  margin-bottom: var(--spacing-sm)
 }
 
 .compare-shared-labels {
@@ -1984,12 +2008,29 @@ body {
   white-space: nowrap;
 }
 
-.compare-shared-label:nth-child(6n+1) { background: var(--ach-teal); }
-.compare-shared-label:nth-child(6n+2) { background: var(--ach-blue); }
-.compare-shared-label:nth-child(6n+3) { background: var(--ach-brown); }
-.compare-shared-label:nth-child(6n+4) { background: var(--ach-pink); }
-.compare-shared-label:nth-child(6n+5) { background: var(--ach-green); }
-.compare-shared-label:nth-child(6n+0) { background: var(--ach-purple); }
+.compare-shared-label:nth-child(6n+1) {
+  background: var(--ach-teal);
+}
+
+.compare-shared-label:nth-child(6n+2) {
+  background: var(--ach-blue);
+}
+
+.compare-shared-label:nth-child(6n+3) {
+  background: var(--ach-brown);
+}
+
+.compare-shared-label:nth-child(6n+4) {
+  background: var(--ach-pink);
+}
+
+.compare-shared-label:nth-child(6n+5) {
+  background: var(--ach-green);
+}
+
+.compare-shared-label:nth-child(6n+0) {
+  background: var(--ach-purple);
+}
 
 .compare-shared-empty {
   font-size: 15px;
@@ -2144,7 +2185,7 @@ body {
     padding: var(--spacing-md) 0;
   }
 
-  .compare-users-grid > .compare-user-card:last-child {
+  .compare-users-grid>.compare-user-card:last-child {
     border-top: 2px dotted rgba(24, 29, 38, 0.25);
     padding-top: var(--spacing-lg);
   }
