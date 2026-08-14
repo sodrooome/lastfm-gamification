@@ -32,6 +32,32 @@ var roastProgressInterval = null;
 var roastStatusInterval = null;
 var roastStatusIdx = 0;
 
+// ─── Hero example bubble ───
+const SOCIAL_PROOF_COUNT = 171;
+
+const HERO_EXAMPLES = [
+  { icon: "flame", text: "847 plays of the same album. comfort zone, much?" },
+  {
+    icon: "trophy",
+    text: "unlocked: having fun with yourself? 100+ scrobbles in a day",
+  },
+  {
+    icon: "flame",
+    text: "top artist streak: 60 days straight. it's a relationship at this point",
+  },
+  {
+    icon: "trophy",
+    text: "unlocked: scrobble of the day. 1+ song, every day this week",
+  },
+];
+
+const ICON_SVGS = {
+  flame:
+    '<svg width="14" height="14" viewBox="0 0 24 24"><path fill="#ffffff" d="M12 2c-4 4-7 7.5-7 12a7 7 0 0 0 14 0c0-4.5-3-8-7-12z"/><path fill="#ffffff" fill-opacity="0.55" d="M12 8c-2 2.5-3.5 4.5-3.5 7a3.5 3.5 0 0 0 7 0c0-2.5-1.5-4.5-3.5-7z"/></svg>',
+  trophy:
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.66 4.41 4.96C8.21 14.39 9.85 15.6 11 16.5V19H8v2h8v-2h-3v-2.5c1.15-.9 2.79-2.11 3.59-4.04C19.08 10.66 21 8.55 21 6V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>',
+};
+
 function startRoastLoadingAnimation() {
   var loadingFill = document.getElementById("roastLoadingFill");
   var loadingStatus = document.getElementById("roastLoadingStatus");
@@ -607,4 +633,59 @@ document.addEventListener("DOMContentLoaded", () => {
     // Jump straight to dashboard if arriving via URL
     loadUser(username);
   }
+
+  // ─── Example bubble rotation ───
+  (function initExampleBubble() {
+    var bubble = document.getElementById("example-bubble");
+    var iconEl = document.getElementById("example-icon");
+    var textEl = document.getElementById("example-text");
+    if (!bubble || !iconEl || !textEl) return;
+
+    var idx = 0;
+    var intervalId = null;
+    var ROTATE_MS = 3500;
+
+    function showExample(i) {
+      var ex = HERO_EXAMPLES[i];
+      iconEl.innerHTML = ICON_SVGS[ex.icon] || ICON_SVGS.flame;
+      iconEl.style.backgroundColor =
+        ex.icon === "flame" ? "#d51007" : "#f59e0b";
+      textEl.classList.remove("fade-out");
+      textEl.textContent = ex.text;
+    }
+
+    function rotate() {
+      textEl.classList.add("fade-out");
+      setTimeout(function () {
+        idx = (idx + 1) % HERO_EXAMPLES.length;
+        showExample(idx);
+      }, 300);
+    }
+
+    showExample(0);
+    intervalId = setInterval(rotate, ROTATE_MS);
+
+    bubble.addEventListener("mouseenter", function () {
+      clearInterval(intervalId);
+    });
+    bubble.addEventListener("mouseleave", function () {
+      intervalId = setInterval(rotate, ROTATE_MS);
+    });
+    bubble.addEventListener("focusin", function () {
+      clearInterval(intervalId);
+    });
+    bubble.addEventListener("focusout", function () {
+      intervalId = setInterval(rotate, ROTATE_MS);
+    });
+  })();
+
+  // ─── Social proof count ───
+  (function initSocialProof() {
+    var textEl = document.getElementById("social-proof-text");
+    if (!textEl) return;
+
+    textEl.textContent =
+      SOCIAL_PROOF_COUNT +
+      " listeners roasted so far · takes 5 seconds, no login needed";
+  })();
 });
