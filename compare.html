@@ -51,24 +51,26 @@
 
       <!-- Input row -->
       <div class="compare-input-row">
-        <div class="search-input-wrap">
-          <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5" />
-            <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-          <input id="user1Input" type="text" class="text-input search-input" placeholder="Last.fm username" />
+        <div class="compare-search-window">
+          <div class="search-input-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5" />
+              <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            <input id="user1Input" type="text" class="text-input search-input" placeholder="Last.fm username" />
+          </div>
+          <span class="compare-vs">vs</span>
+          <div class="search-input-wrap">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5" />
+              <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            <input id="user2Input" type="text" class="text-input search-input" placeholder="Last.fm username" />
+          </div>
+          <button id="compareBtn" class="btn-primary compare-button" type="button">Compare</button>
         </div>
-        <span class="compare-vs">vs</span>
-        <div class="search-input-wrap">
-          <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5" />
-            <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-          <input id="user2Input" type="text" class="text-input search-input" placeholder="Last.fm username" />
-        </div>
-        <button id="compareBtn" class="btn-primary small compare-button" type="button">Compare</button>
       </div>
 
       <!-- Loading -->
@@ -82,21 +84,26 @@
 
       <!-- Results -->
       <div id="compareResults" class="d-none">
-        <!-- Compatibility score card -->
+        <!-- The Verdict: compatibility score card -->
         <div class="compare-score-card">
-          <p class="compare-score-label">Achievement Compatibility Score</p>
-          <p class="compare-score-value" id="compareScoreValue">0 %</p>
+          <p class="compare-score-heading">Your Matchup</p>
+          <p class="compare-score-value" id="compareScoreValue">0%</p>
+          <span class="compare-score-stamp">Certified</span>
+          <p class="compare-score-label">Achievement Compatibility</p>
           <p class="compare-score-tagline" id="compareScoreTagline"></p>
         </div>
 
-        <!-- User cards grid -->
+        <!-- User comparison card -->
         <div class="compare-users-grid" id="compareUsersGrid"></div>
 
+        <!-- Shared Setlist -->
         <div class="compare-shared-artists" id="compareSharedArtists">
-          <p class="compare-shared-title">Shared Similar Artists</p>
+          <p class="compare-shared-title">Shared Setlist</p>
+          <p class="compare-shared-caption">Artists you both have in your top 50 over the past year.</p>
           <div class="compare-shared-labels" id="compareSharedLabels"></div>
         </div>
 
+        <!-- Joint Roast -->
         <div class="compare-joint-roast" id="compareJointRoast">
           <p class="compare-joint-roast-title">Joint Roast</p>
           <p class="compare-joint-roast-consent">
