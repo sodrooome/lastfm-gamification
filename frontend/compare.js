@@ -50,7 +50,7 @@ function animateScore(element, target, duration) {
 
 // ─── User card renderer ────────────────────────────────────────
 
-function renderUserCard(userData) {
+function renderUserCard(userData, actLabel) {
   const card = document.createElement("div");
   card.className = "compare-user-card";
 
@@ -60,7 +60,12 @@ function renderUserCard(userData) {
       `<div class="compare-user-avatar fallback" style="display:none">${escapeHtml(initial)}</div>`
     : `<div class="compare-user-avatar fallback">${escapeHtml(initial)}</div>`;
 
+  const actHtml = actLabel
+    ? `<p class="compare-user-act">${escapeHtml(actLabel)}</p>`
+    : "";
+
   card.innerHTML = `
+    ${actHtml}
     ${avatarHtml}
     <p class="compare-user-name">${escapeHtml(userData.username)}</p>
     <div class="compare-user-stats">
@@ -211,8 +216,13 @@ async function fetchAndRender(user1, user2) {
     // Render user cards
     const grid = document.getElementById("compareUsersGrid");
     grid.innerHTML = "";
-    grid.appendChild(renderUserCard(data.user1));
-    grid.appendChild(renderUserCard(data.user2));
+    grid.appendChild(renderUserCard(data.user1, "You"));
+
+    const divider = document.createElement("div");
+    divider.className = "compare-users-divider";
+    grid.appendChild(divider);
+
+    grid.appendChild(renderUserCard(data.user2, "Them"));
 
     // Render shared artists
     renderSharedArtists(data.shared_artists);
