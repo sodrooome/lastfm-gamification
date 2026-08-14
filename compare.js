@@ -180,6 +180,8 @@ async function fetchAndRender(user1, user2) {
   toggle("compareLoading", true);
   toggle("compareError", false);
   toggle("compareResults", false);
+  toggle("compareExampleBubble", false);
+  toggle("compareSupportLine", false);
 
   try {
     const res = await fetch(
@@ -237,6 +239,8 @@ async function fetchAndRender(user1, user2) {
     const errorEl = document.getElementById("compareError");
     errorEl.textContent = err.message || "Failed to compare profiles";
     toggle("compareError", true);
+    toggle("compareExampleBubble", true);
+    toggle("compareSupportLine", true);
   } finally {
     toggle("compareLoading", false);
   }
