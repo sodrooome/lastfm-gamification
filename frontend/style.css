@@ -2206,6 +2206,36 @@ body {
   color: var(--body-text);
 }
 
+/* ── Compare empty state: headline, preview bubble, support line ── */
+.compare-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  gap: 0;
+}
+
+.compare-hero .landing-title-tagline {
+  margin-bottom: 0;
+}
+
+.compare-example-bubble {
+  margin-bottom: 0;
+  max-width: 480px;
+}
+
+.compare-example-icon {
+  background-color: #d51007;
+}
+
+.compare-support-line {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  margin: 0 0 var(--spacing-lg);
+}
+
 /* ── Compare responsive ── */
 @media (max-width: 600px) {
   .compare-content {
