@@ -171,8 +171,8 @@ body {
 
 .landing-search .search-input {
   box-shadow:
-    0 4px 14px rgba(0, 0, 0, 0.06),
-    0 1px 3px rgba(0, 0, 0, 0.04);
+    0 4px 14px rgba(0, 0, 0, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.06);
 }
 
 .search-input-wrap.small .search-input {
@@ -186,6 +186,64 @@ body {
   margin-top: -0.5rem;
   margin-bottom: 1.75rem;
   /*gives it room to breathe before the next paragraph */
+}
+
+/* ─── Example Bubble (hero rotating teaser) ─── */
+.example-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background: #f5f0e8;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-xs) var(--spacing-md);
+  max-width: 420px;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  color: var(--body-text);
+  line-height: 1.4;
+  margin: 0 auto var(--spacing-lg) auto;
+  /* Fixed min-height to prevent CLS during rotation */
+  min-height: 40px;
+}
+
+.example-bubble-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--rounded-sm);
+  transition: background-color 0.3s ease;
+}
+
+.example-bubble-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+#example-text {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+#example-text.fade-out {
+  opacity: 0;
+}
+
+/* ─── Social Proof Line ─── */
+.social-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xxs);
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: var(--spacing-sm);
+  line-height: 1.4;
+  opacity: 0.6;
 }
 
 /* ─── Inputs & Buttons ─── */
@@ -1424,6 +1482,16 @@ body {
 
   .landing-search {
     flex-direction: column;
+  }
+
+  .example-bubble {
+    font-size: 13px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    max-width: none;
+  }
+
+  .social-proof {
+    font-size: 12px;
   }
 
   .search-input-wrap,
