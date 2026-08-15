@@ -9,16 +9,16 @@
 Turn your Last.fm listening history into a gamified profile with unlock achievements, level up with XP, AI playful roasts, compare your taste with friends or jointly roast each other.
 
 <p align="center">
-  <img src="screenshot/desktop-version-1.png" alt="tastecheck.me landing page" width="60%" />
+  <img src="screenshot/desktop-version-1.png" alt="tastecheck.me landing page"/>
 </p>
 
 ## Features
 
-- **12 lifetime achievements** across three categories: scrobbles, unique artists, and profile completeness plus **3 daily achievements**
-- **10-level XP progression** earned from scrobbles, achievements (150 XP each), and unique artists, capped at 2,585 XP
+- **12 lifetime achievements** across three categories: scrobbles, unique artists, and profile completeness
+- **10-level XP progression** earned from scrobbles, achievements (150 XP each), and unique artists
 - **AI "Roast Me"**: a playful, opt-in roast of your listening habits (Gemini 2.5 Flash via OpenRouter)
 - **Profile comparison**: a compatibility score, shared artists, and a joint roast for any two users
-- **Responsive, Airtable-inspired editorial design with custom components**: see [DESIGN.md](DESIGN.md)
+- **Design Responsive**: Airtable-inspired editorial design with custom components, see [DESIGN.md](DESIGN.md)
 
 ## Architecture
 
@@ -55,7 +55,7 @@ Create `backend/.env`:
 LASTFM_API_KEY=your_api_key_here
 LASTFM_SHARED_SECRET=your_shared_secret_here
 
-# Optional — enables the AI roast + compare roast features
+# Optional, enables the AI roast + compare roast features
 LLM_API_KEY=your_openrouter_key_here
 ```
 
