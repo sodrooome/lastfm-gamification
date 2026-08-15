@@ -102,3 +102,19 @@ frontend/
 - [DESIGN.md](DESIGN.md): design system
 - [LEVELS.md](LEVELS.md): XP thresholds and formulas
 - [how-to.html](frontend/how-to.html): achievement unlock guide
+
+## Contributing
+
+Contributions are welcome. Before opening a pull request:
+
+1. Fork the repository and create a focused feature or fix branch.
+2. Keep changes scoped and follow the existing project conventions.
+3. Run the relevant backend tests with `pytest`.
+4. Update documentation when behavior or setup changes.
+5. Open a pull request with a concise summary and testing notes.
+
+For larger changes, open an issue first to discuss the proposed direction.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
