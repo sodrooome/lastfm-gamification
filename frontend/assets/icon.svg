@@ -1,0 +1,30 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>tastecheck.me icon</title>
+  <desc>Rounded square icon with a white flame mark on a warm orange-to-red gradient background</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF8A4C"/>
+      <stop offset="100%" stop-color="#E23E3E"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#bg)"/>
+
+  <circle cx="256" cy="270" r="118" fill="#ffffff" opacity="0.10"/>
+
+  <path d="
+    M256 128
+    C 232 176, 176 200, 176 268
+    C 176 328, 216 372, 256 384
+    C 296 372, 336 328, 336 268
+    C 336 236, 316 216, 300 196
+    C 302 224, 288 240, 272 248
+    C 280 220, 268 188, 244 164
+    C 248 188, 236 208, 216 224
+    C 202 236, 196 252, 196 268
+    C 196 312, 224 344, 256 356
+    C 288 344, 316 312, 316 268
+    C 316 244, 300 228, 288 212
+    Z
+  " fill="#ffffff"/>
+</svg>
