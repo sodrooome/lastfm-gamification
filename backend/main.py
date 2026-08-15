@@ -36,7 +36,7 @@ from _logging import configure_logging
 
 configure_logging()
 
-origins = ["https://tastecheck.me/"]
+origins = ["https://tastecheck.me"]
 
 if os.getenv("ENVIRONMENT") == "development":
     # extend allowed origins (just in case)
