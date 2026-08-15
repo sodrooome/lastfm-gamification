@@ -1,205 +1,104 @@
-# Last.fm Scrobble Achievements
+<p align="center">
+  <img src="frontend/assets/icon.svg" alt="tastecheck.me logo" width="80" height="80" />
+</p>
 
-A web application that transforms Last.fm listening data into a gamified profile with 12 unlockable achievements and a 10-level progression system powered by XP
+<h1 align="center">tastecheck.me</h1>
 
-| Web Version | Mobile Version |
-| -- | -- |
-| ![images](screenshot/desktop-version.png) | ![images](screenshot/mobile-version.png) |
+<p align="center"><em>Turn your listening into identity</em></p>
+
+Turn your Last.fm listening history into a gamified profile with unlock achievements, level up with XP, AI playful roasts, compare your taste with friends or jointly roast each other.
+
+<p align="center">
+  <img src="screenshot/desktop-version-1.png" alt="tastecheck.me landing page" width="60%" />
+</p>
 
 ## Features
 
-- **12 achievements** across three categories: scrobbles, unique artists, and profile completeness
-- **10-level progression system** with XP earned from playcount, achievements, and artist diversity
-- **Visual progress bar** showing overall progress toward Level 10
-- **Locked achievement display** showing all achievements with enabled/disabled states
-- **Responsive design** following an Airtable-inspired editorial design system
+- **12 lifetime achievements** across three categories: scrobbles, unique artists, and profile completeness plus **3 daily achievements**
+- **10-level XP progression** earned from scrobbles, achievements (150 XP each), and unique artists, capped at 2,585 XP
+- **AI "Roast Me"**: a playful, opt-in roast of your listening habits (Gemini 2.5 Flash via OpenRouter)
+- **Profile comparison**: a compatibility score, shared artists, and a joint roast for any two users
+- **Responsive, Airtable-inspired editorial design with custom components**: see [DESIGN.md](DESIGN.md)
 
 ## Architecture
 
-### Backend
+- **Backend**. FastAPI (Python) that proxies the Last.fm API and computes achievements and XP
+- **Frontend**. vanilla HTML/CSS/JS, no build step, no frameworks, served as static files
 
-FastAPI server that proxies Last.fm API data and computes achievements and XP levels
+## API
 
-| File | Purpose |
+| Endpoint | Description |
 |---|---|
-| `backend/main.py` | FastAPI app, single endpoint `/user/{username}` |
-| `backend/achievements.py` | Achievement conditions, XP calculation, level thresholds |
-| `backend/lastfm.py` | Async Last.fm API client (user info, top artists, recent tracks) |
-| `backend/config.py` | Environment variable loading for API credentials |
-
-### Frontend
-
-Static single-page application with no build step or using third-party frameworks (for now...)
-
-| File | Purpose |
-|---|---|
-| `frontend/index.html` | Page structure, profile card, achievement grid |
-| `frontend/style.css` | Design tokens, layout, component styles, responsive breakpoints |
-| `frontend/app.js` | Fetch API data, render profile, achievements, and progress bar |
-
-## API Reference
-
-### GET `/user/{username}`
-
-Returns the full profile data for a given Last.fm username.
-
-#### Response
-
-```json
-{
-  "username": "string",
-  "total_scrobbles": 12345,
-  "top_artist": "string",
-  "achievements": [
-    { "name": "string", "unlocked": true }
-  ],
-  "level": 5,
-  "current_xp": 775,
-  "max_xp": 2585,
-  "progress_pct": 30.0,
-  "profile_image": "string (URL)",
-  "joined_date": "string (unix timestamp)"
-}
-```
-
-## XP System
-
-Total max XP is 2,585, distributed across five sources:
-
-| Source | Max XP | Description |
-|---|---|---|
-| Scrobbles | 785 | Cumulative milestones from playcount (1 to 1,000,000) |
-| Achievements | 1,500 | 150 XP per unlocked achievement (10 total) |
-| Unique Artists | 300 | Cumulative milestones from unique artist count (50 to 1,000) |
-
-You may refer to the [LEVELS.md](LEVELS.md) for complete threshold tables, formulas, and example calculations.
-
-## AI Roast (beta)
-
-The app can generate a playful, AI-powered roast (powered by Google Gemini 3.5 Flash) of a user's listening habits. Before the roast is shown, an in-page consent gate asks the user to opt in. The roast is generated via [OpenRouter](https://openrouter.ai/) (third-party LLM API) and cached in memory for 24 hours per username (roast counter resets on server restart) to reduce API calls and improve response times. Each Last.fm username gets 3 roasts: cached responses don't count against the limit. If the roast is unavailable, the AI may be rate-limited and you must try again later.
-
-To enable the feature, add an optional API key to your `.env`. Note that your OpenRouter key needs billing enabled (the free tier is not sufficient):
-
-```
-LLM_API_KEY=your_openrouter_key_here
-```
-
-The endpoint is `GET /roast/{username}?consent=true` and returns:
-
-```json
-{
-  "username": "string",
-  "roast": "string",
-  "cached": false
-}
-```
-
-## Achievements
-
-### Scrobbles
-
-| Achievement | Condition |
-|---|---|
-| Welcome to the Club, Folks! | 1+ total scrobbles |
-| A New Journey Ahead | 1,000+ total scrobbles |
-| Obsessive Listener, Huh | 10,000+ total scrobbles |
-| Even AI Can't Stop Me | 100,000+ total scrobbles |
-| No Life? Pure Life | 1,000,000+ total scrobbles |
-
-### Unique Artists
-
-| Achievement | Condition |
-|---|---|
-| Your Loved Ones | 1+ unique top artists |
-| Explorer | 100+ unique top artists |
-| How About Touch Some Grass? | 1,000+ unique top artists |
-| Are You an Elitist or Identity Crisis? | 5,000+ unique top artists |
-| LGTM | 10,000+ unique top artists |
-
-### Profile
-
-| Achievement | Condition |
-|---|---|
-| Spotify Wasn't Even Born Yet | Account registered 10+ years ago |
-| The Completion | Profile has a real name, profile image, and country set |
+| `GET /user/{username}` | Full profile: stats, achievements, XP, level |
+| `GET /roast/{username}?consent=true` | AI roast of a user's listening habits |
+| `GET /compare/{user1}/{user2}` | Compatibility score + shared artists |
+| `POST /compare/roast` | Joint roast comparing two users |
+| `GET /health`, `GET /ready` | Health / readiness checks |
 
 ## Setup
 
 ### Prerequisites
 
 - Python 3.10+
-- A Last.fm API key (register at https://www.last.fm/api/account/create)
+- A [Last.fm API key](https://www.last.fm/api/account/create)
 
 ### Backend
 
-1. Navigate to the backend directory:
-
-```
+```bash
 cd backend
-```
-
-2. Install dependencies:
-
-```
 pip install -r requirements.txt
 ```
 
-3. Create a `.env` file with your Last.fm credentials:
+Create `backend/.env`:
 
-```
+```env
 LASTFM_API_KEY=your_api_key_here
 LASTFM_SHARED_SECRET=your_shared_secret_here
 
-# Optional: enables the AI roast feature
+# Optional — enables the AI roast + compare roast features
 LLM_API_KEY=your_openrouter_key_here
 ```
 
-4. Start the server:
+Start the server:
 
-```
-uvicorn main:app --reload
-```
-
-Or you can use command from `Makefile`:
-
-```
-make serve
+```bash
+make serve          # or: uvicorn main:app --reload
 ```
 
-The API will be available at `http://localhost:8000` and to open the client-side you need to copy from the HTML path
+The API runs at `http://localhost:8000`.
 
 ### Frontend
 
-The frontend is a static application. Open `frontend/index.html` directly in a browser, or serve it with any static file server. The API base URL is configured at the top of `frontend/app.js` and defaults to `http://localhost:8000`
-
-For development with CORS already enabled on the backend, no additional server is required — just open the HTML file in a browser.
-
-## Design System
-
-The UI follows an Airtable-inspired editorial design system documented in [DESIGN.md](DESIGN.md). Key characteristics:
-
-- White canvas background with dark ink type
-- Near-black primary CTA with white text
-- Hairline borders instead of shadows for depth
-- 4px-based spacing system
-- Inter Display font family
-- Flat, zero-shadow elevation model
+No build step. In development (`ENVIRONMENT=development`) the backend serves the frontend as static files; otherwise open `frontend/index.html` directly. The API base URL is configured at the top of `frontend/app.js`.
 
 ## Project Structure
 
 ```
-lastfm-achievements/
-├── backend/
-│   ├── .env                  # LastFM API credentials (not tracked)
-│   ├── config.py             # Environment configuration
-│   ├── main.py               # FastAPI application
-│   ├── achievements.py       # XP logic and achievement conditions
-│   └── lastfm.py             # Last.fm API client
-├── frontend/
-│   ├── index.html            # Page markup
-│   ├── style.css             # Styles and design tokens
-│   └── app.js                # Client-side logic
-├── DESIGN.md                 # Design system documentation
-├── LEVELS.md                 # XP system documentation
-└── README.md                 # Project documentation
+backend/
+├── main.py          # FastAPI app + routes
+├── achievements.py  # Achievement conditions, XP, level thresholds
+├── lastfm.py        # Async Last.fm API client
+├── llm.py           # AI roast (OpenRouter) + in-memory caching
+├── config.py        # Environment variable loading
+└── tests/           # Pytest suite
+
+frontend/
+├── index.html       # Main app (profile + dashboard)
+├── compare.html     # Profile comparison
+├── how-to.html      # Achievement guide
+├── privacy.html     # Privacy policy
+├── terms.html       # Terms of service
+├── 404.html         # Not found page
+├── app.js           # Main app logic
+├── compare.js       # Comparison logic
+├── style.css        # Design tokens + styles
+├── tracking.js      # Analytics
+├── achievements-data.js
+└── assets/          # Icons + images
 ```
+
+## Documentation
+
+- [DESIGN.md](DESIGN.md): design system
+- [LEVELS.md](LEVELS.md): XP thresholds and formulas
+- [how-to.html](frontend/how-to.html): achievement unlock guide
