@@ -99,23 +99,32 @@ body {
   margin-bottom: var(--spacing-xl);
 }
 
-.logo-dot {
-  width: 10px;
-  height: 10px;
-  background: #d51007;
-  border-radius: var(--rounded-full);
+.logo-mark {
+  width: 20px;
+  height: 20px;
+  color: #e8503a;
   display: inline-block;
+  flex-shrink: 0;
 }
 
-.logo-dot.small {
-  width: 8px;
-  height: 8px;
+.logo-mark.small {
+  width: 16px;
+  height: 16px;
 }
 
 .logo-text {
   font-size: 14px;
   font-weight: 500;
   color: var(--ink);
+}
+
+.logo-tagline {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+  border-left: 1px solid var(--hairline);
+  padding-left: var(--spacing-xs);
+  white-space: nowrap;
 }
 
 .landing-title {

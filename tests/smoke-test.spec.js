@@ -53,7 +53,7 @@ test.beforeEach(async ({ page }) => {
 test('Verify initial website loaded with search username input and clickable', async ({ page }) => {
   await page.goto('https://sodrooome.github.io/lastfm-gamification/');
 
-  await expect(page).toHaveTitle(/LastFM/);
+  await expect(page).toHaveTitle(/tastecheck/);
 
   const searchInput = page.getByRole('textbox', { name: 'Enter your username here...' });
   await searchInput.click();
