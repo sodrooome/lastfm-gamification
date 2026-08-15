@@ -60,6 +60,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./frontend
           publish_branch: gh-pages
+          cname: tastecheck.me
 
   deploy-vps:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
