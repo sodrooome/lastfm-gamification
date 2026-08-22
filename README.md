@@ -12,6 +12,12 @@ Turn your Last.fm listening history into a gamified profile with unlock achievem
   <img src="screenshot/desktop-version-1.png" alt="tastecheck.me landing page"/>
 </p>
 
+## We're live on Product Hunt
+
+Catch us on Product Hunt for the latest news and updates. Plus an upvote is always appreciated if you like what we're building! 🎉
+
+<a href="https://www.producthunt.com/products/tastecheck-me?utm_source=badge-follow&utm_medium=badge&utm_source=badge-tastecheck&#0045;me" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/follow.svg?product_id=1293722&theme=light" alt="tastecheck&#0046;me - Turn&#0032;your&#0032;Last&#0046;fm&#0032;history&#0032;into&#0032;a&#0032;gamified&#0044;&#0032;roastable&#0032;profile | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 ## Features
 
 - **12 lifetime achievements** across three categories: scrobbles, unique artists, and profile completeness
