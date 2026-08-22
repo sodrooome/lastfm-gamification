@@ -23,9 +23,28 @@
 
   <header class="dash-nav guide-nav">
     <div class="nav-left">
-      <svg class="logo-mark small" viewBox="168 120 176 272" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" d="M256 128 C232 176 176 200 176 268 C176 328 216 372 256 384 C296 372 336 328 336 268 C336 236 316 216 300 196 C302 224 288 240 272 248 C280 220 268 188 244 164 C248 188 236 208 216 224 C202 236 196 252 196 268 C196 312 224 344 256 356 C288 344 316 312 316 268 C316 244 300 228 288 212 Z"/></svg>
-      <span class="logo-text">tastecheck.me</span>
-      <span class="logo-tagline">Turn your listening into identity</span>
+      <a href="./index.html" style="text-decoration:none;display:flex;align-items:center;gap:var(--spacing-xs);">
+        <svg class="logo-mark small" viewBox="168 120 176 272" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" d="M256 128 C232 176 176 200 176 268 C176 328 216 372 256 384 C296 372 336 328 336 268 C336 236 316 216 300 196 C302 224 288 240 272 248 C280 220 268 188 244 164 C248 188 236 208 216 224 C202 236 196 252 196 268 C196 312 224 344 256 356 C288 344 316 312 316 268 C316 244 300 228 288 212 Z"/></svg>
+        <span class="logo-text">tastecheck.me</span>
+        <span class="logo-tagline">Turn your listening into identity</span>
+      </a>
+    </div>
+    <div class="nav-center">
+
+    </div>
+    <div class="nav-right">
+      <a href="how-to.html" class="how-does-work-link desktop-only">How it works →</a>
+      <div class="mobile-menu-wrap">
+        <button class="btn-icon" id="mobileMenuBtn" aria-label="Menu">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
+            style="pointer-events:none">
+            <path d="M2 5H14M2 8H14M2 11H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+          </svg>
+        </button>
+        <div class="mobile-menu-dropdown" id="mobileMenuDropdown">
+          <a href="how-to.html" class="mobile-menu-link">How it works →</a>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -318,6 +337,24 @@
       document.querySelector(".back-link").href =
         "./?user=" + encodeURIComponent(username);
     }
+  </script>
+  <script>
+    (function () {
+      var btn = document.getElementById('mobileMenuBtn');
+      var dropdown = document.getElementById('mobileMenuDropdown');
+      if (!btn || !dropdown || btn._mobileMenuBound) return;
+      btn._mobileMenuBound = true;
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        dropdown.classList.toggle('open');
+      });
+      document.addEventListener('click', function () {
+        dropdown.classList.remove('open');
+      });
+      dropdown.addEventListener('click', function (e) {
+        e.stopPropagation();
+      });
+    })();
   </script>
   <script src="./app.js"></script>
 

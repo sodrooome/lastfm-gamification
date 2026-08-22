@@ -1528,6 +1528,18 @@ body {
     gap: var(--spacing-xs);
   }
 
+  .compare-view .nav-left,
+  .guide-nav .nav-left {
+    width: auto;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .compare-view .nav-left .logo-tagline,
+  .guide-nav .nav-left .logo-tagline {
+    white-space: normal;
+  }
+
   .nav-center {
     flex: 1;
     min-width: 0;
@@ -2273,7 +2285,7 @@ body {
     margin: 4px 0;
   }
 
-  .compare-button {
+  .compare-search-window .compare-button {
     width: 100%;
     margin-left: 0;
     margin-top: 4px;
