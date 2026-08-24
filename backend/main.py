@@ -526,6 +526,9 @@ async def compare_roast(data: dict = Body(...)):
 BASE_DIR = Path(__file__).parent
 FRONTEND_DIR = BASE_DIR.parent / "frontend"
 
+# Serve /assets/ (favicons, icons, images) in all environments
+app.mount("/assets", StaticFiles(directory=FRONTEND_DIR / "assets"), name="assets")
+
 if os.getenv("ENVIRONMENT") == "development":
     app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
 
