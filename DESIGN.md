@@ -44,6 +44,8 @@ These are the colors that carry Airtable's brand voltage. They appear as full-bl
 
 ### Semantic
 - **Link** (`{colors.link}` — #1b61c9): Inline body links and anchor text. Darker on press to `{colors.link-active}` (#1a3866). Despite the `--theme_button-background-primary` CSS-variable name, this color is **not** the primary button color — it is the link color.
+- **Sage** (`{colors.sidebar-bg}` — #8db87a): The green sidebar surface and circular step-numeral chips on the About page.
+- **Sage Deep** (`{colors.sage-deep}` — #2e5036): The numeral color on sage step chips — a darker stop of the same green family, used for the `1`/`2`/`3` step numbers.
 - **Info** (`{colors.info}` — #254fad) and **Info Border** (`{colors.info-border}` — #458fff): Inline info badges and focused-input outline.
 - **Success** (`{colors.success}` — #006400) and **Success Border** (`{colors.success-border}` — #39bf45): Confirmation states.
 
