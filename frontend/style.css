@@ -17,6 +17,8 @@
   /* warm cream from Figma */
   --sidebar-bg: #8db87a;
   /* green sidebar */
+  --sage-deep: #2e5036;
+  /* deep forest green for step numerals on sage chips */
 
   /* Achievement palette */
   --ach-teal: #2a7c6f;
@@ -1303,6 +1305,94 @@ body {
   color: var(--ink);
 }
 
+/* ─── Guide How It Works ─── */
+.guide-howto {
+  margin-bottom: var(--spacing-xxl);
+}
+
+.guide-howto-intro {
+  margin-bottom: var(--spacing-lg);
+}
+
+.guide-howto-heading {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: var(--spacing-xs);
+}
+
+.guide-howto-desc {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.guide-howto-rule {
+  border: none;
+  border-top: 1px solid var(--hairline);
+  margin-bottom: var(--spacing-xl);
+}
+
+.guide-howto-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.guide-howto-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-lg) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.guide-howto-step:last-child {
+  border-bottom: none;
+}
+
+.guide-howto-step-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.guide-howto-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: var(--rounded-full);
+  background: var(--sidebar-bg);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--sage-deep);
+  line-height: 1;
+}
+
+.guide-howto-step-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0;
+}
+
+.guide-howto-step-body {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .guide-howto-num {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+}
+
 /* ─── Icon Button (mobile nav) ─── */
 .dash-nav .btn-icon {
   width: 36px;
@@ -1348,6 +1438,9 @@ body {
     visibility 0.2s ease;
   z-index: 200;
   min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
 }
 
 .mobile-menu-dropdown.open {
@@ -1632,7 +1725,9 @@ body {
 
   .page-footer .footer-legal {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
   }
 
   .page-footer .footer-legal .footer-divider {
@@ -2330,5 +2425,42 @@ body {
 
   .privacy-title {
     font-size: 24px;
+  }
+}
+
+/* ─── Badge Grid (About page) ─── */
+.badge-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.badge-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  padding: var(--spacing-lg);
+  border: 1px solid var(--hairline);
+  border-radius: var(--rounded-md);
+  background: var(--canvas);
+  box-shadow: var(--shadow-card);
+}
+
+.badge-card .badge-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.badge-card .badge-img {
+  max-height: 72px;
+  width: auto;
+  max-width: 100%;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .badge-grid {
+    grid-template-columns: 1fr;
   }
 }
