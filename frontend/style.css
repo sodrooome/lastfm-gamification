@@ -1393,6 +1393,233 @@ body {
   }
 }
 
+/* ─── Feature Grid (About page) ─── */
+.about-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.about-feature-card {
+  background: var(--canvas);
+  border: 1px solid var(--hairline);
+  border-radius: var(--rounded-lg);
+  padding: 26px 22px;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+}
+
+.about-feature-card.linked {
+  text-decoration: none;
+  color: inherit;
+}
+
+.about-feature-card.linked:hover {
+  box-shadow: 0 6px 20px rgba(58, 122, 74, 0.10);
+  transform: translateY(-2px);
+  border-color: var(--ach-green);
+}
+
+.about-feature-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.about-feature-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.about-feature-icon.green {
+  background: #e8f5ec;
+  color: var(--ach-green);
+}
+
+.about-feature-icon.ember {
+  background: #fdf2e8;
+  color: var(--ach-brown);
+}
+
+.about-feature-card h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 8px;
+}
+
+.about-feature-card > p {
+  margin: 0 0 20px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  flex-grow: 1;
+}
+
+.about-feature-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--ach-green);
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-decoration: none;
+  width: fit-content;
+  transition: background 0.15s ease;
+}
+
+.about-feature-cta:hover {
+  background: var(--sage-deep);
+}
+
+.about-feature-cta svg {
+  width: 14px;
+  height: 14px;
+}
+
+.about-feature-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ach-brown);
+  background: #fdf2e8;
+  border-radius: 20px;
+  padding: 7px 12px;
+  width: fit-content;
+}
+
+.about-feature-status svg {
+  width: 12px;
+  height: 12px;
+}
+
+@media (max-width: 720px) {
+  .about-feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ─── Icon-driven steps with connecting line ─── */
+.about-steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-step {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 20px;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--hairline);
+  position: relative;
+}
+
+.about-step:first-child {
+  padding-top: 0;
+}
+
+.about-step:last-child {
+  border-bottom: none;
+}
+
+.about-step .about-step-icon::after {
+  content: "";
+  position: absolute;
+  top: 48px;
+  left: 23px;
+  width: 1px;
+  height: calc(100% - 22px);
+  background: var(--hairline);
+}
+
+.about-step:last-child .about-step-icon::after {
+  display: none;
+}
+
+.about-step-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--rounded-md);
+  background: var(--green-tint);
+  color: var(--ach-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.about-step-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.about-step h3 {
+  font-size: 16.5px;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 6px 0 6px;
+}
+
+.about-step p {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 42ch;
+}
+
+/* ─── About CTA wrapper ─── */
+.about-cta {
+  margin-top: var(--spacing-xxl);
+}
+
+.about-cta p {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ─── Eyebrow label ─── */
+.about-eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ach-green);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 480px) {
+  .about-step {
+    grid-template-columns: 40px 1fr;
+    gap: 14px;
+  }
+
+  .about-step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--rounded-sm);
+  }
+
+  .about-step-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .about-step .about-step-icon::after {
+    left: 19.5px;
+  }
+}
+
 /* ─── Icon Button (mobile nav) ─── */
 .dash-nav .btn-icon {
   width: 36px;
@@ -2432,15 +2659,15 @@ body {
 .badge-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-md);
+  gap: 12px;
 }
 
 .badge-card {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 120px;
-  padding: var(--spacing-lg);
+  min-height: 80px;
+  padding: 14px 16px;
   border: 1px solid var(--hairline);
   border-radius: var(--rounded-md);
   background: var(--canvas);
@@ -2453,7 +2680,7 @@ body {
 }
 
 .badge-card .badge-img {
-  max-height: 72px;
+  max-height: 54px;
   width: auto;
   max-width: 100%;
   display: block;
