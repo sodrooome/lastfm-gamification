@@ -166,7 +166,16 @@
 
         <div class="about-feature-card">
           <div class="about-feature-icon ember">
-            <img src="./assets/icon.svg" alt="tastecheck.me" style="width:24px;height:24px;" />
+            <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:24px;height:24px;">
+              <defs>
+                <linearGradient id="roastIconBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#FF8A4C"/>
+                  <stop offset="100%" stop-color="#E23E3E"/>
+                </linearGradient>
+              </defs>
+              <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#roastIconBg)"/>
+              <path d="M256 128 C232 176,176 200,176 268 C176 328,216 372,256 384 C296 372,336 328,336 268 C336 236,316 216,300 196 C302 224,288 240,272 248 C280 220,268 188,244 164 C248 188,236 208,216 224 C202 236,196 252,196 268 C196 312,224 344,256 356 C288 344,316 312,316 268 C316 244,300 228,288 212 Z" fill="#ffffff"/>
+            </svg>
           </div>
           <h3>AI Roast</h3>
           <p>Once you've searched a profile, the AI reads your actual listening data and roasts you with it.</p>
@@ -178,7 +187,8 @@
       </div>
     </section>
 
-    <!-- CTA: Enjoying your roast? -->
+    <!-- TODO: Unhide this section when the badge card design and rationale is completed -->
+    <!-- CTA: Enjoying your roast?
     <section class="guide-section">
       <div class="about-cta">
         <h2>Enjoying your roast?</h2>
@@ -201,6 +211,7 @@
         </div>
       </div>
     </section>
+    -->
 
   </div>
 
