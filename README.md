@@ -16,7 +16,7 @@ Turn your Last.fm listening history into a gamified profile with unlock achievem
 
 We just launched on Product Hunt and Peerlist. Come say hi, and an upvote is always appreciated if you like what we're building! 🎉
 
-<p align="center">
+<p align="left">
   <a href="https://peerlist.io/ryanatefoods/project/tastecheckme" target="_blank" rel="noreferrer">
     <img src="https://peerlist.io/api/v1/projects/embed/PRJHQ7MNQEPOE9OPE2B9DJQK9EJ6ML?showUpvote=true&theme=dark" alt="tastecheck.me on Peerlist" style="height: 72px; width: auto;" />
   </a>
