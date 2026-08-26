@@ -182,6 +182,8 @@ async function fetchAndRender(user1, user2) {
   toggle("compareResults", false);
   toggle("compareExampleBubble", false);
   toggle("compareSupportLine", false);
+  toggle("compareHow", false);
+  toggle("compareRecent", false);
 
   try {
     const res = await fetch(
@@ -286,6 +288,40 @@ document.addEventListener("DOMContentLoaded", () => {
   const generateRoastBtn = document.getElementById("generateRoastBtn");
   if (generateRoastBtn) {
     generateRoastBtn.addEventListener("click", generateJointRoast);
+  }
+
+  // Recent roasts strip: auto-marquee with reduced-motion fallback
+  const recentGrid = document.getElementById("compareRecentGrid");
+  const fadeLeft = document.getElementById("compareFadeLeft");
+  const fadeRight = document.getElementById("compareFadeRight");
+
+  if (recentGrid && fadeLeft && fadeRight) {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (!prefersReducedMotion && recentGrid.parentElement) {
+      // Duplicate cards for seamless loop
+      const cards = Array.from(
+        recentGrid.querySelectorAll(".compare-recent-card"),
+      );
+      cards.forEach((card) => {
+        recentGrid.appendChild(card.cloneNode(true));
+      });
+      recentGrid.parentElement.classList.add("is-marquee");
+    } else {
+      const updateFades = () => {
+        const atStart = recentGrid.scrollLeft <= 4;
+        const atEnd =
+          recentGrid.scrollLeft + recentGrid.clientWidth >=
+          recentGrid.scrollWidth - 4;
+        fadeLeft.style.opacity = atStart ? "0" : "1";
+        fadeRight.style.opacity = atEnd ? "0" : "1";
+      };
+      recentGrid.addEventListener("scroll", updateFades, { passive: true });
+      window.addEventListener("resize", updateFades);
+      updateFades();
+    }
   }
 
   // Auto-load if both users are in the URL

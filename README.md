@@ -12,11 +12,19 @@ Turn your Last.fm listening history into a gamified profile with unlock achievem
   <img src="screenshot/desktop-version-1.png" alt="tastecheck.me landing page"/>
 </p>
 
-## We're live on Product Hunt
+## We're live
 
-Catch us on Product Hunt for the latest news and updates. Plus an upvote is always appreciated if you like what we're building! 🎉
+We just launched on Product Hunt and Peerlist. Come say hi, and an upvote is always appreciated if you like what we're building! 🎉
 
-<a href="https://www.producthunt.com/products/tastecheck-me?utm_source=badge-follow&utm_medium=badge&utm_source=badge-tastecheck&#0045;me" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/follow.svg?product_id=1293722&theme=light" alt="tastecheck&#0046;me - Turn&#0032;your&#0032;Last&#0046;fm&#0032;history&#0032;into&#0032;a&#0032;gamified&#0044;&#0032;roastable&#0032;profile | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+<p align="left">
+  <a href="https://peerlist.io/ryanatefoods/project/tastecheckme" target="_blank" rel="noreferrer">
+    <img src="https://peerlist.io/api/v1/projects/embed/PRJHQ7MNQEPOE9OPE2B9DJQK9EJ6ML?showUpvote=true&theme=dark" alt="tastecheck.me on Peerlist" style="height: 72px; width: auto;" />
+  </a>
+  &nbsp;
+  <a href="https://www.producthunt.com/products/tastecheck-me?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-tastecheck-me" target="_blank" rel="noopener noreferrer">
+    <img alt="tastecheck.me - Turn your Last.fm history into a gamified, roastable profile | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1223620&theme=dark&t=1787724339975" />
+  </a>
+</p>
 
 ## Features
 
