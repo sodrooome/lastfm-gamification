@@ -53,7 +53,7 @@
 
       </div>
       <div class="nav-right">
-        <a href="how-to.html" class="how-does-work-link desktop-only">How it works →</a>
+        <a href="how-to.html" class="how-does-work-link desktop-only">How it works</a>
         <div class="mobile-menu-wrap">
           <button class="btn-icon" id="mobileMenuBtn" aria-label="Menu">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +62,7 @@
             </svg>
           </button>
           <div class="mobile-menu-dropdown" id="mobileMenuDropdown">
-            <a href="how-to.html" class="mobile-menu-link">How it works →</a>
+            <a href="how-to.html" class="mobile-menu-link">How it works</a>
             <a href="about.html" class="mobile-menu-link">About</a>
           </div>
         </div>
@@ -74,7 +74,7 @@
       <!-- Headline + subhead -->
       <div class="compare-hero">
         <h1 class="landing-title">Whose taste is worse?</h1>
-        <p class="landing-title-tagline">— settle it with the numbers</p>
+        <p class="landing-title-tagline">settle it with the numbers, or let the AI finish you both off</p>
       </div>
 
       <!-- Example comparison preview (reuses hero bubble pattern) -->
@@ -92,12 +92,12 @@
             <path d="m3 19 2 2" />
           </svg>
         </span>
-        <span>You and <strong>them</strong> share 12% of top artists. they have the better taste, sorry</span>
+        <span>You and <strong>them</strong> are 12% compatible. they have the better taste, sorry</span>
       </div>
 
       <!-- Supporting line -->
       <p class="compare-support-line" id="compareSupportLine">
-        works best with friends, exes, or that one coworker with questionable playlists.
+        <b>Built for duo mode</b>: best with friends, exes, or that one coworker with the aggressively chaotic playlist
       </p>
 
       <!-- Input row -->
@@ -123,6 +123,55 @@
           <button id="compareBtn" class="btn-primary compare-button" type="button">Compare</button>
         </div>
       </div>
+
+      <!-- How it works -->
+      <section class="compare-how" id="compareHow">
+        <h2 class="compare-how-heading">How it works</h2>
+        <div class="compare-how-grid">
+          <div class="compare-how-step">
+            <span class="compare-how-num">1</span>
+            <h3 class="compare-how-title">Paste two usernames</h3>
+            <p class="compare-how-desc">Yours and whoever you're settling this with.</p>
+          </div>
+          <div class="compare-how-step">
+            <span class="compare-how-num">2</span>
+            <h3 class="compare-how-title">Compare your achievements</h3>
+            <p class="compare-how-desc">Your unlocked badges, pulled from Last.fm scrobble history.</p>
+          </div>
+          <div class="compare-how-step">
+            <span class="compare-how-num">3</span>
+            <h3 class="compare-how-title">Get the verdict</h3>
+            <p class="compare-how-desc">A compatibility score, a shared setlist and a joint roast.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent roasts -->
+      <section class="compare-recent" id="compareRecent">
+        <h2 class="compare-recent-heading">recent roasts</h2>
+        <div class="compare-recent-wrap">
+          <div class="compare-recent-fade left" id="compareFadeLeft"></div>
+          <div class="compare-recent-fade right" id="compareFadeRight"></div>
+          <div class="compare-recent-grid" id="compareRecentGrid">
+            <div class="compare-recent-card">
+              <div class="compare-recent-who">bagassp <span class="vs-small">vs</span> lucyayuningsih</div>
+              <p><span class="compare-recent-pct">31%</span> compatible — bagassp wins, barely.</p>
+            </div>
+            <div class="compare-recent-card">
+              <div class="compare-recent-who">amyahya <span class="vs-small">vs</span> auraselena</div>
+              <p><span class="compare-recent-pct">4%</span> compatible — this shouldn't be legal.</p>
+            </div>
+            <div class="compare-recent-card">
+              <div class="compare-recent-who">madsuydeadman <span class="vs-small">vs</span> akilafm</div>
+              <p><span class="compare-recent-pct">58%</span> compatible — basically the same playlist.</p>
+            </div>
+            <div class="compare-recent-card">
+              <div class="compare-recent-who">hypergaki <span class="vs-small">vs</span> nomanproblem</div>
+              <p><span class="compare-recent-pct">72%</span> compatible — get a room.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- Loading -->
       <div id="compareLoading" class="loading-overlay d-none">
