@@ -2860,39 +2860,16 @@ body {
   }
 }
 
-/* ─── Badge Grid (About page) ─── */
-.badge-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.badge-card {
+/* ─── Featured badges (About page) ─── */
+.about-featured-badges {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  min-height: 80px;
-  padding: 14px 16px;
-  border: 1px solid var(--hairline);
-  border-radius: var(--rounded-md);
-  background: var(--canvas);
-  box-shadow: var(--shadow-card);
+  gap: var(--spacing-md);
 }
 
-.badge-card .badge-link {
-  display: inline-flex;
-  align-items: center;
-}
-
-.badge-card .badge-img {
-  max-height: 54px;
-  width: auto;
+.about-featured-badges img {
   max-width: 100%;
   display: block;
-}
-
-@media (max-width: 768px) {
-  .badge-grid {
-    grid-template-columns: 1fr;
-  }
 }
