@@ -239,9 +239,10 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.example-bubble-icon svg {
-  width: 14px;
-  height: 14px;
+.example-bubble-icon i {
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1;
 }
 
 #example-text {
@@ -2697,7 +2698,7 @@ body {
 }
 
 .compare-example-icon {
-  background-color: #d51007;
+  background-color: var(--ach-accent);
 }
 
 .compare-support-line {
@@ -2744,7 +2745,7 @@ body {
   font-family: "DM Mono", monospace;
   font-size: 12px;
   font-weight: 600;
-  color: var(--brand-red);
+  color: var(--ach-accent);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -2851,7 +2852,7 @@ body {
 }
 
 .compare-recent-pct {
-  color: var(--brand-red);
+  color: var(--ach-accent);
   font-weight: 700;
 }
 
