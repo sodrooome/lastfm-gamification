@@ -8,16 +8,6 @@ const API_BASE = isLocal
 
 let currentUsername = null;
 
-// ─── Achievement color palette (cycles through unlocked rows) ───
-const ACH_COLORS = [
-  "ach-teal",
-  "ach-blue",
-  "ach-brown",
-  "ach-pink",
-  "ach-green",
-  "ach-purple",
-];
-
 // ─── Roast loading animation ───
 const ROAST_STATUS_MESSAGES = [
   "Analyzing your scrobbles…",
@@ -334,19 +324,39 @@ function renderProfile(data) {
   }
 }
 
+const ACHIEVEMENT_ICONS = {
+  "Welcome to the Club, Folks!": "fa-solid fa-door-open",
+  "A New Journey Ahead": "fa-solid fa-route",
+  "Obsessive Listener, Huh": "fa-solid fa-headphones",
+  "Even AI Can't Stop Me": "fa-solid fa-robot",
+  "No Life? Pure Life": "fa-solid fa-infinity",
+  "Your Loved Ones": "fa-solid fa-heart",
+  Explorer: "fa-solid fa-compass",
+  "How About Touch Some Grass?": "fa-solid fa-seedling",
+  "Are You an Elitist or Identity Crisis?": "fa-solid fa-mask",
+  LGTM: "fa-solid fa-circle-check",
+  "Spotify Wasn't Even Born Yet": "fa-solid fa-hourglass-half",
+  "The Completion": "fa-solid fa-clipboard-check",
+  "Scrobble of the Day": "fa-solid fa-sun",
+  "Having Fun with Yourself?": "fa-solid fa-repeat",
+  "How about Take a Break": "fa-solid fa-pause",
+};
+
+function achievementIcon(name) {
+  const iconClass = ACHIEVEMENT_ICONS[name];
+  if (!iconClass) return null;
+  return `<i class="${iconClass}" aria-hidden="true"></i>`;
+}
+
 // ─── Achievement row renderer ──────────────────────────────────
 
 function renderAchievements(containerId, list) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
-  let colorIdx = 0;
 
   list.forEach((a) => {
     const row = document.createElement("div");
-    const colorClass = a.unlocked
-      ? ACH_COLORS[colorIdx % ACH_COLORS.length]
-      : "locked";
-    row.className = `ach-row ${colorClass}`;
+    row.className = `ach-row ${a.unlocked ? "ach-unlocked" : "ach-locked"}`;
     row.classList.add("is-clickable");
     row.setAttribute("role", "button");
     row.setAttribute("tabindex", "0");
@@ -361,14 +371,8 @@ function renderAchievements(containerId, list) {
 
     const iconSvg =
       a.icon ||
-      (a.unlocked
-        ? `<svg width="18" height="18" viewBox="0 0 16 16" fill="#f5b342">
-             <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z" />
-           </svg>`
-        : `<svg width="18" height="18" viewBox="0 0 16 16" fill="none">
-             <path d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z"
-               stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-           </svg>`);
+      achievementIcon(a.name) ||
+      `<i class="fa-solid fa-star" aria-hidden="true"></i>`;
 
     // Unlock date line
     let unlockedLine = "";
@@ -395,7 +399,6 @@ function renderAchievements(containerId, list) {
     `;
 
     container.appendChild(row);
-    if (a.unlocked) colorIdx++;
   });
 
   if (list.length === 0) {
