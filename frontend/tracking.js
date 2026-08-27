@@ -56,12 +56,52 @@ function trackAchievementDialogOpened(name, type, unlocked) {
   });
 }
 
+function trackCompareClicked() {
+  track("compare_clicked");
+}
+
+function trackCompareCompleted(score) {
+  track("compare_completed", { compatibility_score: score });
+}
+
+function trackCompareFailed() {
+  track("compare_failed");
+}
+
+function trackCompareRoastClicked() {
+  track("compare_roast_clicked");
+}
+
+function trackCompareRoastGenerated() {
+  track("compare_roast_generated");
+}
+
 // ─── Initialization ────────────────────────────────────────────
 
 function getCurrentPage() {
   const path = window.location.pathname;
-  if (path.includes("how-to")) return "how-to";
-  return "landing";
+  const file = path.split("/").pop() || "";
+  const name = file.replace(/\.html$/, "");
+
+  switch (name) {
+    case "":
+    case "index":
+      return "landing";
+    case "how-to":
+      return "how-to";
+    case "compare":
+      return "compare";
+    case "about":
+      return "about";
+    case "privacy":
+      return "privacy";
+    case "terms":
+      return "terms";
+    case "404":
+      return "not-found";
+    default:
+      return "landing";
+  }
 }
 
 function initTracking() {
@@ -86,5 +126,10 @@ if (typeof window !== "undefined") {
     trackRoastMeClicked,
     trackStartScrobblingClicked,
     trackAchievementDialogOpened,
+    trackCompareClicked,
+    trackCompareCompleted,
+    trackCompareFailed,
+    trackCompareRoastClicked,
+    trackCompareRoastGenerated,
   };
 }

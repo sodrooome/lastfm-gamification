@@ -120,6 +120,8 @@ function resetJointRoast() {
 async function generateJointRoast() {
   if (!currentCompareData) return;
 
+  if (window.analytics) window.analytics.trackCompareRoastClicked();
+
   var btn = document.getElementById("generateRoastBtn");
   if (btn) btn.disabled = true;
   toggle("jointRoastBody", false);
@@ -167,6 +169,7 @@ async function generateJointRoast() {
     resultEl.textContent = data.roast;
     toggle("jointRoastLoading", false);
     toggle("jointRoastResult", true);
+    if (window.analytics) window.analytics.trackCompareRoastGenerated();
   } catch (err) {
     console.error(err);
     var errorEl = document.getElementById("jointRoastError");
@@ -236,8 +239,12 @@ async function fetchAndRender(user1, user2) {
 
     // Reset joint roast card
     resetJointRoast();
+
+    if (window.analytics)
+      window.analytics.trackCompareCompleted(data.compatibility_score || 0);
   } catch (err) {
     console.error(err);
+    if (window.analytics) window.analytics.trackCompareFailed();
     const errorEl = document.getElementById("compareError");
     errorEl.textContent = err.message || "Failed to compare profiles";
     toggle("compareError", true);
@@ -259,6 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const u1 = user1Input.value.trim();
     const u2 = user2Input.value.trim();
     if (!u1 || !u2) return;
+    if (window.analytics) window.analytics.trackCompareClicked();
     fetchAndRender(u1, u2);
   }
 
