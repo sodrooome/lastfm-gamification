@@ -95,7 +95,7 @@ function renderSharedArtists(artists) {
     const empty = document.createElement("p");
     empty.className = "compare-shared-empty";
     empty.textContent =
-      "Well, no wonder your compatibility score isn't exactly chart-topping: your top artists from the past year are complete strangers to each other. It's giving 'parallel universes, same streaming app'";
+      "Yeah, your compatibility score makes total sense. Your top artists wouldn't even recognize each other in a room. It's giving main character vs. background extra energy.";
     container.appendChild(empty);
     return;
   }
