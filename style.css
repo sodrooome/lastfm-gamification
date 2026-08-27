@@ -30,6 +30,13 @@
   --ach-green: #3a7a4a;
   --ach-purple: #5a3a8a;
 
+  /* Lifetime achievement accent (single-accent scheme) */
+  --ach-accent: #d9291c;
+  --ach-accent-tint: #fdece9;
+  --ach-locked-bg: #f4f3ee;
+  --ach-locked-chip: #e7e5db;
+  --ach-locked-icon: #9a968a;
+
   --rounded-xs: 2px;
   --rounded-sm: 6px;
   --rounded-md: 10px;
@@ -257,6 +264,108 @@ body {
   margin-top: var(--spacing-sm);
   line-height: 1.4;
   opacity: 0.6;
+}
+
+/* ─── Badge Showcase (landing) ─── */
+.badge-showcase {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--hairline);
+}
+
+.badge-showcase-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: var(--spacing-xxs);
+}
+
+.badge-showcase-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: var(--spacing-lg);
+}
+
+.badge-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--spacing-md);
+}
+
+.showcase-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  min-width: 0;
+}
+
+.showcase-ring {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: var(--rounded-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.showcase-ring i {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.showcase-badge.unlocked .showcase-ring {
+  background: #fdece9;
+  border: 2px solid var(--brand-red);
+  color: var(--brand-red);
+}
+
+.showcase-badge.locked .showcase-ring {
+  background: #e9e7de;
+  border: 2px dashed #c7c3b4;
+  color: #b0aca0;
+}
+
+.showcase-lock {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--rounded-full);
+  background: var(--muted);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--bg-page);
+}
+
+.showcase-lock i {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.showcase-label {
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: var(--muted);
+  text-align: center;
+  width: 100%;
+}
+
+.showcase-badge.unlocked .showcase-label {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .badge-showcase-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* ─── Inputs & Buttons ─── */
@@ -940,8 +1049,8 @@ body {
 }
 
 .ach-dialog-status.is-unlocked {
-  background: rgba(58, 122, 74, 0.12);
-  color: var(--ach-green);
+  background: var(--ach-accent-tint);
+  color: var(--ach-accent);
 }
 
 .ach-dialog-status.is-locked {
@@ -1124,44 +1233,6 @@ body {
   box-shadow: var(--shadow-row);
 }
 
-.ach-row.locked {
-  background: var(--surface-strong);
-  color: var(--body-text);
-  opacity: 0.8;
-}
-
-.ach-row.locked .ach-name {
-  color: var(--body-text);
-}
-
-.ach-row.locked .ach-icon-wrap {
-  color: var(--body-text);
-}
-
-.ach-row.ach-teal {
-  background: var(--ach-teal);
-}
-
-.ach-row.ach-blue {
-  background: var(--ach-blue);
-}
-
-.ach-row.ach-brown {
-  background: var(--ach-brown);
-}
-
-.ach-row.ach-pink {
-  background: var(--ach-pink);
-}
-
-.ach-row.ach-green {
-  background: var(--ach-green);
-}
-
-.ach-row.ach-purple {
-  background: var(--ach-purple);
-}
-
 .ach-icon-wrap {
   width: 36px;
   height: 36px;
@@ -1172,6 +1243,11 @@ body {
   justify-content: center;
   flex-shrink: 0;
   color: white;
+}
+
+.ach-icon-wrap i {
+  font-size: 18px;
+  line-height: 1;
 }
 
 .ach-text {
@@ -1204,6 +1280,56 @@ body {
 .ach-empty {
   font-size: 13px;
   color: var(--muted);
+}
+
+/* ─── Lifetime achievements — single-accent scheme ─── */
+.ach-row.ach-unlocked {
+  background: var(--ach-accent-tint);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.ach-row.ach-unlocked .ach-name {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.ach-row.ach-unlocked .ach-desc {
+  color: var(--muted);
+}
+
+.ach-row.ach-unlocked .ach-date {
+  color: var(--ach-accent);
+  font-weight: 600;
+}
+
+.ach-row.ach-unlocked .ach-icon-wrap {
+  background: var(--ach-accent);
+  color: #ffffff;
+}
+
+.ach-row.ach-locked {
+  background: var(--ach-locked-bg);
+  color: var(--body-text);
+  box-shadow: none;
+}
+
+.ach-row.ach-locked .ach-name {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.ach-row.ach-locked .ach-desc {
+  color: #a8a498;
+}
+
+.ach-row.ach-locked .ach-date {
+  color: #a8a498;
+}
+
+.ach-row.ach-locked .ach-icon-wrap {
+  background: var(--ach-locked-chip);
+  color: var(--ach-locked-icon);
 }
 
 /* ─── Guide page (keep compatible) ─── */
