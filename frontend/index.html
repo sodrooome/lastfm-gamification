@@ -26,6 +26,10 @@
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
   <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
   <link rel="icon" type="image/svg+xml" href="/assets/icon.svg" />
@@ -89,6 +93,49 @@
         <p class="social-proof">
           <span id="social-proof-text">171 listeners roasted so far · takes 5 seconds, no login needed</span>
         </p>
+
+        <!-- Badge showcase (unlocked vs locked) -->
+        <section class="badge-showcase" aria-label="Achievement badges">
+          <h2 class="badge-showcase-title">achievements up for grabs</h2>
+          <p class="badge-showcase-sub">
+            a few of the badges hiding in your scrobble history
+          </p>
+          <div class="badge-showcase-grid">
+            <div class="showcase-badge unlocked">
+              <div class="showcase-ring">
+                <i class="fa-solid fa-headphones" aria-hidden="true"></i>
+              </div>
+              <span class="showcase-label">Obsessive Listener, Huh</span>
+            </div>
+            <div class="showcase-badge locked">
+              <div class="showcase-ring">
+                <i class="fa-solid fa-infinity" aria-hidden="true"></i>
+                <span class="showcase-lock">
+                  <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                </span>
+              </div>
+              <span class="showcase-label">No Life? Pure Life</span>
+            </div>
+            <div class="showcase-badge locked">
+              <div class="showcase-ring">
+                <i class="fa-solid fa-seedling" aria-hidden="true"></i>
+                <span class="showcase-lock">
+                  <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                </span>
+              </div>
+              <span class="showcase-label">How About Touch Some Grass?</span>
+            </div>
+            <div class="showcase-badge locked">
+              <div class="showcase-ring">
+                <i class="fa-solid fa-robot" aria-hidden="true"></i>
+                <span class="showcase-lock">
+                  <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                </span>
+              </div>
+              <span class="showcase-label">Even AI Can't Stop Me</span>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
     <div id="dashboardView" class="dashboard-view d-none">
