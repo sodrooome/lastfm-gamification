@@ -308,25 +308,40 @@ body {
   width: 60px;
   height: 60px;
   border-radius: var(--rounded-full);
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.showcase-ring i {
-  font-size: 26px;
+/* Inner "label" disc — the vinyl-record motif: a rim (.showcase-ring) around a solid label. */
+.showcase-ring-fill {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--rounded-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.showcase-ring-fill i {
+  font-size: 20px;
   line-height: 1;
 }
 
-.showcase-badge.unlocked .showcase-ring {
-  background: #fdece9;
-  border: 2px solid var(--brand-red);
-  color: var(--brand-red);
+.showcase-badge.unlocked .showcase-ring-fill {
+  width: 60px;
+  height: 60px;
+  background: var(--ach-accent);
+  color: #ffffff;
 }
 
 .showcase-badge.locked .showcase-ring {
-  background: #e9e7de;
   border: 2px dashed #c7c3b4;
+}
+
+.showcase-badge.locked .showcase-ring-fill {
+  background: #e9e7de;
   color: #b0aca0;
 }
 
@@ -570,7 +585,7 @@ body {
 .sidebar {
   width: 260px;
   flex-shrink: 0;
-  background: var(--sidebar-bg);
+  background: var(--primary);
   border-radius: var(--rounded-xl);
   color: white;
   position: relative;
@@ -594,7 +609,7 @@ body {
   width: 90px;
   height: 90px;
   border-radius: var(--rounded-full);
-  border: 3px solid rgba(255, 255, 255, 0.6);
+  border: 3px solid var(--brand-red);
   overflow: hidden;
   background: rgba(255, 255, 255, 0.2);
   flex-shrink: 0;
@@ -626,7 +641,7 @@ body {
 
 .level-badge {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--brand-red);
   color: white;
   border-radius: var(--rounded-pill);
   padding: 4px 14px;
@@ -729,7 +744,7 @@ body {
 .progress-fill {
   height: 100%;
   width: 0%;
-  background: white;
+  background: linear-gradient(90deg, var(--brand-red), var(--ach-accent));
   border-radius: var(--rounded-sm);
   transition: width 0.6s ease;
 }
@@ -858,8 +873,7 @@ body {
 .stats-level-text {
   font-size: 20px;
   font-weight: 600;
-  color: #c050d0;
-  /* vivid purple like Figma */
+  color: var(--ink);
 }
 
 .stats-progress-pct {
@@ -879,7 +893,7 @@ body {
 .stats-progress-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #c050d0, #7040e0);
+  background: linear-gradient(90deg, var(--brand-red), var(--ach-accent));
   border-radius: var(--rounded-pill);
   transition: width 0.6s ease;
 }
@@ -925,20 +939,9 @@ body {
   font-weight: 600;
 }
 
-.blue-tint {
-  background: #e8f0fb;
-}
-
-.green-tint {
-  background: #e8f5ec;
-}
-
-.pink-tint {
-  background: #fce8f0;
-}
-
-.peach-tint {
-  background: #fdf2e8;
+.stat-box.neutral {
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline);
 }
 
 /* ─── Achievements Section ─── */
@@ -1238,7 +1241,9 @@ body {
   width: 36px;
   height: 36px;
   background: rgba(255, 255, 255, 0.18);
-  border-radius: var(--rounded-md);
+  border-radius: var(--rounded-full);
+  border: 2px solid transparent;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1283,6 +1288,15 @@ body {
   color: var(--muted);
 }
 
+/* flex-shrink:0 + .ach-text's min-width:0 keep this from ever overlapping —
+   the name/desc column truncates (existing ellipsis) before this can be pushed off. */
+.ach-xp {
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 /* ─── Lifetime achievements — single-accent scheme ─── */
 .ach-row.ach-unlocked {
   background: var(--ach-accent-tint);
@@ -1302,6 +1316,13 @@ body {
 .ach-row.ach-unlocked .ach-date {
   color: var(--ach-accent);
   font-weight: 600;
+}
+
+.ach-row.ach-unlocked .ach-xp {
+  color: var(--ach-accent);
+  background: var(--canvas);
+  border-radius: var(--rounded-pill);
+  padding: 4px 10px;
 }
 
 .ach-row.ach-unlocked .ach-icon-wrap {
@@ -1328,9 +1349,14 @@ body {
   color: #a8a498;
 }
 
+.ach-row.ach-locked .ach-xp {
+  color: #a8a498;
+}
+
 .ach-row.ach-locked .ach-icon-wrap {
   background: var(--ach-locked-chip);
   color: var(--ach-locked-icon);
+  border-color: var(--ach-locked-icon);
 }
 
 /* ─── Guide page (keep compatible) ─── */
@@ -2215,7 +2241,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #c050d0;
+  color: var(--brand-red);
   animation: roast-pulse 1.5s ease-in-out infinite;
 }
 
@@ -2259,7 +2285,7 @@ body {
 .roast-loading-progress-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #c050d0, #7040e0);
+  background: linear-gradient(90deg, var(--brand-red), var(--ach-accent));
   border-radius: var(--rounded-pill);
   transition: width 0.3s ease;
 }
