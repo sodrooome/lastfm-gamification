@@ -103,13 +103,17 @@
           <div class="badge-showcase-grid">
             <div class="showcase-badge unlocked">
               <div class="showcase-ring">
-                <i class="fa-solid fa-headphones" aria-hidden="true"></i>
+                <div class="showcase-ring-fill">
+                  <i class="fa-solid fa-headphones" aria-hidden="true"></i>
+                </div>
               </div>
               <span class="showcase-label">Obsessive Listener, Huh</span>
             </div>
             <div class="showcase-badge locked">
               <div class="showcase-ring">
-                <i class="fa-solid fa-infinity" aria-hidden="true"></i>
+                <div class="showcase-ring-fill">
+                  <i class="fa-solid fa-infinity" aria-hidden="true"></i>
+                </div>
                 <span class="showcase-lock">
                   <i class="fa-solid fa-lock" aria-hidden="true"></i>
                 </span>
@@ -118,7 +122,9 @@
             </div>
             <div class="showcase-badge locked">
               <div class="showcase-ring">
-                <i class="fa-solid fa-seedling" aria-hidden="true"></i>
+                <div class="showcase-ring-fill">
+                  <i class="fa-solid fa-seedling" aria-hidden="true"></i>
+                </div>
                 <span class="showcase-lock">
                   <i class="fa-solid fa-lock" aria-hidden="true"></i>
                 </span>
@@ -127,7 +133,9 @@
             </div>
             <div class="showcase-badge locked">
               <div class="showcase-ring">
-                <i class="fa-solid fa-robot" aria-hidden="true"></i>
+                <div class="showcase-ring-fill">
+                  <i class="fa-solid fa-robot" aria-hidden="true"></i>
+                </div>
                 <span class="showcase-lock">
                   <i class="fa-solid fa-lock" aria-hidden="true"></i>
                 </span>
@@ -371,7 +379,7 @@
 
             <!-- 4 mini-stat boxes -->
             <div class="stats-grid">
-              <div class="stat-box blue-tint">
+              <div class="stat-box neutral">
                 <p class="stat-box-label">
                   <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
                     <circle
@@ -392,7 +400,7 @@
                 </p>
                 <p id="statScrobbles" class="stat-box-value"></p>
               </div>
-              <div class="stat-box green-tint">
+              <div class="stat-box neutral">
                 <p class="stat-box-label">
                   <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
                     <path
@@ -406,7 +414,7 @@
                 </p>
                 <p id="statTopArtist" class="stat-box-value small-val"></p>
               </div>
-              <div class="stat-box pink-tint">
+              <div class="stat-box neutral">
                 <p class="stat-box-label">
                   <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
                     <path
@@ -420,7 +428,7 @@
                 </p>
                 <p id="statAchievements" class="stat-box-value"></p>
               </div>
-              <div class="stat-box peach-tint">
+              <div class="stat-box neutral">
                 <p class="stat-box-label">
                   <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
                     <circle
@@ -448,21 +456,23 @@
                 </p>
                 <p id="statFriends" class="stat-box-value"></p>
               </div>
-              <div class="stat-box blue-tint">
+              <div class="stat-box neutral">
                 <p class="stat-box-label">
+                  <!-- Location pin — was previously a copy-paste of the Achievements star icon -->
                   <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
                     <path
-                      d="M8 2L10 6H14L11 9L12 13L8 11L4 13L5 9L2 6H6L8 2Z"
+                      d="M8 14s5-4.5 5-8a5 5 0 10-10 0c0 3.5 5 8 5 8z"
                       stroke="currentColor"
                       stroke-width="1.5"
                       stroke-linejoin="round"
                     />
+                    <circle cx="8" cy="6" r="1.6" stroke="currentColor" stroke-width="1.5" />
                   </svg>
                   From
                 </p>
                 <p id="statCountry" class="stat-box-value small-val"></p>
               </div>
-              <div class="stat-box green-tint">
+              <div class="stat-box neutral">
                 <p class="stat-box-label">
                   <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
                     <circle

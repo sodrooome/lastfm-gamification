@@ -387,6 +387,11 @@ function renderAchievements(containerId, list) {
       unlockedLine = `<span class="ach-date">Unlocked</span>`;
     }
 
+    // Daily achievements grant 0 XP (see backend/achievements.py calculate_xp,
+    // which only counts type !== "daily") — only lifetime rows get a tag.
+    const xpTag =
+      a.type === "lifetime" ? `<span class="ach-xp">+150 XP</span>` : "";
+
     row.innerHTML = `
       <div class="ach-icon-wrap">${iconSvg}</div>
       <div class="ach-text">
@@ -394,6 +399,7 @@ function renderAchievements(containerId, list) {
         <p class="ach-desc">${escapeHtml(a.description) || ""}</p>
         ${unlockedLine}
       </div>
+      ${xpTag}
     `;
 
     container.appendChild(row);
