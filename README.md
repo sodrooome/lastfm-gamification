@@ -32,7 +32,7 @@ We just launched on Product Hunt and Peerlist. Come say hi, and an upvote is alw
 - **10-level XP progression** earned from scrobbles, achievements (150 XP each), and unique artists
 - **AI "Roast Me"**: a playful, opt-in roast of your listening habits (Gemini 2.5 Flash via OpenRouter)
 - **Profile comparison**: a compatibility score, shared artists, and a joint roast for any two users
-- **Design Responsive**: Airtable-inspired editorial design with custom components, see [DESIGN.md](DESIGN.md)
+- **Design Responsive**: a warm paper canvas with a single ink + coral accent system and gamified badge components, see [DESIGN.md](DESIGN.md)
 
 ## Architecture
 
