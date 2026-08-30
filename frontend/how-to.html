@@ -26,6 +26,10 @@
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
   <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
   <link rel="icon" type="image/svg+xml" href="/assets/icon.svg" />
@@ -79,109 +83,170 @@
 
     <!-- Daily Achievements -->
     <section class="guide-section">
-      <h2 class="guide-section-title">Daily Achievements</h2>
+      <div class="guide-section-head">
+        <div class="guide-section-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 11-3-6.7" /><polyline points="21 3 21 9 15 9" /></svg>
+        </div>
+        <h2 class="guide-section-title">Daily Achievements</h2>
+      </div>
       <p class="guide-section-desc">These reset every day. Scrobble today to start earning.</p>
       <div class="guide-card">
-        <table class="guide-table">
-          <thead>
-            <tr>
-              <th>Achievement</th>
-              <th>Requirement</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="guide-table-name">Scrobble of the Day</td>
-              <td>Scrobble at least 1 song today</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">Having Fun with Yourself?</td>
-              <td>Scrobble 100+ songs today</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">How about Take a Break</td>
-              <td>Scrobble 1,000+ songs today</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="guide-ach-list">
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-sun" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">Scrobble of the Day</div>
+              <div class="ach-desc">Scrobble at least 1 song today</div>
+            </div>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-repeat" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">Having Fun with Yourself?</div>
+              <div class="ach-desc">Scrobble 100+ songs today</div>
+            </div>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-pause" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">How about Take a Break</div>
+              <div class="ach-desc">Scrobble 1,000+ songs today</div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Lifetime Achievements -->
     <section class="guide-section">
-      <h2 class="guide-section-title">Lifetime Achievements</h2>
+      <div class="guide-section-head">
+        <div class="guide-section-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v4a5 5 0 01-10 0V4z" /><path d="M17 5h2a2 2 0 010 4h-1M7 5H5a2 2 0 000 4h1" /><path d="M12 17v4M8 21h8" /></svg>
+        </div>
+        <h2 class="guide-section-title">Lifetime Achievements</h2>
+      </div>
       <p class="guide-section-desc">Permanent milestones based on your overall listening history.</p>
       <div class="guide-card">
-        <table class="guide-table">
-          <thead>
-            <tr>
-              <th>Achievement</th>
-              <th>Requirement</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="guide-table-name">Welcome to the Club, Folks!</td>
-              <td>1+ total scrobbles</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">A New Journey Ahead</td>
-              <td>1,000+ total scrobbles</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">Obsessive Listener, Huh</td>
-              <td>10,000+ total scrobbles</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">Even AI Can't Stop Me</td>
-              <td>100,000+ total scrobbles</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">No Life? Pure Life</td>
-              <td>1,000,000+ total scrobbles</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">Your Loved Ones</td>
-              <td>1+ unique artists in your top artists</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">Explorer</td>
-              <td>100+ unique artists in your top artists</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">How About Touch Some Grass?</td>
-              <td>1,000+ unique artists in your top artists</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">Are You an Elitist or Identity Crisis?</td>
-              <td>5,000+ unique artists in your top artists</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">LGTM</td>
-              <td>10,000+ unique artists in your top artists</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">Spotify Wasn't Even Born Yet</td>
-              <td>Account registered 10+ years ago</td>
-            </tr>
-            <tr>
-              <td class="guide-table-name">The Completion</td>
-              <td>Profile has real name, image, and country set</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="guide-ach-list">
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-door-open" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">Welcome to the Club, Folks!</div>
+              <div class="ach-desc">1+ total scrobbles</div>
+            </div>
+            <span class="ach-xp">+150 XP</span>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-route" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">A New Journey Ahead</div>
+              <div class="ach-desc">1,000+ total scrobbles</div>
+            </div>
+            <span class="ach-xp">+150 XP</span>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-headphones" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">Obsessive Listener, Huh</div>
+              <div class="ach-desc">10,000+ total scrobbles</div>
+            </div>
+            <span class="ach-xp">+150 XP</span>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">Even AI Can't Stop Me</div>
+              <div class="ach-desc">100,000+ total scrobbles</div>
+            </div>
+            <span class="ach-xp">+150 XP</span>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-infinity" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">No Life? Pure Life</div>
+              <div class="ach-desc">1,000,000+ total scrobbles</div>
+            </div>
+            <span class="ach-xp">+150 XP</span>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-heart" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">Your Loved Ones</div>
+              <div class="ach-desc">1+ unique artists in your top artists</div>
+            </div>
+            <span class="ach-xp">+150 XP</span>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-compass" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">Explorer</div>
+              <div class="ach-desc">100+ unique artists in your top artists</div>
+            </div>
+            <span class="ach-xp">+150 XP</span>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-seedling" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">How About Touch Some Grass?</div>
+              <div class="ach-desc">1,000+ unique artists in your top artists</div>
+            </div>
+            <span class="ach-xp">+150 XP</span>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-mask" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">Are You an Elitist or Identity Crisis?</div>
+              <div class="ach-desc">5,000+ unique artists in your top artists</div>
+            </div>
+            <span class="ach-xp">+150 XP</span>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">LGTM</div>
+              <div class="ach-desc">10,000+ unique artists in your top artists</div>
+            </div>
+            <span class="ach-xp">+150 XP</span>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">Spotify Wasn't Even Born Yet</div>
+              <div class="ach-desc">Account registered 10+ years ago</div>
+            </div>
+            <span class="ach-xp">+150 XP</span>
+          </div>
+          <div class="ach-row ach-unlocked">
+            <div class="ach-icon-wrap"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i></div>
+            <div class="ach-text">
+              <div class="ach-name">The Completion</div>
+              <div class="ach-desc">Profile has real name, image, and country set</div>
+            </div>
+            <span class="ach-xp">+150 XP</span>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- XP -->
     <section class="guide-section">
-      <h2 class="guide-section-title">How XP is Calculated</h2>
+      <div class="guide-section-head">
+        <div class="guide-section-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z" /></svg>
+        </div>
+        <h2 class="guide-section-title">How XP is Calculated</h2>
+      </div>
       <p class="guide-section-desc">Your total XP comes from four sources. Each tier below is cumulative.</p>
 
       <div class="guide-xp-grid">
 
         <div class="guide-card">
-          <h3 style="font-size:16px;font-weight:600;color:var(--ink);margin-bottom:var(--spacing-xxs)">Scrobbles XP</h3>
+          <div class="guide-card-head">
+            <div class="guide-card-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13v-1a8 8 0 0116 0v1" /><rect x="3" y="13" width="4.5" height="7.5" rx="2" /><rect x="16.5" y="13" width="4.5" height="7.5" rx="2" /></svg>
+            </div>
+            <h3 style="font-size:16px;font-weight:600;color:var(--ink)">Scrobbles XP</h3>
+          </div>
           <p style="font-size:13px;color:var(--muted);margin-bottom:var(--spacing-sm)">Reaching a higher threshold
             grants all lower tiers automatically.</p>
           <table class="guide-table">
@@ -223,8 +288,12 @@
         </div>
 
         <div class="guide-card">
-          <h3 style="font-size:16px;font-weight:600;color:var(--ink);margin-bottom:var(--spacing-xxs)">Unique Artists XP
-          </h3>
+          <div class="guide-card-head">
+            <div class="guide-card-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="12" r="5" /><circle cx="16" cy="12" r="5" /></svg>
+            </div>
+            <h3 style="font-size:16px;font-weight:600;color:var(--ink)">Unique Artists XP</h3>
+          </div>
           <p style="font-size:13px;color:var(--muted);margin-bottom:var(--spacing-sm)">Based on distinct artists in your
             listening history.</p>
           <table class="guide-table">
@@ -258,14 +327,23 @@
         </div>
 
         <div class="guide-card">
-          <h3 style="font-size:16px;font-weight:600;color:var(--ink);margin-bottom:var(--spacing-xxs)">Achievements XP
-          </h3>
+          <div class="guide-card-head">
+            <div class="guide-card-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2l2.9 6.2 6.8.9-5 4.8 1.3 6.7L12 17.6 5.9 20.6l1.3-6.7-5-4.8 6.8-.9L12 2z" /></svg>
+            </div>
+            <h3 style="font-size:16px;font-weight:600;color:var(--ink)">Achievements XP</h3>
+          </div>
           <p style="font-size:13px;color:var(--muted)">Each unlocked achievement grants a flat <strong>150 XP</strong>.
             With 12 lifetime achievements available, that's up to <strong>1,800 XP</strong> from achievements alone.</p>
         </div>
 
         <div class="guide-card">
-          <h3 style="font-size:16px;font-weight:600;color:var(--ink);margin-bottom:var(--spacing-xxs)">Bonus XP</h3>
+          <div class="guide-card-head">
+            <div class="guide-card-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 8v8M8 12h8" /></svg>
+            </div>
+            <h3 style="font-size:16px;font-weight:600;color:var(--ink)">Bonus XP</h3>
+          </div>
           <p style="font-size:13px;color:var(--muted)">
             <strong>+150 XP</strong> for accounts registered <strong>10+ years ago</strong>.<br /><br />
             <strong>+150 XP</strong> for a complete profile (real name, avatar, and country set).
@@ -277,7 +355,12 @@
 
     <!-- Level Thresholds -->
     <section class="guide-section">
-      <h2 class="guide-section-title">Level Thresholds</h2>
+      <div class="guide-section-head">
+        <div class="guide-section-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="20" x2="6" y2="12" /><line x1="12" y1="20" x2="12" y2="6" /><line x1="18" y1="20" x2="18" y2="14" /></svg>
+        </div>
+        <h2 class="guide-section-title">Level Thresholds</h2>
+      </div>
       <p class="guide-section-desc">Max level is 10 at 2,585 XP. XP requirements escalate to reward sustained
         engagement.</p>
       <div class="guide-card">
@@ -291,52 +374,52 @@
           </thead>
           <tbody>
             <tr>
-              <td class="guide-table-name">1</td>
+              <td><span class="guide-level-pill">Lv 1</span></td>
               <td>0</td>
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td class="guide-table-name">2</td>
+              <td><span class="guide-level-pill">Lv 2</span></td>
               <td>110</td>
               <td><strong>+110</strong></td>
             </tr>
             <tr>
-              <td class="guide-table-name">3</td>
+              <td><span class="guide-level-pill">Lv 3</span></td>
               <td>275</td>
               <td><strong>+165</strong></td>
             </tr>
             <tr>
-              <td class="guide-table-name">4</td>
+              <td><span class="guide-level-pill">Lv 4</span></td>
               <td>500</td>
               <td><strong>+225</strong></td>
             </tr>
             <tr>
-              <td class="guide-table-name">5</td>
+              <td><span class="guide-level-pill">Lv 5</span></td>
               <td>775</td>
               <td><strong>+275</strong></td>
             </tr>
             <tr>
-              <td class="guide-table-name">6</td>
+              <td><span class="guide-level-pill">Lv 6</span></td>
               <td>1,100</td>
               <td><strong>+325</strong></td>
             </tr>
             <tr>
-              <td class="guide-table-name">7</td>
+              <td><span class="guide-level-pill">Lv 7</span></td>
               <td>1,450</td>
               <td><strong>+350</strong></td>
             </tr>
             <tr>
-              <td class="guide-table-name">8</td>
+              <td><span class="guide-level-pill">Lv 8</span></td>
               <td>1,800</td>
               <td><strong>+350</strong></td>
             </tr>
             <tr>
-              <td class="guide-table-name">9</td>
+              <td><span class="guide-level-pill">Lv 9</span></td>
               <td>2,150</td>
               <td><strong>+350</strong></td>
             </tr>
-            <tr>
-              <td class="guide-table-name">10</td>
+            <tr class="guide-level-max">
+              <td><span class="guide-level-pill">Lv 10</span></td>
               <td>2,585</td>
               <td><strong>+435</strong></td>
             </tr>

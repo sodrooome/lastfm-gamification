@@ -1,10 +1,10 @@
 # how-to.html Revamp Plan
 
-Status: **drafted, not implemented.** This is the last page in the design
-rollout (see `DESIGN.md` → Rollout status) — everything else (landing,
-dashboard, compare, about, legal, 404) has already shipped the ink + coral
-system. This page is a planning document only; no HTML/CSS changes have
-been made yet.
+Status: **implemented on `feat/revamped-guide-page`, not yet reviewed/merged.**
+This was the last page in the design rollout (see `DESIGN.md` → Rollout
+status) — everything else (landing, dashboard, compare, about, legal, 404)
+already shipped the ink + coral system. Implementation follows the plan
+below; the "Implementation checklist" section tracks what's done.
 
 Mockup reference: the "How It Works / Achievement Guide" artboard on the
 shared design canvas (same canvas as the other rollout pages).
@@ -77,36 +77,39 @@ or coral accents; this one reads like a stray docs page next to them.
 
 | New element | Reuses |
 |---|---|
-| Section header icon lockup | `about.html` step-icon / feature-icon recipe (`--ach-accent-tint` bg, `--ach-accent` icon, `--rounded-md`) |
-| Achievement row (daily/lifetime) | `ach-row` pattern from `DESIGN.md` (dashboard achievement list) |
-| "+150 XP" pill | Existing dashboard lifetime-achievement XP pill |
-| Star glyph | Same path already used for achievement icons in the dashboard/badge components |
+| Section header icon lockup | `about.html` step-icon / feature-icon recipe (`--ach-accent-tint` bg, `--ach-accent` icon, `--rounded-md`) — new `.guide-section-icon` class |
+| Achievement row (daily/lifetime) | The actual production `.ach-row.ach-unlocked` / `.ach-icon-wrap` / `.ach-text` / `.ach-name` / `.ach-desc` / `.ach-xp` classes from the dashboard's shared renderer — reused directly, not reimplemented, since the guide's markup can just hand-write the same DOM shape the renderer builds at runtime |
+| Achievement icons | The real per-achievement Font Awesome classes from `app.js`'s `ACHIEVEMENT_ICONS` map (e.g. `fa-door-open`, `fa-headphones`, `fa-infinity`) — same icon a user sees on the dashboard for that badge |
+| "+150 XP" pill | `.ach-xp` under `.ach-row.ach-unlocked` — same class, same visual, no new CSS needed |
 | "Unique Artists" card icon | `about.html`'s "Compare tastes" two-circle icon |
-| Level 10 pill | Dashboard's current-level pill (`--brand-red` solid, white text) |
+| Level 10 pill | Dashboard's current-level pill recipe (`--brand-red` solid, white text) — new `.guide-level-pill` / `.guide-level-max` classes, since the dashboard's own `.level-badge` is sized for the sidebar header, not a table cell |
 
-No new CSS custom properties. New class names follow the existing
-`guide-*` prefix (e.g. `guide-ach-row`, `guide-icon-lockup`,
-`guide-level-pill`) rather than reusing dashboard-specific class names
-directly, since the DOM structure differs slightly (no unlock state to
-toggle here — the guide always renders in the "available" visual, not
-locked/unlocked).
+No new CSS custom properties. **Deviation from the original plan:** rather
+than inventing parallel `guide-ach-row`/`guide-icon-lockup` classes, the
+achievement rows reuse the dashboard's real `.ach-row` family directly —
+simpler and guarantees pixel-parity with the dashboard for anything that
+already exists there. Only genuinely new pieces (section icon lockups, XP
+card icons, the level pill) got new `guide-*`-prefixed classes. The guide
+always renders every row in the `ach-unlocked` visual, since it has no
+per-user unlock state to reflect — it's documentation, not live data.
 
-## Implementation checklist (for when this rolls out)
+## Implementation checklist
 
-- [ ] Add the new `guide-*` component styles to `style.css`, near the
+- [x] Add the new `guide-*` component styles to `style.css`, near the
       existing `guide-*` block.
-- [ ] Update `how-to.html` markup for all four sections per above —
+- [x] Update `how-to.html` markup for all four sections per above —
       preserve every existing `id`/class hook used by `app.js` /
       `tracking.js` (mobile menu, back-link `href` rewrite for `?user=`).
-- [ ] Re-check the existing `@media` block for `.guide-page` /
-      `.guide-xp-grid` (mobile stacks XP grid to 1 column) — confirm the
-      new achievement rows and icon lockups reflow correctly at narrow
-      widths; don't regress the existing mobile-safe behavior.
-- [ ] Update `DESIGN.md`'s Rollout status table: flip `how-to.html` from
-      "✅ Already compliant" to reflect the new icon/row treatment, and
-      add the `ach-row`-on-guide-page note to the Components section.
-- [ ] No automated visual tests or test suites — verification is manual,
-      by the user, same as every other page in this rollout.
+- [x] Re-checked the existing `@media (max-width: 600px)` block for
+      `.guide-page` / `.guide-xp-grid` — no changes needed: `.ach-row`'s
+      existing `.ach-text { min-width: 0 }` + `.ach-name`'s ellipsis and
+      `.ach-xp { flex-shrink: 0 }` already handle narrow widths (they're
+      the same rules the dashboard relies on), and the new section/card
+      icons are small and flex-shrink:0 by their own box model.
+- [x] Updated `DESIGN.md`'s Rollout status table and the `ach-row`
+      Components entry to reflect the new icon/row treatment.
+- [x] No automated visual tests or test suites were run — verification is
+      manual, by the user, same as every other page in this rollout.
 
 ## Branch & commit conventions for this work
 
