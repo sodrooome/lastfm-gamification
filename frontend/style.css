@@ -15,10 +15,6 @@
 
   --bg-page: #f0f0e8;
   /* warm cream from Figma */
-  --sidebar-bg: #8db87a;
-  /* green sidebar */
-  --sage-deep: #2e5036;
-  /* deep forest green for step numerals on sage chips */
   --brand-red: #e8503a;
   /* tastecheck.me logo mark color */
 
@@ -1487,67 +1483,6 @@ body {
   margin-bottom: var(--spacing-xl);
 }
 
-.guide-howto-steps {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.guide-howto-step {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--spacing-lg);
-  padding: var(--spacing-lg) 0;
-  border-bottom: 1px solid var(--hairline);
-}
-
-.guide-howto-step:last-child {
-  border-bottom: none;
-}
-
-.guide-howto-step-text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-}
-
-.guide-howto-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  border-radius: var(--rounded-full);
-  background: var(--sidebar-bg);
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--sage-deep);
-  line-height: 1;
-}
-
-.guide-howto-step-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--ink);
-  margin: 0;
-}
-
-.guide-howto-step-body {
-  font-size: 14px;
-  color: var(--muted);
-  line-height: 1.5;
-  margin: 0;
-}
-
-@media (max-width: 768px) {
-  .guide-howto-num {
-    width: 28px;
-    height: 28px;
-    font-size: 14px;
-  }
-}
-
 /* ─── Feature Grid (About page) ─── */
 .about-feature-grid {
   display: grid;
@@ -1571,9 +1506,9 @@ body {
 }
 
 .about-feature-card.linked:hover {
-  box-shadow: 0 6px 20px rgba(58, 122, 74, 0.10);
+  box-shadow: 0 6px 20px rgba(24, 29, 38, 0.10);
   transform: translateY(-2px);
-  border-color: var(--ach-green);
+  border-color: var(--primary);
 }
 
 .about-feature-icon {
@@ -1592,13 +1527,13 @@ body {
 }
 
 .about-feature-icon.green {
-  background: #e8f5ec;
-  color: var(--ach-green);
+  background: var(--ach-accent-tint);
+  color: var(--ach-accent);
 }
 
 .about-feature-icon.ember {
-  background: #fdf2e8;
-  color: var(--ach-brown);
+  background: var(--ach-accent-tint);
+  color: var(--ach-accent);
 }
 
 .about-feature-card h3 {
@@ -1623,7 +1558,7 @@ body {
   font-size: 13.5px;
   font-weight: 600;
   color: #fff;
-  background: var(--ach-green);
+  background: var(--primary);
   border-radius: 8px;
   padding: 10px 16px;
   text-decoration: none;
@@ -1632,7 +1567,7 @@ body {
 }
 
 .about-feature-cta:hover {
-  background: var(--sage-deep);
+  background: var(--primary-active);
 }
 
 .about-feature-cta svg {
@@ -1646,8 +1581,8 @@ body {
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--ach-brown);
-  background: #fdf2e8;
+  color: var(--muted);
+  background: var(--surface-soft);
   border-radius: 20px;
   padding: 7px 12px;
   width: fit-content;
@@ -1705,8 +1640,8 @@ body {
   width: 48px;
   height: 48px;
   border-radius: var(--rounded-md);
-  background: var(--green-tint);
-  color: var(--ach-green);
+  background: var(--ach-accent-tint);
+  color: var(--ach-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1748,7 +1683,7 @@ body {
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ach-green);
+  color: var(--muted);
   font-weight: 600;
   margin-bottom: 10px;
 }
@@ -2386,7 +2321,7 @@ body {
 
 /* ── Compatibility score card (The Verdict) ── */
 .compare-score-card {
-  background: var(--sidebar-bg);
+  background: var(--primary);
   border-radius: var(--rounded-xl);
   padding: var(--spacing-xxl) var(--spacing-xl);
   text-align: center;
@@ -2410,7 +2345,7 @@ body {
 .compare-score-value {
   font-size: 72px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--ach-accent);
   line-height: 1;
   font-family: "DM Mono", monospace;
   letter-spacing: -0.02em;
@@ -2461,6 +2396,25 @@ body {
   position: relative;
   width: 0;
   border-left: 2px dotted rgba(24, 29, 38, 0.25);
+}
+
+.compare-users-vs {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--rounded-full);
+  background: var(--primary);
+  color: #fff;
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .compare-user-card {
@@ -2525,6 +2479,21 @@ body {
 }
 
 .compare-user-stat-value {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.compare-user-artist-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compare-user-artist-list li {
   font-size: 16px;
   font-weight: 500;
   color: var(--ink);
@@ -2744,7 +2713,7 @@ body {
 .compare-how-heading {
   font-size: 12px;
   text-align: center;
-  color: var(--ach-green);
+  color: var(--muted);
   font-weight: 600;
   margin: 0 0 var(--spacing-md);
   text-transform: uppercase;
@@ -2799,7 +2768,7 @@ body {
 .compare-recent-heading {
   font-size: 12px;
   text-align: center;
-  color: var(--ach-green);
+  color: var(--muted);
   font-weight: 600;
   margin: 0 0 var(--spacing-md);
   text-transform: uppercase;
@@ -2851,7 +2820,6 @@ body {
   flex: 0 0 220px;
   background: var(--canvas);
   border: 1px solid var(--hairline);
-  border-top: 3px solid var(--ach-green);
   border-radius: var(--rounded-md);
   padding: var(--spacing-sm) var(--spacing-md);
   scroll-snap-align: start;
@@ -2973,16 +2941,15 @@ body {
   }
 
   .compare-users-divider {
-    display: none;
+    width: 100%;
+    height: 0;
+    border-left: none;
+    border-top: 2px dotted rgba(24, 29, 38, 0.25);
+    margin: var(--spacing-sm) 0;
   }
 
   .compare-user-card {
     padding: var(--spacing-md) 0;
-  }
-
-  .compare-users-grid>.compare-user-card:last-child {
-    border-top: 2px dotted rgba(24, 29, 38, 0.25);
-    padding-top: var(--spacing-lg);
   }
 
   .compare-score-value {
