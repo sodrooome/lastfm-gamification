@@ -1451,11 +1451,6 @@ body {
   border-bottom: none;
 }
 
-.guide-table-name {
-  font-weight: 500;
-  color: var(--ink);
-}
-
 /* ─── Guide How It Works ─── */
 .guide-howto {
   margin-bottom: var(--spacing-xxl);
@@ -1481,6 +1476,92 @@ body {
   border: none;
   border-top: 1px solid var(--hairline);
   margin-bottom: var(--spacing-xl);
+}
+
+/* ─── Guide page — section icon lockups & achievement rows ─── */
+.guide-section-head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-xxs);
+}
+
+.guide-section-head .guide-section-title {
+  margin-bottom: 0;
+}
+
+.guide-section-head + .guide-section-desc {
+  margin-left: 44px;
+}
+
+.guide-section-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--rounded-md);
+  background: var(--ach-accent-tint);
+  color: var(--ach-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.guide-section-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.guide-ach-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.guide-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
+}
+
+.guide-card-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--rounded-sm);
+  background: var(--ach-accent-tint);
+  color: var(--ach-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.guide-card-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.guide-xp-grid .guide-table strong {
+  color: var(--ach-accent);
+}
+
+.guide-level-pill {
+  display: inline-block;
+  background: var(--surface-strong);
+  color: var(--muted);
+  border-radius: var(--rounded-pill);
+  padding: 3px 11px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+tr.guide-level-max td {
+  background: var(--ach-accent-tint);
+}
+
+tr.guide-level-max .guide-level-pill {
+  background: var(--brand-red);
+  color: #ffffff;
 }
 
 /* ─── Feature Grid (About page) ─── */
