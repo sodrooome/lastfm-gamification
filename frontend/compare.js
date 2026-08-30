@@ -64,18 +64,33 @@ function renderUserCard(userData, actLabel) {
     ? `<p class="compare-user-act">${escapeHtml(actLabel)}</p>`
     : "";
 
+  const topArtists =
+    userData.top_3_artists && userData.top_3_artists.length
+      ? userData.top_3_artists
+      : userData.top_artist
+        ? [{ name: userData.top_artist }]
+        : [];
+
+  const topArtistsHtml = topArtists.length
+    ? `<ul class="compare-user-artist-list">` +
+      topArtists
+        .map((artist, i) => `<li>${i + 1}. ${escapeHtml(artist.name)}</li>`)
+        .join("") +
+      `</ul>`
+    : `<p class="compare-user-stat-value">Unknown</p>`;
+
   card.innerHTML = `
     ${actHtml}
     ${avatarHtml}
     <p class="compare-user-name">${escapeHtml(userData.username)}</p>
     <div class="compare-user-stats">
       <div class="compare-user-stat">
-        <p class="compare-user-stat-label">Top artist</p>
-        <p class="compare-user-stat-value">${escapeHtml(userData.top_artist || "Unknown")}</p>
-      </div>
-      <div class="compare-user-stat">
         <p class="compare-user-stat-label">Scrobbles</p>
         <p class="compare-user-stat-value">${Number(userData.total_scrobbles || 0).toLocaleString()}</p>
+      </div>
+      <div class="compare-user-stat">
+        <p class="compare-user-stat-label">Top Artists</p>
+        ${topArtistsHtml}
       </div>
     </div>
   `;
@@ -227,6 +242,10 @@ async function fetchAndRender(user1, user2) {
 
     const divider = document.createElement("div");
     divider.className = "compare-users-divider";
+    const vsBadge = document.createElement("span");
+    vsBadge.className = "compare-users-vs";
+    vsBadge.textContent = "VS";
+    divider.appendChild(vsBadge);
     grid.appendChild(divider);
 
     grid.appendChild(renderUserCard(data.user2, "Them"));
