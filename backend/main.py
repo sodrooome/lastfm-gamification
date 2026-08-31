@@ -498,12 +498,21 @@ async def compare_roast(data: dict = Body(...)):
             "user2_account_age": account_age_2,
         }
 
-        roast = await roast_joint_listener(ctx)
+        joint_key = "joint:" + "|".join(sorted([user1, user2]))
+        roast, cached = await get_or_cache_roast(
+            joint_key, lambda: ctx, listener=roast_joint_listener
+        )
 
-        return {"roast": roast}
+        return {
+            "roast": roast,
+            "cached": cached,
+            "remaining": get_remaining_roasts(joint_key),
+        }
 
     except HTTPException:
         raise
+    except RoastLimitExceededError:
+        raise HTTPException(status_code=429, detail="Roast limit reached")
     except RoastNotConfiguredError:
         raise HTTPException(status_code=503, detail="Roast feature not configured")
     except RoastServiceUnavailableError:
