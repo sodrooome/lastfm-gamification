@@ -24,6 +24,20 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+function showToast(msg) {
+  let toast = document.getElementById("toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast";
+    toast.className = "toast";
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.add("show");
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => toast.classList.remove("show"), 2500);
+}
+
 function getUsersFromURL() {
   const params = new URLSearchParams(window.location.search);
   return {
@@ -284,7 +298,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function doCompare() {
     const u1 = user1Input.value.trim();
     const u2 = user2Input.value.trim();
-    if (!u1 || !u2) return;
+    if (!u1 || !u2) {
+      showToast("Fill in both usernames first");
+      return;
+    }
     if (window.analytics) window.analytics.trackCompareClicked();
     fetchAndRender(u1, u2);
   }

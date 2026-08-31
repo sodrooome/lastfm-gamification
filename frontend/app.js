@@ -221,7 +221,7 @@ function renderProfile(data) {
   document.getElementById("statCountry").innerText =
     data.country && data.country !== "None" ? data.country : "-";
   document.getElementById("statAvgListen").innerText =
-    data.average_listen + " songs / day";
+    Math.round(data.average_listen) + " songs / day";
 
   // ── Joined date ──
   if (data.joined_date) {
