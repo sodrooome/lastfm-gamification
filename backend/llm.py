@@ -2,7 +2,7 @@ import time
 import logging
 import httpx
 import config
-from typing import Any, Callable
+from typing import Any, Awaitable, Callable
 from exceptions import (
     RoastLimitExceededError,
     RoastNotConfiguredError,
@@ -283,15 +283,19 @@ async def roast_listener(profile_context: dict[str, Any]) -> str:
 
 
 async def get_or_cache_roast(
-    username: str, context_builder: Callable[[], dict[str, Any]]
+    username: str,
+    context_builder: Callable[[], dict[str, Any]],
+    listener: Callable[[dict[str, Any]], Awaitable[str]] | None = None,
 ) -> tuple[str, bool]:
-    """Return roast for a user.
+    """Return roast for a user (or any other daily-limited roast key, e.g. a
+    joint-roast pair key).
 
     First ROAST_LIMIT_PER_USER calls always hit the LLM (no cache serving)
     so the user gets 3 fresh roasts. The result of each call is cached. On
     the 4th+ call the cached result from the most-recent LLM call is returned
     and the button is disabled on the frontend.
     """
+    listener = listener or roast_listener
     count = _ROAST_COUNTS.get(username, 0)
 
     if count >= ROAST_LIMIT_PER_USER:
@@ -300,7 +304,7 @@ async def get_or_cache_roast(
             return cached["roast"], True
         raise RoastLimitExceededError(f"Roast limit exceeded for: {username}")
 
-    roast = await roast_listener(context_builder())
+    roast = await listener(context_builder())
     _ROAST_COUNTS[username] = count + 1
     _ROAST_CACHE[username] = {"roast": roast, "generated_at": time.time()}
     return roast, False
