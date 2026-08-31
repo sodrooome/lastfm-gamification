@@ -95,6 +95,34 @@ class TestLLM:
         assert llm.get_remaining_roasts("ryanfeb") == 2
 
     @pytest.mark.asyncio
+    async def test_custom_listener_is_used_instead_of_default(self):
+        joint_listener = AsyncMock(return_value="Joint roast #1")
+        with patch.object(
+            llm, "roast_listener", new=AsyncMock(return_value="Solo roast")
+        ):
+            roast, get_cached = await llm.get_or_cache_roast(
+                "joint:a|b", lambda: {}, listener=joint_listener
+            )
+
+        assert roast == "Joint roast #1"
+        assert get_cached is False
+        joint_listener.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_custom_listener_key_has_independent_limit(self):
+        # exhausting a solo username's quota must not affect a differently
+        # keyed (e.g. joint-roast) call, since they're tracked separately
+        llm._ROAST_COUNTS["ryanfeb"] = llm.ROAST_LIMIT_PER_USER
+        joint_listener = AsyncMock(return_value="Joint roast")
+
+        roast, get_cached = await llm.get_or_cache_roast(
+            "joint:a|b", lambda: {}, listener=joint_listener
+        )
+
+        assert roast == "Joint roast"
+        assert get_cached is False
+
+    @pytest.mark.asyncio
     async def test_limit_exceeded_with_no_cache_raises(self):
         # simulate count already hit the limit, but cache is still empty
         llm._ROAST_COUNTS["ryafeb"] = llm.ROAST_LIMIT_PER_USER
