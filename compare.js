@@ -146,6 +146,21 @@ function resetJointRoast() {
   if (btn) btn.disabled = false;
 }
 
+function showJointRoastLimitReached(btn) {
+  var resultEl = document.getElementById("jointRoastResult");
+  resultEl.innerHTML =
+    `<div class="roast-limit-hint">` +
+    `<p class="roast-limit-hint-title">You've reached your roast limit!</p>` +
+    `<p class="roast-limit-hint-body">You've officially broken our limit meter! It'll magically reset... eventually. Please try again soon.</p>` +
+    `</div>`;
+  toggle("jointRoastLoading", false);
+  toggle("jointRoastResult", true);
+  if (btn) {
+    btn.disabled = true;
+    btn.title = "You've used all 3 roasts";
+  }
+}
+
 async function generateJointRoast() {
   if (!currentCompareData) return;
 
@@ -182,6 +197,11 @@ async function generateJointRoast() {
       }),
     });
 
+    if (res.status === 429) {
+      showJointRoastLimitReached(btn);
+      return;
+    }
+
     if (!res.ok) {
       var detail = "";
       try {
@@ -194,6 +214,15 @@ async function generateJointRoast() {
     }
 
     var data = await res.json();
+    if (
+      typeof data.remaining === "number" &&
+      data.remaining === 0 &&
+      data.cached
+    ) {
+      showJointRoastLimitReached(btn);
+      return;
+    }
+
     var resultEl = document.getElementById("jointRoastResult");
     resultEl.textContent = data.roast;
     toggle("jointRoastLoading", false);
