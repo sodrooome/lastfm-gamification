@@ -140,8 +140,10 @@ class TestUserRoutesEndpoint:
                 side_effect=[make_user_information(), make_user_information()]
             ),
         ), patch(
-            "main.roast_joint_listener",
-            new=AsyncMock(return_value="You all need a new music"),
+            "main.get_or_cache_roast",
+            new=AsyncMock(return_value=("You all need a new music", False)),
+        ), patch(
+            "main.get_remaining_roasts", return_value=2
         ):
 
             async with client as cli:
@@ -150,8 +152,53 @@ class TestUserRoutesEndpoint:
                     json={"user1": "ryan", "user2": "nayr", "compatibility_score": 42},
                 )
 
+        resp_body = response.json()
         assert response.status_code == 200
-        assert response.json()["roast"] == "You all need a new music"
+        assert resp_body["roast"] == "You all need a new music"
+        assert resp_body["cached"] is False
+        assert resp_body["remaining"] == 2
+
+    @pytest.mark.asyncio
+    async def test_joint_roast_limit_exceeding_error_returns_429(self, client):
+        with patch(
+            "main.fetch_user_information",
+            new=AsyncMock(
+                side_effect=[make_user_information(), make_user_information()]
+            ),
+        ), patch(
+            "main.get_or_cache_roast",
+            new=AsyncMock(side_effect=RoastLimitExceededError()),
+        ):
+
+            async with client as cli:
+                response = await cli.post(
+                    "/compare/roast",
+                    json={"user1": "ryan", "user2": "nayr"},
+                )
+
+        assert response.status_code == 429
+
+    @pytest.mark.asyncio
+    async def test_joint_roast_key_is_order_independent(self, client):
+        mock_get_or_cache_roast = AsyncMock(return_value=("roast text", False))
+        with patch(
+            "main.fetch_user_information",
+            new=AsyncMock(return_value=make_user_information()),
+        ), patch("main.get_or_cache_roast", new=mock_get_or_cache_roast), patch(
+            "main.get_remaining_roasts", return_value=2
+        ):
+
+            async with client as cli:
+                await cli.post(
+                    "/compare/roast", json={"user1": "ryan", "user2": "nayr"}
+                )
+                await cli.post(
+                    "/compare/roast", json={"user1": "nayr", "user2": "ryan"}
+                )
+
+        first_key = mock_get_or_cache_roast.call_args_list[0].args[0]
+        second_key = mock_get_or_cache_roast.call_args_list[1].args[0]
+        assert first_key == second_key == "joint:nayr|ryan"
 
     @pytest.mark.asyncio
     async def test_roast_not_configured_returns_503(self, client):
