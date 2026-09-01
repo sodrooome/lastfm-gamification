@@ -1,11 +1,3 @@
-const isLocal =
-  window.location.hostname === "localhost" ||
-  window.location.hostname === "127.0.0.1";
-
-const API_BASE = isLocal
-  ? "http://localhost:8000"
-  : "https://43-134-108-8.sslip.io";
-
 let currentUsername = null;
 
 // ─── Roast loading animation ───
@@ -655,8 +647,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function showExample(i) {
       var ex = HERO_EXAMPLES[i];
       var iconClass = ICON_FA_CLASSES[ex.icon] || ICON_FA_CLASSES.flame;
-      iconEl.innerHTML =
-        '<i class="' + iconClass + '" aria-hidden="true"></i>';
+      iconEl.innerHTML = '<i class="' + iconClass + '" aria-hidden="true"></i>';
       iconEl.style.backgroundColor =
         ex.icon === "flame" ? "var(--ach-accent)" : "#f59e0b";
       textEl.classList.remove("fade-out");
