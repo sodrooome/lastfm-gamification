@@ -109,6 +109,17 @@ class TestCalculateAchievements:
         names = [a["name"] for a in result]
         assert names == DAILY_ACHIEVEMENTS
 
+    def test_100_scrobbles_same_day_unlocks_having_fun_with_yourself(self):
+        # Regression: with a too-small fetch limit, a user who scrobbled
+        # 100+ tracks today could never have all of them show up in
+        # recent_tracks, so this achievement could never unlock.
+        now = datetime.now(timezone.utc)
+        tracks = [{"date": {"uts": str(int(now.timestamp()) - i)}} for i in range(150)]
+        recent_tracks = {"recenttracks": {"track": tracks}}
+        result = calculate_daily_achievements(recent_tracks)
+        unlocked = {a["name"]: a["unlocked"] for a in result}
+        assert unlocked["Having Fun with Yourself?"] is True
+
     def test_no_registered_date_returned_zero(self):
         user_information = make_user_information(playcount=1000)
         assert _compute_avg_listen(user_information, 1000) == 0.0

@@ -2,30 +2,45 @@
 
 ## Project Overview
 
-**lastfm-achievements** is a web application that transforms Last.fm listening data into a gamified profile with unlockable achievements and a 10-level XP progression system.
+**tastecheck.me** (formerly lastfm-achievements) is a web application that transforms Last.fm listening data into a gamified profile: unlockable achievements, a 10-level XP progression system, an opt-in AI "roast" of your listening habits, and a two-user compare/joint-roast feature.
 
-- **Backend:** FastAPI (Python) — proxies Last.fm API, computes achievements and XP
+- **Backend:** FastAPI (Python) — proxies Last.fm API, computes achievements and XP, generates AI roasts via OpenRouter
 - **Frontend:** Static SPA — vanilla HTML/CSS/JS, no build step, no frameworks
-- **Design:** Airtable-inspired editorial system (see DESIGN.md)
+- **Design:** Warm paper canvas, single ink + coral accent system (see DESIGN.md)
 
 ## Project Structure
 
 ```
-lastfm-achievements/
+lastfm-gamification/
 ├── backend/
-│   ├── .env              # Last.fm API credentials (gitignored)
-│   ├── Makefile          # serve, format targets
+│   ├── .env              # Last.fm / OpenRouter credentials (gitignored)
+│   ├── Makefile          # serve-dev, serve-prod, format, test targets
 │   ├── requirements.txt  # Python dependencies
-│   ├── config.py         # Env var loading (LASTFM_API_KEY, LASTFM_SHARED_SECRET)
-│   ├── main.py           # FastAPI app, mounts frontend as static files
-│   ├── models.py         # Pydantic models (currently unused)
+│   ├── pytest.ini        # Pytest config
+│   ├── config.py         # Env var loading (LASTFM_API_KEY, LASTFM_SHARED_SECRET, LLM_API_KEY)
+│   ├── main.py           # FastAPI app, routes, mounts frontend as static files
 │   ├── achievements.py   # Achievement conditions, XP calculation, level thresholds
-│   └── lastfm.py         # Async Last.fm API client (httpx)
+│   ├── lastfm.py         # Async Last.fm API client (httpx)
+│   ├── llm.py            # AI roast generation (OpenRouter) + per-key daily rate limit/cache
+│   ├── exceptions.py     # RoastLimitExceededError, RoastNotConfiguredError, RoastServiceUnavailableError
+│   ├── _logging.py       # Logging setup
+│   └── tests/            # Pytest suite (test_achievements.py, test_lastfm.py, test_llm.py, test_user_routes.py)
 ├── frontend/
-│   ├── index.html        # Page structure, profile card, achievement grids
-│   ├── how-to.html       # Explanation page
+│   ├── index.html        # Landing + dashboard (profile card, achievement grids)
+│   ├── compare.html      # Two-user compare + joint roast
+│   ├── how-to.html       # Achievement guide
+│   ├── about.html        # About page
+│   ├── privacy.html, terms.html, 404.html
 │   ├── style.css         # Design tokens, layout, components, responsive breakpoints
-│   └── app.js            # Fetch API data, DOM rendering
+│   ├── config.js         # Shared API_BASE resolution (loaded before app.js/compare.js)
+│   ├── app.js            # Main app: fetch API data, DOM rendering, roast dialogs
+│   ├── compare.js        # Compare page logic + joint roast
+│   ├── tracking.js       # Analytics (Mixpanel)
+│   └── achievements-data.js
+├── e2e/                  # Playwright smoke tests (kept out of frontend/, see below)
+│   ├── package.json, package-lock.json
+│   ├── playwright.config.js
+│   └── tests/            # smoke-test.spec.js
 ├── screenshot/           # Desktop and mobile screenshots
 ├── DESIGN.md             # Design system documentation
 ├── LEVELS.md             # XP system documentation
@@ -39,15 +54,28 @@ lastfm-achievements/
 ```bash
 cd backend
 pip install -r requirements.txt   # Install dependencies
-make serve                         # Start dev server (uvicorn --reload)
+make serve-dev                     # Start dev server (uvicorn --reload)
+make serve-prod                    # Start prod server
 make format                        # Format with Black
+make test                          # Run pytest suite
 ```
 
-Server runs on `http://localhost:8000`. Frontend is served as static files from the same server.
+Server runs on `http://localhost:8000`. Frontend is served as static files from the same server when `ENVIRONMENT=development`.
 
 ### Frontend
 
-No build step. Open `frontend/index.html` directly or serve via the backend. API base URL is at the top of `frontend/app.js`.
+No build step. Open `frontend/index.html` directly or serve via the backend. API base URL is resolved in `frontend/config.js`, shared by `app.js`/`compare.js`.
+
+### End-to-End Tests (`e2e/`)
+
+Playwright smoke tests live in their own top-level `e2e/` directory, separate from `frontend/` — the entire `frontend/` directory is published as-is to GitHub Pages (`publish_dir: ./frontend` in `.github/workflows/deploy.yml`), so test tooling (`package.json`, `playwright.config.js`, `node_modules`) must not live inside it.
+
+```bash
+cd e2e
+npm install       # or `npm run install` for Playwright browsers
+npm test          # runs against the deployed GitHub Pages site, not localhost
+npm run report    # opens the HTML report
+```
 
 ## Backend Conventions
 
@@ -58,13 +86,19 @@ No build step. Open `frontend/index.html` directly or serve via the backend. API
 - **Async:** All Last.fm API calls are async using `httpx.AsyncClient`
 - **Error handling:** Wrap route handlers in try/except, raise `HTTPException(status_code=500)` on failure
 - **No type hints required** but preferred for route parameters
-- **Debug prints:** `print(response.json())` statements exist in `lastfm.py` — acceptable during development
 
 ### API Client (`lastfm.py`)
 
 - Each function creates its own `httpx.AsyncClient` context manager
 - All endpoints return raw JSON dicts from the Last.fm API
 - `fetch_user_all_top_artists()` paginates across all pages (default limit: 10,000 artists), returns a `set` of artist names plus first page data
+- `fetch_user_recent_tracks()` requests `limit=200` (Last.fm's max page size for this endpoint) so the "100+ scrobbles today" daily achievement is reachable; the rarely-hit 1,000/day achievement still can't trigger off a single page — pagination would be needed for that
+
+### AI Roast & Rate Limiting (`llm.py`)
+
+- `get_or_cache_roast(key, context_builder, listener=roast_listener)` enforces a shared daily quota (`ROAST_LIMIT_PER_USER = 3`) per string key, caching the most recent result and raising `RoastLimitExceededError` (→ HTTP 429) once exhausted
+- Solo roasts (`GET /roast/{username}`) key on the plain username; joint roasts (`POST /compare/roast`) key on `"joint:" + "|".join(sorted([user1, user2]))` so either ordering of the pair shares one quota, and pass `listener=roast_joint_listener` to reuse the same counter/cache against a different LLM prompt
+- The counters are in-memory and single-process — see Notable Gaps below
 
 ### Achievement Logic (`achievements.py`)
 
@@ -78,7 +112,7 @@ No build step. Open `frontend/index.html` directly or serve via the backend. API
 ### JavaScript (`app.js`)
 
 - **No frameworks, no build tools** — vanilla DOM manipulation
-- API base URL is hardcoded at top: `const API_BASE = "http://localhost:8000"`
+- API base URL is resolved once in `config.js` (localhost → `http://localhost:8000`, else the hardcoded production URL) and shared by `app.js`/`compare.js`; `config.js` must be loaded before either script
 - State management via DOM visibility toggles (`toggle(id, show)`)
 - URL params (`?user=username`) control which profile loads
 - `window.history.pushState` updates URL on successful load
@@ -137,10 +171,10 @@ Refer to LEVELS.md for complete threshold tables, formulas, and examples. Core r
 
 ## Notable Gaps / TODOs
 
-- `backend/models.py` defines a `UserProfile` Pydantic model that is currently unused
-- `print()` debug statements in `lastfm.py` and `main.py`
-- No test suite exists
-- `API_BASE` in `app.js` is hardcoded to localhost
+- `API_BASE` still falls back to a hardcoded production URL when not running on localhost (now centralized in `config.js` instead of duplicated, but the tradeoff is unchanged — there's no build step to inject an env-specific value)
 - No linting configured for frontend (ESLint, Prettier)
-- `fetch_user_recent_tracks()` only fetches 50 tracks, which means daily achievements requiring 100+ daily scrobbles can never trigger
-- The AI roast in-memory cache is single-process and non-persistent; a multi-process cache (Redis/SQLite) would be needed for gunicorn deployments
+- The AI roast in-memory cache/counters (`llm.py`, shared by solo and joint roasts) are single-process and non-persistent; a multi-process store (Redis/SQLite) would be needed for gunicorn deployments
+- Backend test coverage is uneven (~80% overall as of this writing; `lastfm.py` is now fully covered). Still untested:
+  - `main.py`: `/health` and `/ready` endpoints entirely; the 404/500 error branches on `/user`, `/roast`, `/compare`, `/compare/roast`; the `/compare` tagline tiers beyond one bucket
+  - `llm.py`: the entire joint-roast path (`roast_joint_listener`, `_format_joint_roast_prompt`); `roast_listener`'s HTTP-error and malformed-response branches; several `_clean_roast_output`/`_is_reasoning_line` edge cases (empty input, all-caps line, multi-`?` line, 400-char truncation)
+  - `achievements.py`: the "Spotify Wasn't Even Born Yet" (10yr account) and "How about Take a Break" (1000+/day) achievements; `_compute_avg_listen`'s actual calculation path

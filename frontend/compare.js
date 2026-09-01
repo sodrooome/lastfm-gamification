@@ -1,15 +1,7 @@
 // frontend/compare.js
 // Compare two Last.fm profiles and render compatibility score + user cards.
 
-// ─── API base (same pattern as app.js) ──────────────────────────
-
-const isLocal =
-  window.location.hostname === "localhost" ||
-  window.location.hostname === "127.0.0.1";
-
-const API_BASE = isLocal
-  ? "http://localhost:8000"
-  : "https://43-134-108-8.sslip.io";
+// API_BASE comes from config.js (shared with app.js), loaded before this script.
 
 // ─── Helpers ───────────────────────────────────────────────────
 

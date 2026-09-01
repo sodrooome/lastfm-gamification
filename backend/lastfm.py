@@ -53,8 +53,10 @@ async def fetch_user_top_artists_12month(username: str, limit=50):
 async def fetch_user_recent_tracks(username: str):
     params = {
         "method": "user.getrecenttracks",
+        # 200 is Last.fm's max page size for this endpoint; below 100 the
+        # "100+ scrobbles today" daily achievement could never trigger.
+        "limit": 200,
         "user": username,
-        "limit": 50,
         "api_key": LASTFM_API_KEY,
         "format": "json",
     }

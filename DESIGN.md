@@ -107,6 +107,10 @@ Two shadow tokens, both very soft — this system does **not** run a zero-shadow
 
 **`compare-score-card`** (compare page verdict card) — Same ink-surface-plus-coral-highlight pattern as the sidebar: `{colors.primary}` background, white heading/label/stamp text, and the compatibility percentage itself in `{colors.ach-accent}`. The two head-to-head user cards below it (`.compare-user-card`) stay neutral white/ink — a `{colors.primary}` circular "VS" badge sits on the dotted divider between them (also shown as a horizontal divider on mobile, not hidden), and each side's top 3 artists are listed as plain numbered text, deliberately not accent-colored, to keep the ranked list reading as equal-weight data per the `stat-box` rule.
 
+**`roast-limit-hint`** (shown inside the roast result dialog on `index.html`, and inline on the joint-roast card on `compare.html`, once the daily roast quota is exhausted) — `{colors.ach-accent-tint}` background, `{rounded.md}` corners, title text in `{colors.ach-accent}`. Reads as a gentle limit notice, not a hard error — same treatment as `toast` below, not a red/black alert box.
+
+**`toast`** (compare page, transient validation feedback — e.g. submitting Compare with an empty username) — Fixed to the bottom center of the viewport, `{colors.ach-accent-tint}` background with a 1px `{colors.ach-accent}` border and `{colors.ach-accent}` text, `{rounded.md}` corners. Fades in/out; auto-dismisses after ~2.5s.
+
 ## Do's and Don'ts
 
 ### Do

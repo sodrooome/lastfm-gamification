@@ -18,16 +18,16 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: e2e/package-lock.json
 
       - name: Install NPM Dependencies
-        working-directory: frontend
+        working-directory: e2e
         run: npm ci
 
       - name: Install Playwright Browsers
-        working-directory: frontend
+        working-directory: e2e
         run: npx playwright install --with-deps
 
       - name: Run Frontend Smoke Tests
-        working-directory: frontend
+        working-directory: e2e
         run: npx playwright test
