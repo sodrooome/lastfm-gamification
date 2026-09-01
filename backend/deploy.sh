@@ -1,5 +1,5 @@
-# simple deployment and pulling latest changes to the VPS server
 #!/bin/bash
+# simple deployment and pulling latest changes to the VPS server
 
 set -e # immediately exit
 
@@ -12,7 +12,9 @@ echo "=== Restart Service ==="
 sudo systemctl restart lastfm-backend
 
 echo "=== Checking Status ==="
-sudo systemctl status lastfm-backend --no-pager 1
+sudo systemctl status lastfm-backend --no-pager
+
+echo "=== Checking Health ==="
+curl -sf https://43-134-108-8.sslip.io/health
 
 echo "Deployment Completed"
-curl -s https://43-134-108-8.sslip.io/health
