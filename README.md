@@ -8,9 +8,16 @@
 
 Turn your Last.fm listening history into a gamified profile with unlock achievements, level up with XP, AI playful roasts, compare your taste with friends or jointly roast each other.
 
-<p align="center">
-  <img src="screenshot/desktop-version-1.png" alt="tastecheck.me landing page"/>
-</p>
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="screenshot/desktop-version-1.png" alt="tastecheck.me landing page" width="420"/>
+    </td>
+    <td align="center">
+      <img src="screenshot/tastecheck-amyahya-roast.png" alt="Shareable roast result card" width="300"/>
+    </td>
+  </tr>
+</table>
 
 ## We're live
 
@@ -31,6 +38,7 @@ We just launched on Product Hunt and Peerlist. Come say hi, and an upvote is alw
 - **12 lifetime achievements** across three categories: scrobbles, unique artists, and profile completeness
 - **10-level XP progression** earned from scrobbles, achievements (150 XP each), and unique artists
 - **AI "Roast Me"**: a playful, opt-in roast of your listening habits (Gemini 2.5 Flash via OpenRouter)
+- **Shareable roast cards**: turn a roast result into a downloadable/shareable image card, generated entirely client-side
 - **Profile comparison**: a compatibility score, shared artists, and a joint roast for any two users
 - **Design Responsive**: a warm paper canvas with a single ink + coral accent system and gamified badge components, see [DESIGN.md](DESIGN.md)
 
@@ -83,7 +91,7 @@ The API runs at `http://localhost:8000`.
 
 ### Frontend
 
-No build step. In development (`ENVIRONMENT=development`) the backend serves the frontend as static files; otherwise open `frontend/index.html` directly. The API base URL is configured at the top of `frontend/app.js`.
+No build step. In development (`ENVIRONMENT=development`) the backend serves the frontend as static files; otherwise open `frontend/index.html` directly. The API base URL is configured in `frontend/config.js`.
 
 ## Project Structure
 
@@ -100,15 +108,20 @@ frontend/
 ├── index.html       # Main app (profile + dashboard)
 ├── compare.html     # Profile comparison
 ├── how-to.html      # Achievement guide
+├── about.html       # About page
+├── release.html     # Release notes / changelog
 ├── privacy.html     # Privacy policy
 ├── terms.html       # Terms of service
 ├── 404.html         # Not found page
-├── app.js           # Main app logic
+├── app.js           # Main app logic + shareable roast card generation
 ├── compare.js       # Comparison logic
+├── config.js        # Shared API base URL resolution
 ├── style.css        # Design tokens + styles
 ├── tracking.js      # Analytics
 ├── achievements-data.js
 └── assets/          # Icons + images
+
+e2e/                 # Playwright smoke tests
 ```
 
 ## Documentation
@@ -116,6 +129,7 @@ frontend/
 - [DESIGN.md](DESIGN.md): design system
 - [LEVELS.md](LEVELS.md): XP thresholds and formulas
 - [how-to.html](frontend/how-to.html): achievement unlock guide
+- [release.html](frontend/release.html): release notes / changelog
 
 ## Contributing
 

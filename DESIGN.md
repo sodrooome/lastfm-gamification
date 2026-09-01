@@ -20,6 +20,7 @@ This design language was introduced gradually, page by page. As of this writing,
 | `about.html` | ✅ Migrated — feature-card icons/CTA/status pill, the "how it works" step icons, and the `.about-eyebrow` labels all moved off legacy green/ember to a plain ink/muted neutral treatment |
 | `privacy.html`, `terms.html`, `404.html` | ✅ Already compliant — these only ever used ink/muted/canvas, no legacy colors to remove |
 | `how-to.html` | ✅ Migrated — section headers now carry a small `--ach-accent`-tint icon lockup (matching `about.html`'s recipe); the Daily/Lifetime achievement lists reuse the shared `ach-row` component instead of plain tables (star/badge icons per achievement, "+150 XP" pill on lifetime rows, no pill on daily); XP calculation cards get a matching icon each and their tier values recolor to `--ach-accent`; the Level Thresholds table's level number renders as a pill, with Level 10 highlighted in the solid `--brand-red` "max level" treatment the dashboard already uses |
+| `release.html` | ✅ Native — built directly on the ink + coral system (no legacy version existed); uses the `guide-page` shell shared with `about.html`/`how-to.html`, plus the new `release-entry`/`release-tag` components (see Components below) |
 
 `{colors.legacy-sidebar-bg}` and `{colors.legacy-sage-deep}` have been removed from `style.css` entirely — nothing references them anymore. `{colors.ach-green}` / `{colors.ach-brown}` remain defined and in use, but only for their legitimate job: the "Shared Setlist" artist-pill color cycle on `compare.html` (see Variety accent below) — not as a general green/brown accent.
 
@@ -52,7 +53,8 @@ This design language was introduced gradually, page by page. As of this writing,
 
 ### Variety accent (not brand)
 
-- **Ach Teal / Blue / Brown / Pink / Green / Purple** (`#2a7c6f #3d5a8a #6b4a2a #c0446a #3a7a4a #5a3a8a`): A six-color cycle used *only* for the "Shared Setlist" artist-name pills on the compare results page. This is legitimate categorical variety for an open-ended list of artist names, not a branding decision — don't read it as license to reintroduce multi-hue accents elsewhere.
+- **Ach Teal / Blue / Brown / Pink / Green / Purple** (`#2a7c6f #3d5a8a #6b4a2a #c0446a #3a7a4a #5a3a8a`): A six-color cycle, used for two specific fixed-category cases — the "Shared Setlist" artist-name pills on the compare results page (open-ended list, solid pill + white text), and the three `release-tag` chips on `release.html` (Feature/Fix/Design, tint background + colored text — see `release-tag` below). Both are legitimate categorical variety for a small number of known categories, not a branding decision — don't read it as license to reintroduce multi-hue accents elsewhere.
+- **Tints** (`--ach-green-tint #ebf2ed`, `--ach-blue-tint #eceff3`, `--ach-purple-tint #efebf3`): Light backgrounds for the subset of the variety palette used in `release-tag` chips, following the same "tint bg + solid-color text" recipe as `{colors.ach-accent-tint}`.
 
 ### Legacy (removed)
 
@@ -110,6 +112,10 @@ Two shadow tokens, both very soft — this system does **not** run a zero-shadow
 **`roast-limit-hint`** (shown inside the roast result dialog on `index.html`, and inline on the joint-roast card on `compare.html`, once the daily roast quota is exhausted) — `{colors.ach-accent-tint}` background, `{rounded.md}` corners, title text in `{colors.ach-accent}`. Reads as a gentle limit notice, not a hard error — same treatment as `toast` below, not a red/black alert box.
 
 **`toast`** (compare page, transient validation feedback — e.g. submitting Compare with an empty username) — Fixed to the bottom center of the viewport, `{colors.ach-accent-tint}` background with a 1px `{colors.ach-accent}` border and `{colors.ach-accent}` text, `{rounded.md}` corners. Fades in/out; auto-dismisses after ~2.5s.
+
+**`release-entry`** (`release.html`, one changelog item) — Flat row, `{colors.hairline}` bottom border (no card wrapper), a fixed-width `release-tag` chip on the left and title/description stacked on the right. The `release-tag` chip is tint background + colored text — `release-tag-feature` (green), `release-tag-fix` (blue), `release-tag-design` (purple) — using the variety-accent tints (see Variety accent above), never `{colors.brand-red}`/`{colors.ach-accent}` since those stay reserved for brand/achievement use.
+
+**`roast-share-card`** (client-side canvas export from the roast result dialog, `app.js`'s `buildShareCardCanvas()`) — A 1080×1080 image reusing the dashboard sidebar's identity-block recipe verbatim: `{colors.primary}` background, `{colors.brand-red}` avatar ring, `{colors.brand-red}` level pill, brand-red→ach-accent XP gradient bar. The roast quote is the dominant element (poster treatment — one big readable thing), with a small `{colors.ach-accent}`-colored decorative quote mark above it. Not a live DOM component — it only exists as canvas-drawn pixels, so its styling is duplicated in JS rather than reading `style.css`; keep it in sync by hand if the sidebar recipe changes.
 
 ## Do's and Don'ts
 
