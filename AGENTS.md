@@ -33,8 +33,9 @@ lastfm-gamification/
 │   ├── privacy.html, terms.html, 404.html
 │   ├── style.css         # Design tokens, layout, components, responsive breakpoints
 │   ├── config.js         # Shared API_BASE resolution (loaded before app.js/compare.js)
-│   ├── app.js            # Main app: fetch API data, DOM rendering, roast dialogs
+│   ├── app.js            # Main app: fetch API data, DOM rendering, roast dialogs, share card
 │   ├── compare.js        # Compare page logic + joint roast
+│   ├── release.html      # Release notes / changelog, linked from every page's footer
 │   ├── tracking.js       # Analytics (Mixpanel)
 │   └── achievements-data.js
 ├── e2e/                  # Playwright smoke tests (kept out of frontend/, see below)
@@ -117,6 +118,15 @@ npm run report    # opens the HTML report
 - URL params (`?user=username`) control which profile loads
 - `window.history.pushState` updates URL on successful load
 - Achievements are split by `type` field into daily and lifetime sections
+
+### Shareable Roast Card (`app.js`)
+
+- After a successful (non-cached, non-error) roast, `#roastResultShare` appears in the result dialog and calls `shareRoastCard()` — entirely client-side, no backend endpoint involved
+- `buildShareCardCanvas(profileData, roastText)` draws a fixed 1080×1080 `<canvas>` reusing the sidebar's existing visual recipe (ink background, brand-red avatar ring, brand-red level pill, brand-red→ach-accent XP gradient) — `currentProfileData` (set in `_fetchAndRender`) supplies the stats, `lastRoastText` supplies the quote
+- The avatar image is loaded with `crossOrigin="anonymous"`; if Last.fm's CDN doesn't grant it, the load fails and the card falls back to a monogram (first letter of the username) instead of erroring — there is no backend proxy for this
+- The roast quote is a single fixed-width block with its own height budget (170px) — `fitRoastText()` shrinks the font step by step until the wrapped text fits, since roast length varies (bounded at 400 chars by `_clean_roast_output` in `backend/llm.py`)
+- Layout below the avatar/quote flows sequentially top-to-bottom (each element's y-position is computed from the one above it) rather than anchoring anything to a fixed distance from the canvas bottom — an earlier version anchored the footer to `size - 64` and it visually collided with the XP bar whenever the roast text was long enough to push content further down
+- Export uses `navigator.share` with the generated PNG `File` when the browser supports sharing files, falling back to a synthetic `<a download>` click otherwise
 
 ### HTML
 

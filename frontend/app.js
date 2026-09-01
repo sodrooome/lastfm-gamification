@@ -1,4 +1,5 @@
 let currentUsername = null;
+let currentProfileData = null;
 
 // ─── Roast loading animation ───
 const ROAST_STATUS_MESSAGES = [
@@ -155,6 +156,7 @@ async function _fetchAndRender(username) {
     if (window.analytics) window.analytics.trackProfileSearched(true);
 
     currentUsername = username;
+    currentProfileData = data;
     renderProfile(data);
     const params = new URLSearchParams(window.location.search);
     params.set("user", username);
@@ -201,14 +203,7 @@ function renderProfile(data) {
   const scrobblesFormatted = Number(data.total_scrobbles).toLocaleString();
   document.getElementById("statScrobbles").innerText = scrobblesFormatted;
 
-  /* unused code but might be useful later */
-  // document.getElementById("totalScrobblesSidebar").innerText =
-  //   scrobblesFormatted + " scrobbles";
-
   document.getElementById("statTopArtist").innerText = data.top_artist;
-
-  /* unused code but might be useful later */
-  // document.getElementById("topArtistSidebar").innerText = data.top_artist;
 
   document.getElementById("statCountry").innerText =
     data.country && data.country !== "None" ? data.country : "-";
@@ -504,6 +499,7 @@ function _bindEnter(inputId, handler) {
 
 let _roastConsentBound = false;
 let _roastResultBound = false;
+let lastRoastText = null;
 
 function openRoastConsent() {
   if (!currentUsername) return;
@@ -534,6 +530,7 @@ async function confirmRoast() {
   const resultDialog = document.getElementById("roastResultDialog");
   const resultText = document.getElementById("roastResultText");
   const closeBtn = document.getElementById("roastResultClose");
+  const shareBtn = document.getElementById("roastResultShare");
   if (!resultDialog || !resultText || !closeBtn) return;
 
   if (!_roastResultBound) {
@@ -545,10 +542,13 @@ async function confirmRoast() {
     resultDialog.addEventListener("click", (e) => {
       if (e.target === resultDialog) resultDialog.close();
     });
+    if (shareBtn) shareBtn.addEventListener("click", shareRoastCard);
   }
 
   resultText.textContent = "Roasting…";
   closeBtn.disabled = true;
+  lastRoastText = null;
+  toggle("roastResultShare", false);
   if (!loadingDialog.open) loadingDialog.showModal();
   startRoastLoadingAnimation();
 
@@ -580,6 +580,8 @@ async function confirmRoast() {
         }
       } else {
         resultText.textContent = data.roast;
+        lastRoastText = data.roast;
+        toggle("roastResultShare", true);
       }
     } else if (res.status === 429) {
       resultText.innerHTML =
@@ -609,6 +611,336 @@ async function confirmRoast() {
     if (!resultDialog.open) resultDialog.showModal();
   } finally {
     closeBtn.disabled = false;
+  }
+}
+
+// ─── Share Card (client-side canvas export) ─────────────────────
+
+const SHARE_CARD_SIZE = 1080;
+const SHARE_CARD_INK = "#181d26";
+const SHARE_CARD_BRAND_RED = "#e8503a";
+const SHARE_CARD_ACH_ACCENT = "#d9291c";
+const FALLBACK_AVATAR_URL =
+  "https://lastfm.freetls.fastly.net/i/u/avatar170s/818148bf682d429dc215c1705eb27b98.png";
+
+function loadImage(src, crossOrigin) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    if (crossOrigin) img.crossOrigin = crossOrigin;
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+    img.src = src;
+  });
+}
+
+// Draws `img` into the x/y/w/h box, cropping (not stretching) to cover it —
+// same behavior as CSS `object-fit: cover`.
+function drawImageCover(ctx, img, x, y, w, h) {
+  const imgRatio = img.width / img.height;
+  const boxRatio = w / h;
+  let sx, sy, sw, sh;
+  if (imgRatio > boxRatio) {
+    sh = img.height;
+    sw = sh * boxRatio;
+    sx = (img.width - sw) / 2;
+    sy = 0;
+  } else {
+    sw = img.width;
+    sh = sw / boxRatio;
+    sx = 0;
+    sy = (img.height - sh) / 2;
+  }
+  ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+}
+
+function wrapCanvasText(ctx, text, maxWidth) {
+  const words = text.split(/\s+/);
+  const lines = [];
+  let line = "";
+  for (const word of words) {
+    const test = line ? `${line} ${word}` : word;
+    if (line && ctx.measureText(test).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+// Shrinks the font size step by step until the roast quote fits within
+// maxHeight — roast length varies a lot, so this keeps long roasts legible
+// instead of overflowing the card.
+function fitRoastText(ctx, text, maxWidth, maxHeight) {
+  let fontSize = 42;
+  const minFontSize = 22;
+  let lines, lineHeight;
+  do {
+    ctx.font = `400 ${fontSize}px "DM Sans", sans-serif`;
+    lines = wrapCanvasText(ctx, text, maxWidth);
+    lineHeight = fontSize * 1.35;
+    if (lines.length * lineHeight <= maxHeight || fontSize <= minFontSize)
+      break;
+    fontSize -= 2;
+  } while (true);
+  return { fontSize, lines, lineHeight };
+}
+
+async function buildShareCardCanvas(profileData, roastText) {
+  const size = SHARE_CARD_SIZE;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = SHARE_CARD_INK;
+  ctx.fillRect(0, 0, size, size);
+
+  // ── Brand row (same-origin asset, no CORS concern) ──
+  try {
+    const logo = await loadImage("/assets/icon-180.png");
+    ctx.drawImage(logo, 96, 64, 30, 30);
+  } catch (err) {
+    console.error(err);
+  }
+  ctx.fillStyle = "#ffffff";
+  ctx.font = '500 20px "DM Sans", sans-serif';
+  ctx.textAlign = "left";
+  ctx.textBaseline = "middle";
+  ctx.fillText("tastecheck.me", 136, 79);
+
+  const centerX = size / 2;
+
+  // ── Avatar (cross-origin — falls back to a monogram if it can't load) ──
+  const avatarCenterY = 260;
+  const avatarRadius = 84;
+  let avatarImg = null;
+  try {
+    avatarImg = await loadImage(
+      profileData.profile_image || FALLBACK_AVATAR_URL,
+      "anonymous",
+    );
+  } catch (err) {
+    avatarImg = null;
+  }
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(centerX, avatarCenterY, avatarRadius, 0, Math.PI * 2);
+  ctx.closePath();
+  ctx.clip();
+  if (avatarImg) {
+    drawImageCover(
+      ctx,
+      avatarImg,
+      centerX - avatarRadius,
+      avatarCenterY - avatarRadius,
+      avatarRadius * 2,
+      avatarRadius * 2,
+    );
+  } else {
+    ctx.fillStyle = "rgba(255,255,255,0.15)";
+    ctx.fillRect(
+      centerX - avatarRadius,
+      avatarCenterY - avatarRadius,
+      avatarRadius * 2,
+      avatarRadius * 2,
+    );
+    ctx.fillStyle = "#ffffff";
+    ctx.font = '600 72px "DM Sans", sans-serif';
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(
+      (profileData.username || "?").charAt(0).toUpperCase(),
+      centerX,
+      avatarCenterY,
+    );
+  }
+  ctx.restore();
+
+  ctx.beginPath();
+  ctx.arc(centerX, avatarCenterY, avatarRadius + 2.5, 0, Math.PI * 2);
+  ctx.lineWidth = 5;
+  ctx.strokeStyle = SHARE_CARD_BRAND_RED;
+  ctx.stroke();
+
+  // ── Username + level pill ──
+  ctx.fillStyle = "#ffffff";
+  ctx.font = '500 38px "DM Sans", sans-serif';
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  const usernameY = avatarCenterY + avatarRadius + 46;
+  ctx.fillText(profileData.username || "", centerX, usernameY);
+
+  const levelText = `Level ${profileData.level}`;
+  ctx.font = '500 16px "DM Sans", sans-serif';
+  const levelPillW = ctx.measureText(levelText).width + 40;
+  const levelPillY = usernameY + 48;
+  ctx.fillStyle = SHARE_CARD_BRAND_RED;
+  const pillRadius = 16;
+  const pillX = centerX - levelPillW / 2;
+  const pillTop = levelPillY - pillRadius;
+  ctx.beginPath();
+  ctx.roundRect(pillX, pillTop, levelPillW, pillRadius * 2, pillRadius);
+  ctx.fill();
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText(levelText, centerX, levelPillY);
+
+  // ── Roast quote ──
+  const quoteMaxWidth = 860;
+  const quoteTop = levelPillY + 160;
+  ctx.font = "600 100px Georgia, 'Times New Roman', serif";
+  ctx.fillStyle = SHARE_CARD_ACH_ACCENT;
+  ctx.globalAlpha = 0.9;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "alphabetic";
+  ctx.fillText("“", centerX, quoteTop);
+  ctx.globalAlpha = 1;
+
+  const { fontSize, lines, lineHeight } = fitRoastText(
+    ctx,
+    roastText,
+    quoteMaxWidth,
+    170,
+  );
+  ctx.fillStyle = "#ffffff";
+  ctx.font = `400 ${fontSize}px "DM Sans", sans-serif`;
+  ctx.textBaseline = "middle";
+  let lineY = quoteTop + 55;
+  for (const line of lines) {
+    ctx.fillText(line, centerX, lineY);
+    lineY += lineHeight;
+  }
+
+  // ── Stats row ──
+  const statsY = lineY + 40;
+  const stats = [
+    [Number(profileData.total_scrobbles).toLocaleString(), "Total Scrobbles"],
+    [profileData.top_artist || "Unknown", "Top Artist"],
+    [`${Math.round(profileData.average_listen)} songs / day`, "Avg Listens"],
+  ];
+  const statGap = 220;
+  const statsStartX = centerX - statGap;
+  stats.forEach((stat, i) => {
+    const x = statsStartX + i * statGap;
+    const statMaxWidth = statGap - 24;
+    ctx.font = '600 26px "DM Sans", sans-serif';
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(stat[0], x, statsY, statMaxWidth);
+    ctx.font = '500 13px "DM Sans", sans-serif';
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    ctx.fillText(stat[1].toUpperCase(), x, statsY + 34, statMaxWidth);
+
+    if (i > 0) {
+      ctx.strokeStyle = "rgba(255,255,255,0.2)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x - statGap / 2, statsY - 20);
+      ctx.lineTo(x - statGap / 2, statsY + 20);
+      ctx.stroke();
+    }
+  });
+
+  // ── XP bar ──
+  const xpBarY = statsY + 90;
+  const xpBarW = 480;
+  const xpBarX = centerX - xpBarW / 2;
+  ctx.fillStyle = "rgba(255,255,255,0.2)";
+  ctx.beginPath();
+  ctx.roundRect(xpBarX, xpBarY, xpBarW, 8, 6);
+  ctx.fill();
+
+  const progressPct = Math.max(0, Math.min(100, profileData.progress_pct || 0));
+  const gradient = ctx.createLinearGradient(xpBarX, 0, xpBarX + xpBarW, 0);
+  gradient.addColorStop(0, SHARE_CARD_BRAND_RED);
+  gradient.addColorStop(1, SHARE_CARD_ACH_ACCENT);
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.roundRect(xpBarX, xpBarY, xpBarW * (progressPct / 100), 8, 6);
+  ctx.fill();
+
+  // ── Footer ──
+  const footerY = xpBarY + 64;
+  ctx.font = '400 16px "DM Sans", sans-serif';
+  ctx.textAlign = "left";
+  const footerPrefix = "Get roasted at ";
+  const footerBrand = "tastecheck.me";
+  const footerPrefixWidth = ctx.measureText(footerPrefix).width;
+  const footerBrandWidth = ctx.measureText(footerBrand).width;
+  const footerStartX = centerX - (footerPrefixWidth + footerBrandWidth) / 2;
+  ctx.fillStyle = "rgba(255,255,255,0.55)";
+  ctx.fillText(footerPrefix, footerStartX, footerY);
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText(footerBrand, footerStartX + footerPrefixWidth, footerY);
+
+  return canvas;
+}
+
+function canvasToBlob(canvas) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) resolve(blob);
+      else reject(new Error("Canvas export failed"));
+    }, "image/png");
+  });
+}
+
+async function shareRoastCard() {
+  if (!lastRoastText || !currentProfileData) return;
+
+  const shareBtn = document.getElementById("roastResultShare");
+  const originalLabel = shareBtn ? shareBtn.innerHTML : "";
+  if (shareBtn) {
+    shareBtn.disabled = true;
+    shareBtn.textContent = "Generating…";
+  }
+
+  try {
+    const canvas = await buildShareCardCanvas(
+      currentProfileData,
+      lastRoastText,
+    );
+    const blob = await canvasToBlob(canvas);
+    const file = new File([blob], `tastecheck-${currentUsername}-roast.png`, {
+      type: "image/png",
+    });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: "My tastecheck.me roast",
+        text: "I just got roasted on tastecheck.me — check yours:",
+      });
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    if (shareBtn) {
+      shareBtn.disabled = false;
+      shareBtn.innerHTML = originalLabel;
+    }
+  } catch (err) {
+    if (shareBtn) shareBtn.disabled = false;
+    if (err && err.name === "AbortError") {
+      // user cancelled the native share sheet — not an error
+      if (shareBtn) shareBtn.innerHTML = originalLabel;
+      return;
+    }
+    console.error(err);
+    if (shareBtn) {
+      shareBtn.textContent = "Couldn't generate image";
+      setTimeout(() => {
+        shareBtn.innerHTML = originalLabel;
+      }, 2000);
+    }
   }
 }
 

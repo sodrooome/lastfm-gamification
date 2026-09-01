@@ -26,6 +26,11 @@
   --ach-green: #3a7a4a;
   --ach-purple: #5a3a8a;
 
+  /* Light tints of the above, for release-note tag chips */
+  --ach-blue-tint: #eceff3;
+  --ach-green-tint: #ebf2ed;
+  --ach-purple-tint: #efebf3;
+
   /* Lifetime achievement accent (single-accent scheme) */
   --ach-accent: #d9291c;
   --ach-accent-tint: #fdece9;
@@ -1210,6 +1215,12 @@ body {
   background: var(--surface-soft);
 }
 
+.roast-share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 @media (max-width: 768px) {
   .roast-button {
     width: fit-content;
@@ -1449,6 +1460,82 @@ body {
 
 .guide-table tbody tr:last-child td {
   border-bottom: none;
+}
+
+/* ─── Release Notes ─── */
+.release-group {
+  margin-bottom: var(--spacing-xxl);
+}
+
+.release-group-label {
+  font-family: "DM Mono", monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-bottom: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.release-entry {
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.release-entry:last-child {
+  border-bottom: none;
+}
+
+.release-tag {
+  flex-shrink: 0;
+  width: 76px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: var(--rounded-pill);
+  margin-top: 2px;
+}
+
+.release-tag-feature {
+  background: var(--ach-green-tint);
+  color: var(--ach-green);
+}
+
+.release-tag-fix {
+  background: var(--ach-blue-tint);
+  color: var(--ach-blue);
+}
+
+.release-tag-design {
+  background: var(--ach-purple-tint);
+  color: var(--ach-purple);
+}
+
+.release-entry-body {
+  min-width: 0;
+}
+
+.release-entry-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.release-entry-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 /* ─── Guide How It Works ─── */
