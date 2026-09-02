@@ -517,6 +517,19 @@ function _bindEnter(inputId, handler) {
 let _roastConsentBound = false;
 let _roastResultBound = false;
 let lastRoastText = null;
+let selectedRoastTone = "casual";
+
+function _selectRoastTone(tone) {
+  selectedRoastTone = tone;
+  const cards = { casual: "toneCardCasual", savage: "toneCardSavage" };
+  for (const [cardTone, id] of Object.entries(cards)) {
+    const card = document.getElementById(id);
+    if (!card) continue;
+    const isSelected = cardTone === tone;
+    card.classList.toggle("is-selected", isSelected);
+    card.setAttribute("aria-checked", String(isSelected));
+  }
+}
 
 function openRoastConsent() {
   if (!currentUsername) return;
@@ -534,6 +547,12 @@ function openRoastConsent() {
     dialog.addEventListener("click", (e) => {
       if (e.target === dialog) dialog.close();
     });
+    document
+      .getElementById("toneCardCasual")
+      ?.addEventListener("click", () => _selectRoastTone("casual"));
+    document
+      .getElementById("toneCardSavage")
+      ?.addEventListener("click", () => _selectRoastTone("savage"));
   }
 
   if (!dialog.open) dialog.showModal();
@@ -573,7 +592,7 @@ async function confirmRoast() {
 
   try {
     const res = await fetch(
-      `${API_BASE}/roast/${encodeURIComponent(currentUsername)}?consent=true`,
+      `${API_BASE}/roast/${encodeURIComponent(currentUsername)}?consent=true&tone=${selectedRoastTone}`,
     );
 
     stopRoastLoadingAnimation();

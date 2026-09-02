@@ -1154,6 +1154,83 @@ body {
   cursor: not-allowed;
 }
 
+.tone-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+  /* .ach-dialog-close is 32px tall, offset 12px from the content edge —
+     clear its footprint so the Savage card doesn't sit under it. */
+  margin-top: var(--spacing-lg);
+}
+
+.tone-card {
+  position: relative;
+  border: 1.5px solid var(--hairline);
+  border-radius: var(--rounded-lg);
+  padding: var(--spacing-md);
+  text-align: left;
+  background: var(--surface-soft);
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.tone-card.is-selected {
+  border-color: var(--brand-red);
+  background: var(--ach-accent-tint);
+}
+
+.tone-card-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--rounded-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  margin-bottom: var(--spacing-sm);
+  font-size: 14px;
+  background: var(--muted);
+}
+
+.tone-card.is-selected .tone-card-icon {
+  background: var(--brand-red);
+}
+
+.tone-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.tone-card-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.tone-card-check {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  width: 16px;
+  height: 16px;
+  border-radius: var(--rounded-full);
+  background: var(--brand-red);
+  color: #ffffff;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+}
+
+.tone-card.is-selected .tone-card-check {
+  display: flex;
+}
+
 .roast-consent-list {
   margin-left: 1.5rem;
   list-style-type: disc;

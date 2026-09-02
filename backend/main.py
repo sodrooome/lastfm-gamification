@@ -24,6 +24,7 @@ from lastfm import (
 from llm import (
     get_or_cache_roast,
     get_remaining_roasts,
+    roast_listener,
     roast_joint_listener,
 )
 from exceptions import (
@@ -226,9 +227,11 @@ async def get_user_profile(username: str):
 
 
 @app.get("/roast/{username}")
-async def get_user_roast(username: str, consent: bool = False):
+async def get_user_roast(username: str, consent: bool = False, tone: str = "savage"):
     if not consent:
         raise HTTPException(status_code=400, detail="Consent required")
+
+    tone = tone if tone in ("casual", "savage") else "savage"
 
     try:
         user_info = await fetch_user_information(username=username)
@@ -290,7 +293,11 @@ async def get_user_roast(username: str, consent: bool = False):
             "unlocked_achievements": unlocked_achievements,
         }
 
-        roast, cached = await get_or_cache_roast(username, lambda: context)
+        roast, cached = await get_or_cache_roast(
+            username,
+            lambda: context,
+            listener=lambda ctx: roast_listener(ctx, tone=tone),
+        )
 
         return {
             "username": username,
