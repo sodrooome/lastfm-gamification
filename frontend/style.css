@@ -194,6 +194,23 @@ body {
   box-shadow:
     0 4px 14px rgba(0, 0, 0, 0.08),
     0 1px 3px rgba(0, 0, 0, 0.06);
+  padding-right: 52px;
+}
+
+.search-send-btn {
+  position: absolute;
+  right: 5px;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--rounded-full);
+  border: none;
+  background: var(--brand-red);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
 }
 
 .search-input-wrap.small .search-input {

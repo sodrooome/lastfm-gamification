@@ -949,6 +949,9 @@ async function shareRoastCard() {
 document.addEventListener("DOMContentLoaded", () => {
   _bindEnter("usernameInput", () => loadUser());
   _bindEnter("usernameInputDash", loadUserFromDash);
+  document
+    .getElementById("usernameSubmit")
+    ?.addEventListener("click", () => loadUser());
 
   const roastButton = document.getElementById("roastButton");
   if (roastButton) {
