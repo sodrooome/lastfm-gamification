@@ -32,6 +32,17 @@ ROAST_SYSTEM_PROMPT = (
     "the roast — no reasoning, no preamble, no explanation, nothing else."
 )
 
+CASUAL_ROAST_SYSTEM_PROMPT = (
+    "You're a witty friend gently ribbing a Last.fm listener using their real listening "
+    "stats. Keep it playful and lighthearted, teasing rather than mean — poke fun at "
+    "their specific numbers (scrobbles, top artist, account age, level, achievements) "
+    "with a fun, self-aware punchline, but stay warm, never cutting.\n\n"
+    "Rules: ground every joke in the given data, no outside assumptions. No slurs, "
+    "harassment, body-shaming, medical jokes, or remarks about age, gender, appearance, "
+    "or other protected traits. One paragraph, under 300 characters. Reply with ONLY "
+    "the roast — no reasoning, no preamble, no explanation, nothing else."
+)
+
 _ROAST_CACHE: dict[str, dict[str, Any]] = {}
 _ROAST_COUNTS: dict[str, int] = {}
 
@@ -225,13 +236,16 @@ def _strip_reasoning_prefix(line: str) -> str:
     return line
 
 
-async def roast_listener(profile_context: dict[str, Any]) -> str:
+async def roast_listener(profile_context: dict[str, Any], tone: str = "savage") -> str:
     """Call OpenRouter chat completions and return roast text."""
     if not config.LLM_API_KEY:
         raise RoastNotConfiguredError("LLM_API_KEY is not configured")
 
+    system_prompt = (
+        CASUAL_ROAST_SYSTEM_PROMPT if tone == "casual" else ROAST_SYSTEM_PROMPT
+    )
     messages = [
-        {"role": "system", "content": ROAST_SYSTEM_PROMPT},
+        {"role": "system", "content": system_prompt},
         {"role": "user", "content": _format_user_prompt(profile_context)},
     ]
 
