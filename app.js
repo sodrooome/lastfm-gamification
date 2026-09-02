@@ -92,6 +92,20 @@ function showUserNotFound() {
   toggle("userNotFound", true);
 }
 
+function showToast(msg) {
+  let toast = document.getElementById("toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast";
+    toast.className = "toast";
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.add("show");
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => toast.classList.remove("show"), 2500);
+}
+
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;
@@ -111,7 +125,10 @@ function showDashboard() {
 async function loadUser(usernameParam) {
   const usernameInput = document.getElementById("usernameInput");
   const username = usernameParam || usernameInput.value.trim();
-  if (!username) return;
+  if (!username) {
+    showToast("Enter your Last.fm username first");
+    return;
+  }
 
   // Transition to dashboard shell, sync nav input
   showDashboard();
@@ -500,6 +517,19 @@ function _bindEnter(inputId, handler) {
 let _roastConsentBound = false;
 let _roastResultBound = false;
 let lastRoastText = null;
+let selectedRoastTone = "casual";
+
+function _selectRoastTone(tone) {
+  selectedRoastTone = tone;
+  const cards = { casual: "toneCardCasual", savage: "toneCardSavage" };
+  for (const [cardTone, id] of Object.entries(cards)) {
+    const card = document.getElementById(id);
+    if (!card) continue;
+    const isSelected = cardTone === tone;
+    card.classList.toggle("is-selected", isSelected);
+    card.setAttribute("aria-checked", String(isSelected));
+  }
+}
 
 function openRoastConsent() {
   if (!currentUsername) return;
@@ -517,6 +547,12 @@ function openRoastConsent() {
     dialog.addEventListener("click", (e) => {
       if (e.target === dialog) dialog.close();
     });
+    document
+      .getElementById("toneCardCasual")
+      ?.addEventListener("click", () => _selectRoastTone("casual"));
+    document
+      .getElementById("toneCardSavage")
+      ?.addEventListener("click", () => _selectRoastTone("savage"));
   }
 
   if (!dialog.open) dialog.showModal();
@@ -556,7 +592,7 @@ async function confirmRoast() {
 
   try {
     const res = await fetch(
-      `${API_BASE}/roast/${encodeURIComponent(currentUsername)}?consent=true`,
+      `${API_BASE}/roast/${encodeURIComponent(currentUsername)}?consent=true&tone=${selectedRoastTone}`,
     );
 
     stopRoastLoadingAnimation();
@@ -949,6 +985,9 @@ async function shareRoastCard() {
 document.addEventListener("DOMContentLoaded", () => {
   _bindEnter("usernameInput", () => loadUser());
   _bindEnter("usernameInputDash", loadUserFromDash);
+  document
+    .getElementById("usernameSubmit")
+    ?.addEventListener("click", () => loadUser());
 
   const roastButton = document.getElementById("roastButton");
   if (roastButton) {

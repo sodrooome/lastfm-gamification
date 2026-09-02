@@ -88,10 +88,21 @@
               class="text-input search-input"
               placeholder="Enter your username here"
             />
+            <button
+              id="usernameSubmit"
+              class="search-send-btn"
+              type="button"
+              aria-label="Submit username"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14" />
+                <path d="M13 6l6 6-6 6" />
+              </svg>
+            </button>
           </div>
         </div>
         <p class="social-proof">
-          <span id="social-proof-text">171 listeners roasted so far · takes 5 seconds, no login needed</span>
+          <span id="social-proof-text">200 listeners roasted so far · takes 5 seconds, no login needed</span>
         </p>
 
         <!-- Badge showcase (unlocked vs locked) -->
@@ -573,6 +584,33 @@
         >
           &times;
         </button>
+        <div class="tone-cards" role="radiogroup" aria-label="Roast intensity">
+          <button
+            type="button"
+            class="tone-card is-selected"
+            id="toneCardCasual"
+            role="radio"
+            aria-checked="true"
+          >
+            <span class="tone-card-check"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+            <span class="tone-card-icon"><i class="fa-solid fa-face-smile" aria-hidden="true"></i></span>
+            <span class="tone-card-title">Casual</span>
+            <span class="tone-card-desc">Light jabs, keeps it fun</span>
+          </button>
+          <button
+            type="button"
+            class="tone-card"
+            id="toneCardSavage"
+            role="radio"
+            aria-checked="false"
+          >
+            <span class="tone-card-check"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+            <span class="tone-card-icon"><i class="fa-solid fa-fire" aria-hidden="true"></i></span>
+            <span class="tone-card-title">Savage</span>
+            <span class="tone-card-desc">No mercy, full send</span>
+          </button>
+        </div>
+
         <h2 class="ach-dialog-title" id="roastConsentTitle">
           Roast Me: Your Consent
         </h2>
