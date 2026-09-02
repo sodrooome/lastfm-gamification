@@ -92,6 +92,20 @@ function showUserNotFound() {
   toggle("userNotFound", true);
 }
 
+function showToast(msg) {
+  let toast = document.getElementById("toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast";
+    toast.className = "toast";
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.add("show");
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => toast.classList.remove("show"), 2500);
+}
+
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;
@@ -111,7 +125,10 @@ function showDashboard() {
 async function loadUser(usernameParam) {
   const usernameInput = document.getElementById("usernameInput");
   const username = usernameParam || usernameInput.value.trim();
-  if (!username) return;
+  if (!username) {
+    showToast("Enter your Last.fm username first");
+    return;
+  }
 
   // Transition to dashboard shell, sync nav input
   showDashboard();
