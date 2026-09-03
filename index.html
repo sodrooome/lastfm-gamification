@@ -49,14 +49,14 @@
           <svg class="logo-mark" viewBox="168 120 176 272" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" d="M256 128 C232 176 176 200 176 268 C176 328 216 372 256 384 C296 372 336 328 336 268 C336 236 316 216 300 196 C302 224 288 240 272 248 C280 220 268 188 244 164 C248 188 236 208 216 224 C202 236 196 252 196 268 C196 312 224 344 256 356 C288 344 316 312 316 268 C316 244 300 228 288 212 Z"/></svg>
           <span class="logo-text">tastecheck.me</span>
         </div>
-        <h1 class="landing-title">Turn your listening<br />into identity</h1>
-        <p class="landing-title-tagline">or get roasted...</p>
+        <h1 class="landing-title">Your scrobbles,<br />gamified.</h1>
+        <p class="landing-title-tagline">Unlock achievements. Or let an AI roast you for your questionable taste.</p>
         <div class="example-bubble" id="example-bubble">
           <span class="example-bubble-icon" id="example-icon"></span>
           <span id="example-text">847 plays of the same album. comfort zone, much?</span>
         </div>
         <p class="landing-sub">
-          Unlock achievements from your scrobble history and enter your Last.fm username to find out which
+          Paste your <b>Last.fm</b> username below — no login, no signup, just your scrobble history judged instantly.
         </p>
         <div class="landing-search">
           <div class="search-input-wrap">
@@ -101,15 +101,23 @@
             </button>
           </div>
         </div>
-        <p class="social-proof">
-          <span id="social-proof-text">200 listeners roasted so far · takes 5 seconds, no login needed</span>
-        </p>
+        <div class="stat-proof-row">
+          <div class="stat-proof">
+            <span id="statProofSearched" class="stat-proof-value"></span>
+            <span class="stat-proof-label">Profiles Searched</span>
+          </div>
+          <div class="stat-proof-divider"></div>
+          <div class="stat-proof">
+            <span id="statProofRoasted" class="stat-proof-value"></span>
+            <span class="stat-proof-label">Profiles Roasted</span>
+          </div>
+        </div>
 
         <!-- Badge showcase (unlocked vs locked) -->
         <section class="badge-showcase" aria-label="Achievement badges">
-          <h2 class="badge-showcase-title">achievements up for grabs</h2>
+          <h2 class="badge-showcase-title">achievements hiding in your scrobbles</h2>
           <p class="badge-showcase-sub">
-            a few of the badges hiding in your scrobble history
+            some are easy. some are basically a personality diagnosis.
           </p>
           <div class="badge-showcase-grid">
             <div class="showcase-badge unlocked">

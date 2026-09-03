@@ -1,3 +1,5 @@
+/// <reference path="./achievements-data.js" />
+
 let currentUsername = null;
 let currentProfileData = null;
 
@@ -16,7 +18,8 @@ var roastStatusInterval = null;
 var roastStatusIdx = 0;
 
 // ─── Hero example bubble ───
-const SOCIAL_PROOF_COUNT = 171;
+const SOCIAL_PROOF_SEARCHED = 210;
+const SOCIAL_PROOF_ROASTED = 100;
 
 const HERO_EXAMPLES = [
   { icon: "flame", text: "847 plays of the same album. comfort zone, much?" },
@@ -140,7 +143,10 @@ async function loadUser(usernameParam) {
 // Called by the dashboard nav "View" button
 async function loadUserFromDash() {
   const val = document.getElementById("usernameInputDash").value.trim();
-  if (!val) return;
+  if (!val) {
+    showToast("Enter your Last.fm username first");
+    return;
+  }
 
   // Keep landing input in sync (for URL-based reload)
   document.getElementById("usernameInput").value = val;
@@ -251,21 +257,6 @@ function renderProfile(data) {
   }
 
   // ── "Data fetched" timestamp ──
-  const now = new Date();
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
   const timestamp = data.last_active_play;
   if (timestamp) {
     const playedDate = new Date(timestamp * 1000);
@@ -274,11 +265,6 @@ function renderProfile(data) {
       day: "numeric",
       month: "short",
       year: "numeric",
-    });
-
-    const formattedTime = playedDate.toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
     });
 
     document.getElementById("fetchedDate").innerText = `${formattedDate}`;
@@ -1004,6 +990,26 @@ document.addEventListener("DOMContentLoaded", () => {
     loadUser(username);
   }
 
+  // ─── Back/forward navigation ───
+  // pushState in _fetchAndRender updates the URL but doesn't trigger a
+  // re-render on its own — listen for popstate so Back/Forward actually
+  // switches the displayed profile (or returns to the landing view).
+  window.addEventListener("popstate", () => {
+    const urlUsername = getUsernameFromURL();
+    if (urlUsername) {
+      if (urlUsername === currentUsername) return;
+      document.getElementById("usernameInput").value = urlUsername;
+      document.getElementById("usernameInputDash").value = urlUsername;
+      showDashboard();
+      _fetchAndRender(urlUsername);
+    } else {
+      document.getElementById("landingView").classList.remove("d-none");
+      document.getElementById("dashboardView").classList.add("d-none");
+      currentUsername = null;
+      currentProfileData = null;
+    }
+  });
+
   // ─── Example bubble rotation ───
   (function initExampleBubble() {
     var bubble = document.getElementById("example-bubble");
@@ -1050,13 +1056,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   })();
 
-  // ─── Social proof count ───
+  // ─── Social proof stats ───
   (function initSocialProof() {
-    var textEl = document.getElementById("social-proof-text");
-    if (!textEl) return;
-
-    textEl.textContent =
-      SOCIAL_PROOF_COUNT +
-      " listeners roasted so far · takes 5 seconds, no login needed";
+    var searchedEl = document.getElementById("statProofSearched");
+    var roastedEl = document.getElementById("statProofRoasted");
+    if (searchedEl) searchedEl.textContent = SOCIAL_PROOF_SEARCHED + "+";
+    if (roastedEl) roastedEl.textContent = SOCIAL_PROOF_ROASTED + "+";
   })();
 });
