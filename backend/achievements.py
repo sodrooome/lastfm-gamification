@@ -65,7 +65,8 @@ def calculate_achievements(user_info, top_artists_set, recent_tracks):
     unixtime = registered.get("unixtime")
     if unixtime:
         account_age_years = (
-            datetime.now() - datetime.fromtimestamp(int(unixtime))
+            datetime.now(timezone.utc)
+            - datetime.fromtimestamp(int(unixtime), tz=timezone.utc)
         ).days / 365.25
         if account_age_years >= 10:
             unlocked.add("Spotify Wasn't Even Born Yet")
@@ -161,7 +162,7 @@ def get_scrobbles_by_day(recent_tracks):
             continue
 
         timestamp = int(date_information["uts"])
-        day = datetime.utcfromtimestamp(timestamp).strftime("%Y-%m-%d")
+        day = datetime.fromtimestamp(timestamp, tz=timezone.utc).strftime("%Y-%m-%d")
 
         daily_counts[day] += 1
 
@@ -171,7 +172,7 @@ def get_scrobbles_by_day(recent_tracks):
 def calculate_daily_achievements(recent_tracks):
     daily_counts = get_scrobbles_by_day(recent_tracks=recent_tracks)
 
-    today = datetime.utcnow().strftime("%Y-%m-%d")
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     today_count = daily_counts.get(today, 0)
 
     unlocked = set()
