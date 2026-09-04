@@ -127,6 +127,41 @@ class TestCalculateAchievements:
         user_information = make_user_information(playcount=1000)
         assert _compute_avg_listen(user_information, 1000) == 0.0
 
+    def test_ten_year_account_unlocks_spotify_achievement(self):
+        # +1 day buffer: unixtime_years_ago(10) truncates to 3652 days, just
+        # under the 3652.5-day (365.25 * 10) threshold the code checks against.
+        joined_datetime = datetime.now(timezone.utc) - timedelta(days=3653)
+        user_information = make_user_information(
+            playcount=0, registered_unixtime=int(joined_datetime.timestamp())
+        )
+        result = calculate_achievements(user_information, set(), {})
+        unlocked = {a["name"]: a["unlocked"] for a in result}
+        assert unlocked["Spotify Wasn't Even Born Yet"] is True
+
+    def test_under_ten_year_account_does_not_unlock_spotify_achievement(self):
+        user_information = make_user_information(
+            playcount=0, registered_unixtime=unixtime_years_ago(5)
+        )
+        result = calculate_achievements(user_information, set(), {})
+        unlocked = {a["name"]: a["unlocked"] for a in result}
+        assert unlocked["Spotify Wasn't Even Born Yet"] is False
+
+    def test_1000_scrobbles_same_day_unlocks_take_a_break(self):
+        now = datetime.now(timezone.utc)
+        tracks = [{"date": {"uts": str(int(now.timestamp()) - i)}} for i in range(1000)]
+        recent_tracks = {"recenttracks": {"track": tracks}}
+        result = calculate_daily_achievements(recent_tracks)
+        unlocked = {a["name"]: a["unlocked"] for a in result}
+        assert unlocked["How about Take a Break"] is True
+
+    def test_average_listen_computes_real_division(self):
+        joined_datetime = datetime.now(timezone.utc) - timedelta(days=100)
+        user_information = make_user_information(
+            playcount=3650, registered_unixtime=int(joined_datetime.timestamp())
+        )
+        result = _compute_avg_listen(user_information, 3650)
+        assert result == round(3650 / 100, 2)
+
     def test_xp_thresholds_at_max_xp(self):
         user_information = make_user_information(playcount=10_000_000)
         top_artist = {f"artist_{i}" for i in range(5000)}

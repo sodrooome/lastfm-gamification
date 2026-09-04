@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 from httpx import AsyncClient, ASGITransport
 from main import app, RoastNotConfiguredError, RoastLimitExceededError
 
@@ -38,7 +38,170 @@ TOP_ARTISTS_RESPONSE = {
 }
 
 
+def make_lastfm_response(status_code: int = 200, json_data=None) -> MagicMock:
+    response = MagicMock()
+    response.status_code = status_code
+    response.json.return_value = json_data or {}
+    return response
+
+
+def make_achievements(names: list[str]) -> list[dict]:
+    return [{"name": n, "unlocked": True, "type": "lifetime"} for n in names]
+
+
 class TestUserRoutesEndpoint:
+    @pytest.mark.asyncio
+    async def test_health_check_returns_ok(self, client):
+        async with client as cli:
+            response = await cli.get("/health")
+
+        assert response.status_code == 200
+        assert response.json()["status"] == "ok"
+
+    @pytest.mark.asyncio
+    async def test_readiness_check_returns_ready(self, client):
+        mock_response = make_lastfm_response(status_code=200, json_data={})
+        mock_httpx_client = AsyncMock()
+        mock_httpx_client.get.return_value = mock_response
+        mock_httpx_client.__aenter__.return_value = mock_httpx_client
+        mock_httpx_client.__aexit__.return_value = False
+
+        with patch("main.httpx.AsyncClient", return_value=mock_httpx_client):
+            async with client as cli:
+                response = await cli.get("/ready")
+
+        resp_body = response.json()
+        assert response.status_code == 200
+        assert resp_body["status"] == "ready"
+        assert resp_body["checks"]["lastfm_api"] is True
+
+    @pytest.mark.asyncio
+    async def test_readiness_check_returns_not_ready_on_upstream_failure(self, client):
+        mock_response = make_lastfm_response(status_code=500)
+        mock_httpx_client = AsyncMock()
+        mock_httpx_client.get.return_value = mock_response
+        mock_httpx_client.__aenter__.return_value = mock_httpx_client
+        mock_httpx_client.__aexit__.return_value = False
+
+        with patch("main.httpx.AsyncClient", return_value=mock_httpx_client):
+            async with client as cli:
+                response = await cli.get("/ready")
+
+        assert response.status_code == 503
+        assert response.json()["detail"]["checks"]["lastfm_api"] is False
+
+    @pytest.mark.asyncio
+    async def test_roast_user_not_found_returns_404(self, client):
+        with patch(
+            "main.fetch_user_information", new=AsyncMock(return_value={"error": 6})
+        ):
+            async with client as cli:
+                response = await cli.get("/roast/ghost", params={"consent": True})
+
+        assert response.status_code == 404
+
+    @pytest.mark.asyncio
+    async def test_roast_unexpected_exception_returns_500(self, client):
+        with patch(
+            "main.fetch_user_information",
+            new=AsyncMock(side_effect=RuntimeError("boom")),
+        ):
+            async with client as cli:
+                response = await cli.get("/roast/testuser", params={"consent": True})
+
+        assert response.status_code == 500
+        assert response.json()["detail"] == "Internal server error"
+
+    @pytest.mark.asyncio
+    async def test_compare_second_user_not_found_returns_404(self, client):
+        with patch(
+            "main.fetch_user_information",
+            new=AsyncMock(side_effect=[make_user_information(), {"error": 6}]),
+        ):
+            async with client as cli:
+                response = await cli.get("/compare/ryan/ghost")
+
+        assert response.status_code == 404
+
+    @pytest.mark.asyncio
+    async def test_compare_unexpected_exception_returns_500(self, client):
+        with patch(
+            "main.fetch_user_information",
+            new=AsyncMock(side_effect=RuntimeError("boom")),
+        ):
+            async with client as cli:
+                response = await cli.get("/compare/ryan/nayr")
+
+        assert response.status_code == 500
+        assert response.json()["detail"] == "Internal server error"
+
+    @pytest.mark.asyncio
+    async def test_compare_roast_unexpected_exception_returns_500(self, client):
+        with patch(
+            "main.fetch_user_information",
+            new=AsyncMock(side_effect=RuntimeError("boom")),
+        ):
+            async with client as cli:
+                response = await cli.post(
+                    "/compare/roast", json={"user1": "ryan", "user2": "nayr"}
+                )
+
+        assert response.status_code == 500
+        assert response.json()["detail"] == "Internal server error"
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        "user1_names,user2_names,expected_tagline",
+        [
+            (["A", "B"], ["A", "B"], "You two are basically the same person."),
+            (
+                ["A", "B", "C"],
+                ["A", "B"],
+                "You two would survive a road trip, barely.",
+            ),
+            (["A"], ["A", "B"], "Different worlds, same playlist."),
+            (
+                ["A"],
+                ["A", "B", "C", "D"],
+                "Your music tastes are... an interesting contrast.",
+            ),
+            (
+                ["A"],
+                [f"B{i}" for i in range(9)] + ["A"],
+                "You have nothing in common. At all.",
+            ),
+        ],
+    )
+    async def test_compare_tagline_buckets(
+        self, client, user1_names, user2_names, expected_tagline
+    ):
+        with patch(
+            "main.fetch_user_information",
+            new=AsyncMock(
+                side_effect=[make_user_information(), make_user_information()]
+            ),
+        ), patch(
+            "main.fetch_user_all_top_artists",
+            new=AsyncMock(return_value=(set(), TOP_ARTISTS_RESPONSE)),
+        ), patch(
+            "main.fetch_user_top_artists",
+            new=AsyncMock(return_value=TOP_ARTISTS_RESPONSE),
+        ), patch(
+            "main.fetch_user_top_artists_12month",
+            new=AsyncMock(side_effect=[["A", "B"], ["C", "D"]]),
+        ), patch(
+            "main.calculate_achievements",
+            side_effect=[
+                make_achievements(user1_names),
+                make_achievements(user2_names),
+            ],
+        ):
+
+            async with client as cli:
+                response = await cli.get("/compare/ryan/nayr")
+
+        assert response.json()["compatibility_tagline"] == expected_tagline
+
     @pytest.mark.asyncio
     async def test_positive_scenario_returns_expected_response(self, client):
         with patch(

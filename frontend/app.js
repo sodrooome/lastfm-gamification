@@ -571,6 +571,7 @@ async function confirmRoast() {
 
   const loadingDialog = document.getElementById("roastLoadingDialog");
   const resultDialog = document.getElementById("roastResultDialog");
+  if (resultDialog && resultDialog.open) resultDialog.close();
   const resultText = document.getElementById("roastResultText");
   const closeBtn = document.getElementById("roastResultClose");
   const shareBtn = document.getElementById("roastResultShare");
