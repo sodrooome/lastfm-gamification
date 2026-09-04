@@ -100,6 +100,7 @@ npm run report    # opens the HTML report
 - `get_or_cache_roast(key, context_builder, listener=roast_listener)` enforces a shared daily quota (`ROAST_LIMIT_PER_USER = 3`) per string key, caching the most recent result and raising `RoastLimitExceededError` (→ HTTP 429) once exhausted
 - Solo roasts (`GET /roast/{username}`) key on the plain username; joint roasts (`POST /compare/roast`) key on `"joint:" + "|".join(sorted([user1, user2]))` so either ordering of the pair shares one quota, and pass `listener=roast_joint_listener` to reuse the same counter/cache against a different LLM prompt
 - The counters are in-memory and single-process — see Notable Gaps below
+- `GET /roast/{username}` responds with `remaining` (quota left after this call); `app.js`'s `updateRoastRemainingUI()` reflects it as a status chip in the result dialog and enables/disables the Retake button (`#roastResultRetake`, wired to re-run `confirmRoast()` without re-showing consent) accordingly
 
 ### Achievement Logic (`achievements.py`)
 

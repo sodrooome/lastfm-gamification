@@ -544,6 +544,27 @@ function openRoastConsent() {
   if (!dialog.open) dialog.showModal();
 }
 
+// Reflects `remaining` (roasts left today) in the result dialog's status
+// chip and keeps the Retake button in sync — same "X left" chip recipe as
+// the achievement dialog's status pill, same disabled state as the main
+// Roast Me button once exhausted.
+function updateRoastRemainingUI(remaining) {
+  const chip = document.getElementById("roastRemainingChip");
+  const retakeBtn = document.getElementById("roastResultRetake");
+  if (!chip || !retakeBtn || typeof remaining !== "number") return;
+
+  const exhausted = remaining <= 0;
+  chip.textContent = exhausted
+    ? "Roast limit reached"
+    : `${remaining} roast${remaining === 1 ? "" : "s"} left today`;
+  chip.classList.toggle("is-exhausted", exhausted);
+  toggle("roastRemainingChip", true);
+
+  toggle("roastResultRetake", true);
+  retakeBtn.disabled = exhausted;
+  retakeBtn.title = exhausted ? "You've used all 3 roasts" : "";
+}
+
 async function confirmRoast() {
   const consentDialog = document.getElementById("roastConsentDialog");
   if (consentDialog && consentDialog.open) consentDialog.close();
@@ -553,6 +574,7 @@ async function confirmRoast() {
   const resultText = document.getElementById("roastResultText");
   const closeBtn = document.getElementById("roastResultClose");
   const shareBtn = document.getElementById("roastResultShare");
+  const retakeBtn = document.getElementById("roastResultRetake");
   if (!resultDialog || !resultText || !closeBtn) return;
 
   if (!_roastResultBound) {
@@ -565,12 +587,17 @@ async function confirmRoast() {
       if (e.target === resultDialog) resultDialog.close();
     });
     if (shareBtn) shareBtn.addEventListener("click", shareRoastCard);
+    // Retake re-rolls the same tone without re-showing consent — the user
+    // already consented once this session.
+    if (retakeBtn) retakeBtn.addEventListener("click", confirmRoast);
   }
 
   resultText.textContent = "Roasting…";
   closeBtn.disabled = true;
   lastRoastText = null;
   toggle("roastResultShare", false);
+  toggle("roastRemainingChip", false);
+  toggle("roastResultRetake", false);
   if (!loadingDialog.open) loadingDialog.showModal();
   startRoastLoadingAnimation();
 
@@ -600,10 +627,12 @@ async function confirmRoast() {
           roastButton.classList.add("is-limit-reached");
           roastButton.title = "You've used all 3 roasts";
         }
+        updateRoastRemainingUI(0);
       } else {
         resultText.textContent = data.roast;
         lastRoastText = data.roast;
         toggle("roastResultShare", true);
+        updateRoastRemainingUI(data.remaining);
       }
     } else if (res.status === 429) {
       resultText.innerHTML =
@@ -616,6 +645,7 @@ async function confirmRoast() {
         roastButton.classList.add("is-limit-reached");
         roastButton.title = "You've used all 3 roasts";
       }
+      updateRoastRemainingUI(0);
     } else if (res.status === 400) {
       resultText.textContent = "Consent required, please try again";
     } else {
