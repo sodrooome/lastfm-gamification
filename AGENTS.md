@@ -100,6 +100,7 @@ npm run report    # opens the HTML report
 - `get_or_cache_roast(key, context_builder, listener=roast_listener)` enforces a shared daily quota (`ROAST_LIMIT_PER_USER = 3`) per string key, caching the most recent result and raising `RoastLimitExceededError` (→ HTTP 429) once exhausted
 - Solo roasts (`GET /roast/{username}`) key on the plain username; joint roasts (`POST /compare/roast`) key on `"joint:" + "|".join(sorted([user1, user2]))` so either ordering of the pair shares one quota, and pass `listener=roast_joint_listener` to reuse the same counter/cache against a different LLM prompt
 - The counters are in-memory and single-process — see Notable Gaps below
+- `GET /roast/{username}` responds with `remaining` (quota left after this call); `app.js`'s `updateRoastRemainingUI()` reflects it as a status chip in the result dialog and enables/disables the Retake button (`#roastResultRetake`, wired to re-run `confirmRoast()` without re-showing consent) accordingly
 
 ### Achievement Logic (`achievements.py`)
 
@@ -184,7 +185,4 @@ Refer to LEVELS.md for complete threshold tables, formulas, and examples. Core r
 - `API_BASE` still falls back to a hardcoded production URL when not running on localhost (now centralized in `config.js` instead of duplicated, but the tradeoff is unchanged — there's no build step to inject an env-specific value)
 - No linting configured for frontend (ESLint, Prettier)
 - The AI roast in-memory cache/counters (`llm.py`, shared by solo and joint roasts) are single-process and non-persistent; a multi-process store (Redis/SQLite) would be needed for gunicorn deployments
-- Backend test coverage is uneven (~80% overall as of this writing; `lastfm.py` is now fully covered). Still untested:
-  - `main.py`: `/health` and `/ready` endpoints entirely; the 404/500 error branches on `/user`, `/roast`, `/compare`, `/compare/roast`; the `/compare` tagline tiers beyond one bucket
-  - `llm.py`: the entire joint-roast path (`roast_joint_listener`, `_format_joint_roast_prompt`); `roast_listener`'s HTTP-error and malformed-response branches; several `_clean_roast_output`/`_is_reasoning_line` edge cases (empty input, all-caps line, multi-`?` line, 400-char truncation)
-  - `achievements.py`: the "Spotify Wasn't Even Born Yet" (10yr account) and "How about Take a Break" (1000+/day) achievements; `_compute_avg_listen`'s actual calculation path
+- Backend test coverage is uneven (~85% overall as of this writing). `lastfm.py`, `/health`+`/ready`, the 404/500 branches on `/user`/`/roast`/`/compare`/`/compare/roast`, all `/compare` tagline tiers, the joint-roast path (`roast_joint_listener`, `_format_joint_roast_prompt`), the `_clean_roast_output`/`_is_reasoning_line` edge cases, and the achievement/`_compute_avg_listen` edge cases are all covered now. No known route-level or unit-level gaps remain — only the real OpenRouter integration is unexercised (every LLM test mocks the HTTP call)

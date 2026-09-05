@@ -1332,10 +1332,31 @@ body {
   background: var(--surface-soft);
 }
 
-.roast-share-btn {
+.roast-share-btn,
+.roast-retake-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+.roast-retake-btn {
+  margin-right: auto;
+}
+
+.roast-retake-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Roast Remaining Chip ─── */
+.roast-remaining-chip {
+  background: var(--surface-strong);
+  color: var(--muted);
+}
+
+.roast-remaining-chip.is-exhausted {
+  background: var(--ach-accent-tint);
+  color: var(--ach-accent);
 }
 
 @media (max-width: 768px) {

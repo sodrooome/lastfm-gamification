@@ -111,6 +111,8 @@ Two shadow tokens, both very soft — this system does **not** run a zero-shadow
 
 **`roast-limit-hint`** (shown inside the roast result dialog on `index.html`, and inline on the joint-roast card on `compare.html`, once the daily roast quota is exhausted) — `{colors.ach-accent-tint}` background, `{rounded.md}` corners, title text in `{colors.ach-accent}`. Reads as a gentle limit notice, not a hard error — same treatment as `toast` below, not a red/black alert box.
 
+**`roast-remaining-chip`** (roast result dialog on `index.html`, above the roast text) — same status-chip recipe as `ach-dialog`'s status pill: `{colors.surface-strong}`/`{colors.muted}` while roasts remain, switching to `{colors.ach-accent-tint}`/`{colors.ach-accent}` once exhausted (`.is-exhausted`). Sits beside the `roast-retake-btn` ghost button, which disables itself in the same exhausted state.
+
 **`toast`** (compare page, transient validation feedback — e.g. submitting Compare with an empty username) — Fixed to the bottom center of the viewport, `{colors.ach-accent-tint}` background with a 1px `{colors.ach-accent}` border and `{colors.ach-accent}` text, `{rounded.md}` corners. Fades in/out; auto-dismisses after ~2.5s.
 
 **`release-entry`** (`release.html`, one changelog item) — Flat row, `{colors.hairline}` bottom border (no card wrapper), a fixed-width `release-tag` chip on the left and title/description stacked on the right. The `release-tag` chip is tint background + colored text — `release-tag-feature` (green), `release-tag-fix` (blue), `release-tag-design` (purple) — using the variety-accent tints (see Variety accent above), never `{colors.brand-red}`/`{colors.ach-accent}` since those stay reserved for brand/achievement use.

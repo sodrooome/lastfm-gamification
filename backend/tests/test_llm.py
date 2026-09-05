@@ -186,3 +186,61 @@ class TestLLM:
 
         assert result == "Nice try, life is detected"
         mock_client.post.assert_called_once()
+
+    def test_empty_raw_text_returns_empty(self):
+        assert llm._clean_roast_output("") == ""
+
+    def test_all_caps_line_is_reasoning(self):
+        assert llm._is_reasoning_line("THIS IS ALL CAPS INSTRUCTION") is True
+
+    def test_multiple_question_marks_is_reasoning(self):
+        assert llm._is_reasoning_line("What? Really? Seriously?") is True
+
+    def test_clean_roast_output_truncates_at_400_chars(self):
+        raw_text = "This roast is devastating and cruel. " * 20
+        cleaned = llm._clean_roast_output(raw_text)
+        assert len(cleaned) <= 400
+        assert cleaned == raw_text[:400].rstrip()
+
+    def test_format_joint_roast_prompt_includes_key_fields(self):
+        ctx = {
+            "user1": "ryanfeb",
+            "user2": "nayr",
+            "compatibility_score": 42,
+            "shared_artists": ["The Radio Dept"],
+            "user1_top_artists": ["A"],
+            "user2_top_artists": ["B"],
+            "user1_scrobbles": 1000,
+            "user2_scrobbles": 2000,
+        }
+        prompt = llm._format_joint_roast_prompt(ctx)
+        assert "User A: ryanfeb" in prompt
+        assert "User B: nayr" in prompt
+        assert "Compatibility score: 42%" in prompt
+        assert "Shared artists: The Radio Dept" in prompt
+
+    def test_format_joint_roast_prompt_no_shared_artists(self):
+        prompt = llm._format_joint_roast_prompt({"user1": "a", "user2": "b"})
+        assert "Shared artists: none" in prompt
+
+    @pytest.mark.asyncio
+    async def test_roast_joint_listener_success(self):
+        payload = make_llm_success_payload(content="You two deserve each other")
+        mock_response = make_response(status_code=200, json_data=payload)
+
+        mock_client = AsyncMock()
+        mock_client.post.return_value = mock_response
+        mock_client.__aenter__.return_value = mock_client
+        mock_client.__aexit__.return_value = False
+
+        with patch.object(llm.httpx, "AsyncClient", return_value=mock_client):
+            result = await llm.roast_joint_listener({"user1": "a", "user2": "b"})
+
+        assert result == "You two deserve each other"
+        mock_client.post.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_roast_joint_listener_not_configured(self):
+        with patch.object(llm.config, "LLM_API_KEY", ""):
+            with pytest.raises(RoastNotConfiguredError):
+                await llm.roast_joint_listener({"user1": "a", "user2": "b"})
