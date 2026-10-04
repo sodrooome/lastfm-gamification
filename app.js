@@ -18,29 +18,20 @@ var roastStatusInterval = null;
 var roastStatusIdx = 0;
 
 // ─── Hero example bubble ───
-const SOCIAL_PROOF_SEARCHED = 210;
-const SOCIAL_PROOF_ROASTED = 100;
+const SOCIAL_PROOF_SEARCHED = 250;
+const SOCIAL_PROOF_ROASTED = 120;
 
 const HERO_EXAMPLES = [
-  { icon: "flame", text: "847 plays of the same album. comfort zone, much?" },
   {
-    icon: "trophy",
-    text: "unlocked: having fun with yourself? 100+ scrobbles in a day",
+    text: "5,909 scrobbles in over two years? That’s barely 8 songs a day. Did you just discover music last week? DAY6 as your top artist with only 662 unique artists screams \"stuck in a K-hole,\" not \"explorer.\" Your \"loved ones\" are probably just your mom.",
   },
   {
-    icon: "flame",
-    text: "top artist streak: 60 days straight. it's a relationship at this point",
+    text: "30,000 scrobbles in 2.5 years, mostly Slipknot? You're not \"obsessive,\" you're a sonic masochist. 431 unique artists? That's not exploring, that's barely dipping a toe outside your angsty comfort zone. And with three friends, I'm guessing they're all just as committed to their nü-metal induced hearing loss.",
   },
   {
-    icon: "trophy",
-    text: "unlocked: scrobble of the day. 1+ song, every day this week",
+    text: "34,752 scrobbles in 13 years are a testament to chronic underachievement, averaging a pathetic 7 songs daily. Counterparts as your top artist isn't a personality, it's a beige wall. You have \"Obsessive Listener\" and \"Explorer\" achievements, yet only 750 unique artists? That's not exploring, that's just circling the same five blocks",
   },
 ];
-
-const ICON_FA_CLASSES = {
-  flame: "fa-solid fa-fire",
-  trophy: "fa-solid fa-trophy",
-};
 
 function startRoastLoadingAnimation() {
   var loadingFill = document.getElementById("roastLoadingFill");
@@ -301,7 +292,7 @@ function renderProfile(data) {
   renderAchievements("achievements", lifetime);
 
   // ── How-it-works link ──
-  const howLink = document.querySelector(".how-does-work-link");
+  const howLink = document.getElementById("dashHowLink");
   if (howLink) {
     howLink.href = "how-to.html?user=" + encodeURIComponent(data.username);
   }
@@ -342,7 +333,7 @@ function renderAchievements(containerId, list) {
   const container = document.getElementById(containerId);
   container.innerHTML = "";
 
-  list.forEach((a) => {
+  list.forEach((a, i) => {
     const row = document.createElement("div");
     row.className = `ach-row ${a.unlocked ? "ach-unlocked" : "ach-locked"}`;
     row.classList.add("is-clickable");
@@ -380,9 +371,13 @@ function renderAchievements(containerId, list) {
     // Daily achievements grant 0 XP (see backend/achievements.py calculate_xp,
     // which only counts type !== "daily") — only lifetime rows get a tag.
     const xpTag =
-      a.type === "lifetime" ? `<span class="ach-xp">+150 XP</span>` : "";
+      a.type === "lifetime"
+        ? `<span class="ach-xp">+150 XP</span>`
+        : `<span class="ach-status">${a.unlocked ? "unlocked" : "locked"}</span>`;
+    const idx = String(i + 1).padStart(2, "0");
 
     row.innerHTML = `
+      <span class="ach-idx">${idx}</span>
       <div class="ach-icon-wrap">${iconSvg}</div>
       <div class="ach-text">
         <p class="ach-name">${escapeHtml(a.name)}</p>
@@ -445,6 +440,7 @@ function openAchievementModal(ach, triggerEl) {
   ACH_DIALOG_STATUS.textContent = ach.unlocked ? "Unlocked" : "Locked";
   ACH_DIALOG_STATUS.classList.toggle("is-unlocked", ach.unlocked);
   ACH_DIALOG_STATUS.classList.toggle("is-locked", !ach.unlocked);
+  ACH_DIALOG_DATE.classList.toggle("is-unlocked", !!ach.unlocked);
 
   if (ach.unlocked && ach.unlocked_date) {
     const d = new Date(ach.unlocked_date);
@@ -1044,33 +1040,35 @@ document.addEventListener("DOMContentLoaded", () => {
   // ─── Example bubble rotation ───
   (function initExampleBubble() {
     var bubble = document.getElementById("example-bubble");
-    var iconEl = document.getElementById("example-icon");
     var textEl = document.getElementById("example-text");
-    if (!bubble || !iconEl || !textEl) return;
+    if (!bubble || !textEl) return;
+
+    // Every roast is rendered up front and stacked in one grid cell (see
+    // .example-bubble-text), so only the active one is visible.
+    var quotes = HERO_EXAMPLES.map(function (ex) {
+      var el = document.createElement("span");
+      el.className = "example-quote";
+      el.textContent = ex.text;
+      textEl.appendChild(el);
+      return el;
+    });
 
     var idx = 0;
     var intervalId = null;
-    var ROTATE_MS = 3500;
+    var ROTATE_MS = 7000;
 
-    function showExample(i) {
-      var ex = HERO_EXAMPLES[i];
-      var iconClass = ICON_FA_CLASSES[ex.icon] || ICON_FA_CLASSES.flame;
-      iconEl.innerHTML = '<i class="' + iconClass + '" aria-hidden="true"></i>';
-      iconEl.style.backgroundColor =
-        ex.icon === "flame" ? "var(--ach-accent)" : "#f59e0b";
-      textEl.classList.remove("fade-out");
-      textEl.textContent = ex.text;
+    function show(i) {
+      quotes.forEach(function (el, n) {
+        el.classList.toggle("is-active", n === i);
+      });
     }
 
     function rotate() {
-      textEl.classList.add("fade-out");
-      setTimeout(function () {
-        idx = (idx + 1) % HERO_EXAMPLES.length;
-        showExample(idx);
-      }, 300);
+      idx = (idx + 1) % quotes.length;
+      show(idx);
     }
 
-    showExample(0);
+    show(0);
     intervalId = setInterval(rotate, ROTATE_MS);
 
     bubble.addEventListener("mouseenter", function () {
