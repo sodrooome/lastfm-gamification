@@ -6,7 +6,7 @@
 
 - **Backend:** FastAPI (Python) — proxies Last.fm API, computes achievements and XP, generates AI roasts via OpenRouter
 - **Frontend:** Static SPA — vanilla HTML/CSS/JS, no build step, no frameworks
-- **Design:** Warm paper canvas, single ink + coral accent system (see DESIGN.md)
+- **Design:** Warm paper canvas, single ink + coral accent system (see DESIGN.md). The landing view and `compare.html` use the scoped "Refined Editorial" tokens (Newsreader serif, hairline structure) declared on `.landing-view, .compare-view`
 
 ## Project Structure
 

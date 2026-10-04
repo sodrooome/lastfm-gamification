@@ -38,6 +38,54 @@ function getUsersFromURL() {
   };
 }
 
+// ─── Sample joint roasts (hero card) ───────────────────────────
+
+const SAMPLE_ROASTS = [
+  "Auraselena, the soundtrack to a bland anime, meets Bagassp, a man who smells exclusively of Hot Topic. A 67% compatibility score is generous, considering one thinks Hindia is edgy and the other listens to actual Slipknot. Bagassp, you're obviously suffering more.",
+  "User A is an emo relic, User B a nu-metal tourist. Their 71% compatibility is a statistical anomaly, likely due to a shared, inexplicable Maroon 5 phase they both desperately want to forget. One listens to actual music, the other just screams about it.",
+];
+
+// Every roast is rendered up front and stacked in one grid cell (see
+// .compare-sample-text), so only the active one is visible.
+function initSampleRoasts() {
+  const bubble = document.getElementById("compareExampleBubble");
+  const textEl = document.getElementById("compareSampleText");
+  if (!bubble || !textEl) return;
+
+  const quotes = SAMPLE_ROASTS.map(function (text) {
+    const el = document.createElement("span");
+    el.className = "compare-sample-quote";
+    el.textContent = text;
+    textEl.appendChild(el);
+    return el;
+  });
+
+  let idx = 0;
+  let intervalId = null;
+  const ROTATE_MS = 7000;
+
+  function show(i) {
+    quotes.forEach(function (el, n) {
+      el.classList.toggle("is-active", n === i);
+    });
+  }
+  function start() {
+    intervalId = setInterval(function () {
+      idx = (idx + 1) % quotes.length;
+      show(idx);
+    }, ROTATE_MS);
+  }
+  function stop() {
+    clearInterval(intervalId);
+  }
+
+  show(0);
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  start();
+  bubble.addEventListener("mouseenter", stop);
+  bubble.addEventListener("mouseleave", start);
+}
+
 // ─── Score count-up animation ──────────────────────────────────
 
 function animateScore(element, target, duration) {
@@ -86,9 +134,13 @@ function renderUserCard(userData, actLabel) {
     : `<p class="compare-user-stat-value">Unknown</p>`;
 
   card.innerHTML = `
-    ${actHtml}
-    ${avatarHtml}
-    <p class="compare-user-name">${escapeHtml(userData.username)}</p>
+    <div class="compare-user-head">
+      ${avatarHtml}
+      <div class="compare-user-id">
+        <p class="compare-user-name">${escapeHtml(userData.username)}</p>
+        ${actHtml}
+      </div>
+    </div>
     <div class="compare-user-stats">
       <div class="compare-user-stat">
         <p class="compare-user-stat-label">Scrobbles</p>
@@ -129,11 +181,21 @@ function renderSharedArtists(artists) {
   });
 }
 
+// Result/limit states show a rule under the title and drop the consent copy;
+// idle/loading/error show the consent copy instead.
+function setJointRoastHasOutput(hasOutput) {
+  var card = document.getElementById("compareJointRoast");
+  if (card) card.classList.toggle("has-output", hasOutput);
+  toggle("jointRoastConsent", !hasOutput);
+}
+
 function resetJointRoast() {
   toggle("jointRoastBody", true);
   toggle("jointRoastLoading", false);
   toggle("jointRoastResult", false);
+  toggle("jointRoastActions", false);
   toggle("jointRoastError", false);
+  setJointRoastHasOutput(false);
   var btn = document.getElementById("generateRoastBtn");
   if (btn) btn.disabled = false;
 }
@@ -145,8 +207,12 @@ function showJointRoastLimitReached(btn) {
     `<p class="roast-limit-hint-title">You've reached your roast limit!</p>` +
     `<p class="roast-limit-hint-body">You've officially broken our limit meter! It'll magically reset... eventually. Please try again soon.</p>` +
     `</div>`;
+  setJointRoastHasOutput(true);
   toggle("jointRoastLoading", false);
   toggle("jointRoastResult", true);
+  toggle("jointRoastActions", false);
+  // Limit state keeps the (disabled) generate button visible under the hint.
+  toggle("jointRoastBody", true);
   if (btn) {
     btn.disabled = true;
     btn.title = "You've used all 3 roasts";
@@ -163,7 +229,9 @@ async function generateJointRoast() {
   toggle("jointRoastBody", false);
   toggle("jointRoastLoading", true);
   toggle("jointRoastResult", false);
+  toggle("jointRoastActions", false);
   toggle("jointRoastError", false);
+  setJointRoastHasOutput(false);
 
   try {
     var res = await fetch(API_BASE + "/compare/roast", {
@@ -217,8 +285,10 @@ async function generateJointRoast() {
 
     var resultEl = document.getElementById("jointRoastResult");
     resultEl.textContent = data.roast;
+    setJointRoastHasOutput(true);
     toggle("jointRoastLoading", false);
     toggle("jointRoastResult", true);
+    toggle("jointRoastActions", true);
     if (window.analytics) window.analytics.trackCompareRoastGenerated();
   } catch (err) {
     console.error(err);
@@ -336,23 +406,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") doCompare();
   });
 
-  // Nav search redirects to the main profile page
-  const navSearch = document.getElementById("usernameInputDash");
-  if (navSearch) {
-    navSearch.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        const val = navSearch.value.trim();
-        if (val) {
-          window.location.href = `./index.html?user=${encodeURIComponent(val)}`;
-        }
-      }
-    });
-  }
+  initSampleRoasts();
 
-  // Generate joint roast button
+  // Generate joint roast button (and "Generate again" on the result state)
   const generateRoastBtn = document.getElementById("generateRoastBtn");
   if (generateRoastBtn) {
     generateRoastBtn.addEventListener("click", generateJointRoast);
+  }
+  const regenerateRoastBtn = document.getElementById("regenerateRoastBtn");
+  if (regenerateRoastBtn) {
+    regenerateRoastBtn.addEventListener("click", generateJointRoast);
   }
 
   // Recent roasts strip: auto-marquee with reduced-motion fallback
