@@ -7,3 +7,6 @@ __pycache__/
 
 # ignore the virtual environment which is created on VPS
 venv/
+
+node_modules/
+playwright-report/
