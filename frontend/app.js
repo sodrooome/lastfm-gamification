@@ -82,7 +82,9 @@ function showError(msg) {
   toggle("error", true);
 }
 
-function showUserNotFound() {
+function showUserNotFound(username) {
+  document.getElementById("unfGhostName").textContent = username;
+  document.getElementById("unfTitleName").textContent = username;
   toggle("userNotFound", true);
 }
 
@@ -159,7 +161,7 @@ async function _fetchAndRender(username) {
     if (!res.ok) {
       if (res.status === 404) {
         if (window.analytics) window.analytics.trackProfileSearched(false);
-        showUserNotFound();
+        showUserNotFound(username);
         return;
       }
       throw new Error("Server error");

@@ -11,7 +11,7 @@ Turn your Last.fm listening history into a gamified profile with unlock achievem
 <table align="center">
   <tr>
     <td align="center">
-      <img src="screenshot/desktop-version-1.png" alt="tastecheck.me landing page" width="420"/>
+      <img src="screenshot/new-desktop-version.png" alt="tastecheck.me landing page" width="600"/>
     </td>
     <td align="center">
       <img src="screenshot/tastecheck-amyahya-roast.png" alt="Shareable roast result card" width="300"/>

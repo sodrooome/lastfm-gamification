@@ -23,9 +23,9 @@
   <meta name="twitter:image" content="https://tastecheck.me/assets/og-image.png" />
   <meta name="twitter:image:alt" content="tastecheck.me — Turn your listening into identity" />
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./style.css?v=6" />
   <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png" />
   <link rel="icon" type="image/svg+xml" href="/assets/icon.svg" />
@@ -53,21 +53,94 @@
     </header>
   </div>
 
-  <div class="guide-page">
+  <div class="guide-page editorial-page release-page">
     <div class="guide-back">
-      <a class="back-link" href="./">Back to search</a>
+      <a class="back-link" href="./">&larr; Back to search</a>
     </div>
 
-    <div class="guide-header">
-      <div class="about-eyebrow">Release Notes</div>
-      <h1>What's new in tastecheck.me?</h1>
-      <p>Every update related to shipped feature, fix, and redesign</p>
+    <div class="release-head">
+      <div class="guide-header">
+        <div class="about-eyebrow">Release notes</div>
+        <h1>What&rsquo;s new in<br /><em>tastecheck.me</em></h1>
+        <p>All our latest features, fixes, and redesigns, listed in real time</p>
+      </div>
+      <div class="release-filters" role="group" aria-label="Filter updates">
+        <button type="button" class="release-chip is-on" data-filter="all">All</button>
+        <button type="button" class="release-chip" data-filter="feature">Features</button>
+        <button type="button" class="release-chip" data-filter="fix">Fixes</button>
+        <button type="button" class="release-chip" data-filter="design">Design</button>
+      </div>
     </div>
 
-    <div class="release-group">
-      <div class="release-group-label">September 2026</div>
+    <div class="release-layout">
+      <aside class="release-toc" aria-label="Jump to month">
+        <span class="release-toc-eyebrow">Jump to</span>
+        <div class="release-toc-list">
+          <a class="release-toc-link is-active" href="#october-2026"><span class="release-toc-dot"></span>October 2026</a>
+          <a class="release-toc-link" href="#september-2026"><span class="release-toc-dot"></span>September 2026</a>
+          <a class="release-toc-link" href="#august-2026"><span class="release-toc-dot"></span>August 2026</a>
+          <a class="release-toc-link" href="#july-2026"><span class="release-toc-dot"></span>July 2026</a>
+          <a class="release-toc-link" href="#may-2026"><span class="release-toc-dot"></span>May 2026</a>
+        </div>
+      </aside>
 
-      <div class="release-entry">
+      <main class="release-main">
+    <section class="release-group" id="october-2026" data-collapsed="false">
+      <div class="release-group-head">
+        <h2 class="release-group-label">October 2026</h2>
+        <span class="release-group-count">1 fix &middot; 3 design</span>
+        <button type="button" class="release-toggle" aria-expanded="true">
+          <span class="release-toggle-text">Hide updates</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+        </button>
+      </div>
+      <div class="release-entries">
+
+      <div class="release-entry" data-kind="design">
+        <span class="release-tag release-tag-design">Design</span>
+        <div class="release-entry-body">
+          <h3 class="release-entry-title">A refined editorial look, everywhere</h3>
+          <p class="release-entry-desc">The landing page, dashboard, compare, how-it-works, and about pages now share one editorial style: warm paper background, serif headlines, and hairline structure.</p>
+        </div>
+      </div>
+
+      <div class="release-entry" data-kind="design">
+        <span class="release-tag release-tag-design">Design</span>
+        <div class="release-entry-body">
+          <h3 class="release-entry-title">Redesigned 404 and &ldquo;user not found&rdquo; pages</h3>
+          <p class="release-entry-desc">Lost links and mistyped usernames now get a proper page, with a &ldquo;track not found&rdquo; player card, a checklist of what to double-check, and a consolation roast.</p>
+        </div>
+      </div>
+
+      <div class="release-entry" data-kind="design">
+        <span class="release-tag release-tag-design">Design</span>
+        <div class="release-entry-body">
+          <h3 class="release-entry-title">Easier-to-browse release notes</h3>
+          <p class="release-entry-desc">This page now has filters for features, fixes, and design, a month index to jump around, and collapsible older months.</p>
+        </div>
+      </div>
+
+      <div class="release-entry" data-kind="fix">
+        <span class="release-tag release-tag-fix">Fix</span>
+        <div class="release-entry-body">
+          <h3 class="release-entry-title">Consistent accent colors on the dashboard</h3>
+          <p class="release-entry-desc">Unlocked achievements, XP chips, and the navbar logo now use the same coral as the rest of the site instead of a slightly different red.</p>
+        </div>
+      </div>
+      </div>
+    </section>
+    <section class="release-group" id="september-2026" data-collapsed="true">
+      <div class="release-group-head">
+        <h2 class="release-group-label">September 2026</h2>
+        <span class="release-group-count">3 features &middot; 1 fix &middot; 1 design</span>
+        <button type="button" class="release-toggle" aria-expanded="false">
+          <span class="release-toggle-text">Show updates</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+        </button>
+      </div>
+      <div class="release-entries">
+
+      <div class="release-entry" data-kind="feature">
         <span class="release-tag release-tag-feature">Feature</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Retake your roast</h3>
@@ -75,7 +148,7 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="feature">
         <span class="release-tag release-tag-feature">Feature</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Choose your roast intensity</h3>
@@ -83,7 +156,7 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="feature">
         <span class="release-tag release-tag-feature">Feature</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Shareable roast cards</h3>
@@ -91,7 +164,7 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="fix">
         <span class="release-tag release-tag-fix">Fix</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">More accurate daily achievements</h3>
@@ -99,19 +172,27 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="design">
         <span class="release-tag release-tag-design">Design</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">One-tap search on the homepage</h3>
           <p class="release-entry-desc">Added a Send button to the homepage search bar, so submitting your username no longer requires pressing Enter.</p>
         </div>
       </div>
-    </div>
+      </div>
+    </section>
+    <section class="release-group" id="august-2026" data-collapsed="true">
+      <div class="release-group-head">
+        <h2 class="release-group-label">August 2026</h2>
+        <span class="release-group-count">2 features &middot; 2 fixes &middot; 2 design</span>
+        <button type="button" class="release-toggle" aria-expanded="false">
+          <span class="release-toggle-text">Show updates</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+        </button>
+      </div>
+      <div class="release-entries">
 
-    <div class="release-group">
-      <div class="release-group-label">August 2026</div>
-
-      <div class="release-entry">
+      <div class="release-entry" data-kind="feature">
         <span class="release-tag release-tag-feature">Feature</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Social sharing previews</h3>
@@ -119,7 +200,7 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="feature">
         <span class="release-tag release-tag-feature">Feature</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Rebrand to tastecheck.me</h3>
@@ -127,7 +208,7 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="fix">
         <span class="release-tag release-tag-fix">Fix</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Navigation and toast cleanup</h3>
@@ -135,7 +216,7 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="fix">
         <span class="release-tag release-tag-fix">Fix</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Favicon fixes</h3>
@@ -143,7 +224,7 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="design">
         <span class="release-tag release-tag-design">Design</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">One accent system, site-wide</h3>
@@ -151,19 +232,27 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="design">
         <span class="release-tag release-tag-design">Design</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Unified achievement badge colors</h3>
           <p class="release-entry-desc">Achievement badges and accent colors were brought under one consistent theme instead of several mismatched hues.</p>
         </div>
       </div>
-    </div>
+      </div>
+    </section>
+    <section class="release-group" id="july-2026" data-collapsed="true">
+      <div class="release-group-head">
+        <h2 class="release-group-label">July 2026</h2>
+        <span class="release-group-count">3 features &middot; 1 fix &middot; 1 design</span>
+        <button type="button" class="release-toggle" aria-expanded="false">
+          <span class="release-toggle-text">Show updates</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+        </button>
+      </div>
+      <div class="release-entries">
 
-    <div class="release-group">
-      <div class="release-group-label">July 2026</div>
-
-      <div class="release-entry">
+      <div class="release-entry" data-kind="feature">
         <span class="release-tag release-tag-feature">Feature</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Compare & joint roasts</h3>
@@ -171,7 +260,7 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="feature">
         <span class="release-tag release-tag-feature">Feature</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">AI Roast</h3>
@@ -179,7 +268,7 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="feature">
         <span class="release-tag release-tag-feature">Feature</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Mobile-friendly dashboard</h3>
@@ -187,7 +276,7 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="fix">
         <span class="release-tag release-tag-fix">Fix</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Navigation & button consistency</h3>
@@ -195,28 +284,105 @@
         </div>
       </div>
 
-      <div class="release-entry">
+      <div class="release-entry" data-kind="design">
         <span class="release-tag release-tag-design">Design</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Achievement detail dialogs</h3>
           <p class="release-entry-desc">Locked achievements now show a teaser instead of staying blank, and tapping any badge opens a detail popup (a bottom sheet on mobile).</p>
         </div>
       </div>
-    </div>
+      </div>
+    </section>
+    <section class="release-group" id="may-2026" data-collapsed="true">
+      <div class="release-group-head">
+        <h2 class="release-group-label">May 2026</h2>
+        <span class="release-group-count">1 feature</span>
+        <button type="button" class="release-toggle" aria-expanded="false">
+          <span class="release-toggle-text">Show updates</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+        </button>
+      </div>
+      <div class="release-entries">
 
-    <div class="release-group">
-      <div class="release-group-label">May 2026</div>
-
-      <div class="release-entry">
+      <div class="release-entry" data-kind="feature">
         <span class="release-tag release-tag-feature">Feature</span>
         <div class="release-entry-body">
           <h3 class="release-entry-title">Initial launch</h3>
           <p class="release-entry-desc">tastecheck.me went live: enter a Last.fm username and get back achievements, XP levels, and listening stats.</p>
         </div>
       </div>
+      </div>
+    </section>
+        <p class="release-empty" hidden>No updates match this filter.</p>
+      </main>
     </div>
   </div>
 
+  <script>
+    (function () {
+      var chips = document.querySelectorAll(".release-chip");
+      var groups = document.querySelectorAll(".release-group");
+      var links = document.querySelectorAll(".release-toc-link");
+      var empty = document.querySelector(".release-empty");
+      var filter = "all";
+
+      function setCollapsed(g, collapsed) {
+        g.dataset.collapsed = collapsed ? "true" : "false";
+        var btn = g.querySelector(".release-toggle");
+        btn.setAttribute("aria-expanded", String(!collapsed));
+        btn.querySelector(".release-toggle-text").textContent = collapsed ? "Show updates" : "Hide updates";
+      }
+
+      function apply() {
+        var any = false;
+        groups.forEach(function (g) {
+          var shown = 0;
+          g.querySelectorAll(".release-entry").forEach(function (e) {
+            var ok = filter === "all" || e.dataset.kind === filter;
+            e.hidden = !ok;
+            if (ok) shown++;
+          });
+          g.hidden = shown === 0;
+          if (shown) any = true;
+        });
+        empty.hidden = any;
+      }
+
+      chips.forEach(function (c) {
+        c.addEventListener("click", function () {
+          filter = c.dataset.filter;
+          chips.forEach(function (x) { x.classList.toggle("is-on", x === c); });
+          if (filter !== "all") groups.forEach(function (g) { setCollapsed(g, false); });
+          apply();
+        });
+      });
+
+      groups.forEach(function (g) {
+        g.querySelector(".release-toggle").addEventListener("click", function () {
+          setCollapsed(g, g.dataset.collapsed !== "true");
+        });
+      });
+
+      links.forEach(function (l) {
+        l.addEventListener("click", function () {
+          var g = document.querySelector(l.getAttribute("href"));
+          if (g) setCollapsed(g, false);
+        });
+      });
+
+      if ("IntersectionObserver" in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (!en.isIntersecting) return;
+            links.forEach(function (l) {
+              l.classList.toggle("is-active", l.getAttribute("href") === "#" + en.target.id);
+            });
+          });
+        }, { rootMargin: "0px 0px -70% 0px" });
+        groups.forEach(function (g) { io.observe(g); });
+      }
+    })();
+  </script>
   <script src="./tracking.js"></script>
   <footer class="page-footer page-footer-split">
     <p>
