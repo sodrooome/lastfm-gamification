@@ -25,7 +25,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&family=Newsreader:ital,wght@0,500;1,400;1,500&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="./style.css?v=3" />
+  <link rel="stylesheet" href="./style.css?v=5" />
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -276,18 +276,37 @@
       <div id="error" class="alert-error d-none text-center"></div>
 
       <!-- User Not Found -->
-      <div id="userNotFound" class="user-not-found-card d-none text-center">
-        <div class="user-not-found-body">
-          <img
-            src="./assets/404-not-found.png"
-            alt="User not found"
-            class="user-not-found-image"
-          />
-          <h2 class="user-not-found-title">User not found</h2>
-          <p class="user-not-found-desc">
-            The Last.fm username you entered doesn't exist or may have been
-            changed. Try another username.
-          </p>
+      <div id="userNotFound" class="unf-layout d-none">
+        <aside class="unf-ghost" aria-hidden="true">
+          <div class="unf-ghost-avatar">?</div>
+          <h2 class="unf-ghost-name" id="unfGhostName"></h2>
+          <span class="unf-ghost-level">LEVEL &mdash;</span>
+          <div class="unf-ghost-bar"></div>
+          <div class="unf-ghost-stats"><span>0 scrobbles</span><span>0 badges</span></div>
+        </aside>
+        <div class="unf-main">
+          <section class="unf-card">
+            <span class="unf-eyebrow unf-eyebrow-brand">User not found</span>
+            <h2 class="unf-title">No one called<br /><em id="unfTitleName"></em> here.</h2>
+            <p class="unf-desc">
+              We couldn&rsquo;t find that Last.fm profile. Double-check the
+              spelling and try again with the search above.
+            </p>
+            <span class="unf-eyebrow">Things to check</span>
+            <ol class="unf-checks">
+              <li><span class="unf-idx">01</span><div><b>Spelling</b><span>Usernames must match exactly &mdash; one extra letter and we&rsquo;re lost.</span></div></li>
+              <li><span class="unf-idx">02</span><div><b>It&rsquo;s a Last.fm username</b><span>Not a Spotify, Apple Music, or display name.</span></div></li>
+              <li><span class="unf-idx">03</span><div><b>The account exists</b><span>Renamed or deleted profiles won&rsquo;t show up.</span></div></li>
+              <li><span class="unf-idx">04</span><div><b>Don&rsquo;t have Last.fm?</b><span>Create a free account and connect your music app &mdash; come back once you&rsquo;ve got some scrobbles to judge.</span></div></li>
+            </ol>
+          </section>
+          <aside class="unf-side">
+            <div class="unf-roast">
+              <svg width="26" height="21" viewBox="0 0 30 24" fill="none" aria-hidden="true"><path d="M0 24V14.4C0 6.4 4.8 1.2 12 0L13.2 3.6C8.4 4.8 6 7.6 6 12H12V24H0ZM18 24V14.4C18 6.4 22.8 1.2 30 0L31.2 3.6C26.4 4.8 24 7.6 24 12H30V24H18Z" fill="currentColor" /></svg>
+              <p>Can&rsquo;t roast someone who doesn&rsquo;t exist. Though their taste is probably still better than yours.</p>
+              <span class="unf-roast-label">Consolation roast</span>
+            </div>
+          </aside>
         </div>
       </div>
 

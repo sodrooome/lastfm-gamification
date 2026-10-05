@@ -23,7 +23,7 @@
   <meta name="twitter:image" content="https://tastecheck.me/assets/og-image.png" />
   <meta name="twitter:image:alt" content="tastecheck.me — Turn your listening into identity" />
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
   <link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
@@ -52,14 +52,43 @@
       </nav>
     </header>
   </div>
-  <div class="not-found-view">
+  <main class="not-found-view">
     <div class="not-found-inner">
-      <img src="./assets/404-not-found.png" alt="404" class="not-found-image" />
-      <h1 class="not-found-title">Page not found</h1>
-      <p class="not-found-sub">The page you're looking for doesn't exist or has been moved.</p>
-      <a href="./" class="btn-primary not-found-cta">Back to search</a>
+      <section class="not-found-copy">
+        <span class="nf-eyebrow nf-eyebrow-brand">Error 404 &middot; Page not found</span>
+        <h1 class="not-found-title">This page got<br /><em>skipped.</em></h1>
+        <p class="not-found-sub">Whatever you were looking for isn&rsquo;t here. The link may be broken, mistyped, or the page was moved.</p>
+        <div class="nf-request" aria-hidden="true">
+          <span class="nf-request-verb">GET</span>
+          <span class="nf-request-path" id="nfRequestPath"></span>
+        </div>
+        <div class="not-found-actions">
+          <a href="./" class="btn-primary not-found-cta">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5" /><path d="M11 18l-6-6 6-6" /></svg>
+            Back to home
+          </a>
+          <a href="./" class="btn-ghost not-found-cta">Search a profile</a>
+        </div>
+      </section>
+      <div class="not-found-divider" aria-hidden="true"></div>
+      <aside class="nf-player" aria-label="404 — track not found">
+        <div class="nf-player-head">
+          <span class="nf-player-label">Now playing</span>
+          <span class="nf-bars"><i></i><i></i><i></i></span>
+        </div>
+        <div class="nf-player-code">404</div>
+        <div class="nf-player-track">Track not found</div>
+        <div class="nf-player-meta">Unknown Artist &middot; 0:00 / 0:00</div>
+        <div class="nf-player-progress"></div>
+        <ol class="nf-tracks">
+          <li class="nf-track nf-track-dead"><span class="nf-n">01</span><span class="nf-t">The page you wanted</span><span class="nf-p">0 plays</span></li>
+          <li class="nf-track nf-track-dead"><span class="nf-n">02</span><span class="nf-t">A working link</span><span class="nf-p">0 plays</span></li>
+          <li class="nf-track"><span class="nf-n">03</span><span class="nf-t">Your way back home</span><span class="nf-p nf-p-play">&#9654; play</span></li>
+        </ol>
+        <p class="nf-player-quote">Even your URLs have questionable taste.</p>
+      </aside>
     </div>
-  </div>
+  </main>
   <footer class="page-footer page-footer-split">
     <p>
       <a href="https://www.last.fm/api" target="_blank" rel="noopener noreferrer" class="lastfm-link">
@@ -81,6 +110,10 @@
     </p>
   </footer>
   </div>
+  <script>
+    document.getElementById("nfRequestPath").textContent =
+      location.host + location.pathname;
+  </script>
   <script src="./tracking.js"></script>
 </body>
 
