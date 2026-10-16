@@ -2282,7 +2282,7 @@ body {
   scroll-margin-top: 24px;
 }
 
-.release-group + .release-group {
+.release-group:not([hidden]) ~ .release-group:not([hidden]) {
   padding-top: 28px;
   border-top: 1px solid var(--hairline);
 }
@@ -2353,11 +2353,11 @@ body {
   grid-template-columns: 90px minmax(0, 1fr);
   gap: 20px;
   padding: 24px 0;
-  border-bottom: 1px solid var(--hairline);
 }
 
-.release-entry:last-of-type {
-  border-bottom: none;
+/* separator only between visible entries, so a filtered-out last entry can't leave a trailing line */
+.release-entry:not([hidden]) ~ .release-entry:not([hidden]) {
+  border-top: 1px solid var(--hairline);
 }
 
 .release-tag {
@@ -2441,6 +2441,16 @@ body {
   .release-group-head {
     flex-wrap: wrap;
     row-gap: 8px;
+  }
+
+  .release-group-count {
+    margin-right: 0;
+    flex-basis: 100%;
+    order: 1;
+  }
+
+  .release-toggle {
+    order: 2;
   }
 
   .release-group-label {
