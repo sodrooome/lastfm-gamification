@@ -18,8 +18,8 @@ var roastStatusInterval = null;
 var roastStatusIdx = 0;
 
 // ─── Hero example bubble ───
-const SOCIAL_PROOF_SEARCHED = 250;
-const SOCIAL_PROOF_ROASTED = 120;
+const SOCIAL_PROOF_SEARCHED = 290;
+const SOCIAL_PROOF_ROASTED = 170;
 
 const HERO_EXAMPLES = [
   {
